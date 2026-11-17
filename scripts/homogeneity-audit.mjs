@@ -1,13 +1,13 @@
-// 8000 篇文章状态与同质化体检（只读，不写盘）
+// 文章同质化体检（只读，不写盘）
 // 用法：
 //   node scripts/homogeneity-audit.mjs           完整报告
-//   node scripts/homogeneity-audit.mjs --gate    门禁模式：按「可索引文章」判定，超限则 exit 1
+//   node scripts/homogeneity-audit.mjs --gate    门禁模式：对全部文章判定，超限则 exit 1
 import fs from 'node:fs';
 import path from 'node:path';
 import { parse } from 'yaml';
 
 const GATE_MODE = process.argv.includes('--gate');
-// 门禁阈值（仅对可索引文章生效；noindex 国家版不算数）
+// 门禁阈值（全量文章可索引：冗余国家版/变体已在生成期直接删除，不再用 noindex）
 const GATE = {
   // 同 cell(model|cat|ind|country) 内两篇 Jaccard 上限：超过即近似复制 → 阻断
   JaccardMax: 0.90,

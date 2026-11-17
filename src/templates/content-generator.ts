@@ -240,7 +240,8 @@ function buildModelSpecBlock(model: typeof models[0] | null): string {
   if (!model) return '';
   const grits = model.gritRange.slice(0, 4).join('–') + (model.gritRange.length > 4 ? '…' : '');
   const lines = [
-    '<!-- model-spec-block -->',
+    // MDX 合法注释语法（HTML 注释 <!-- --> 在 MDX/JSX 中非法，会中断构建）
+    '{/* model-spec-block */}',
     `<h2>مواصفات ${model.name} (الفروقات الجوهرية)</h2>`,
     `<ul class="plain-links">`,
     `  <li><strong>درجات الغرِت المتاحة:</strong> ${grits}</li>`,
@@ -366,7 +367,7 @@ function buildBLUF(
       break;
     case 'faq-buyers-guide':
       bluf = pick2([
-        `أهم 3 أسئلة لمشتري ${productName}: 1) أي درجة غرِت لـ ${industryName}؟ → تعتمد على مرحلة العمل. 2) ما الحد الأدنى للطلب؟ → يُحدد بالمواصفة. 3) كم مدة التوريد؟ → 3–6 أسابيع من اعتماد المواصفة. التفاصيل في الأسئلة أدناه.`,
+        `أهم 3 أسئلة لمشتري ${productName}: 1) أي درجة غرِت لـ ${industryName}؟ → تعتمد على مرحلة العمل. 2) ما الحد الأدنى للطلب؟ → يُحدد بالمواصفة. 3) كم مدة التوريد؟ → تُحدد في عرض السعر حسب الكمية والمواصفة. التفاصيل في الأسئلة أدناه.`,
         `مشترو ${productName} يسألون عادةً عن: اختيار الغرِت لـ ${industryName}، حد الكمية الأدنى، ومهلة التوريد. الإجابات المباشرة في قسم الأسئلة أدناه مع نموذج الاستفسار الجاهز.`,
       ]);
       bluf += challenge;
@@ -427,7 +428,7 @@ function buildDirectAnswerBlock(
       answer = `المتطلبات: شهادة مطابقة SASO (السعودية)/ESMA (الإمارات)/GSO (الخليج). الميناء الرئيسي: ${getMainPort(gccCountry?.code)}. مهلة بحري 25–35 يوم. الدفع: LC مستندي أو TT مسبق. لا وجود لمخزن محلي.`;
       break;
     case 'faq-buyers-guide':
-      answer = `1) كيف أختار الغرِت؟ → مرحلة العمل تحدد. 2) ما الـ MOQ؟ → بالمواصفة. 3) مهلة التوريد؟ → 3–6 أسابيع. 4) هل تدعمون OEM؟ → نعم، بشروط. 5) كيف أطلب عرضاً؟ → نموذج الاستفسار مع المواصفة الكاملة.`;
+      answer = `1) كيف أختار الغرِت؟ → مرحلة العمل تحدد. 2) ما الـ MOQ؟ → بالمواصفة. 3) مهلة التوريد؟ → تُحدد في عرض السعر. 4) هل تدعمون OEM؟ → نعم، بشروط. 5) كيف أطلب عرضاً؟ → نموذج الاستفسار مع المواصفة الكاملة.`;
       break;
     default:
       answer = `الجواب المباشر: ${productName} يُختار حسب المادة، المرحلة، والماكينة. التفاصيل في المقال.`;
@@ -458,7 +459,7 @@ function buildSection(
   // GCC Regional Sourcing - 精确逐节匹配
   if (type === 'gcc-regional-sourcing') {
     if (h2Title.includes('لوائح') || h2Title.includes('امتثال') || h2Title.includes('SASO') || h2Title.includes('ESMA') || h2Title.includes('GSO')) {
-      content = buildSafetyCompliance(topic, industry, gccCountry);
+      content = buildImportCompliance(gccCountry);
     }
     else if (h2Title.includes('لوجستيات') || h2Title.includes('موانئ') || h2Title.includes('التخليص') || h2Title.includes('مسارات')) {
       content = buildLogisticsPorts(gccCountry);
@@ -483,8 +484,7 @@ function buildSection(
     }
     else if (h2Title.includes('تحديثات') || h2Title.includes('معايير') || h2Title.includes('قراءة') || h2Title.includes('FEPA') || h2Title.includes('ISO') || h2Title.includes('SASO') || h2Title.includes('ESMA') || h2Title.includes('GSO')) {
       content = buildStandardsAnalysis(topic, industry, gccCountry);
-    }
-    else if (h2Title.includes('حجم السوق') || h2Title.includes('بيانات') || h2Title.includes('نمو') || h2Title.includes('اقتباس')) {
+    }    else if (h2Title.includes('حجم السوق') || h2Title.includes('بيانات') || h2Title.includes('نمو') || h2Title.includes('اقتباس')) {
       content = buildMarketData(topic, industry, gccCountry);
     }
     else if (h2Title.includes('اتجاهات تقنية') || h2Title.includes('ابتكار') || h2Title.includes('اتجاهات المنتج')) {
@@ -1110,13 +1110,102 @@ function buildMarketContext(topic: TopicSpec, industry: typeof industries[0] | u
 <p>القطاع مدفوع بـ: المشاريع الحكومية الضخمة (رؤية 2030 السعودية، مشاريع إكسبو الإمارات، كأس العالم قطر)، نمو التصنيع المحلي، واستبدال الواردات. الطلب على مواد التشطيب الصناعية ينمو 6–8% سنوياً.</p>`;
 }
 
+/**
+ * 进口合规（地域寻源篇专用）：按目的国给出真实的监管机构与合规要点，
+ * 替代原先误路由的 PPE 安全清单（该清单与进口法规主题无关，属灌水）。
+ * 数据全部来自 prompts_ar_gulf.md 第 7 节限定的权威机构（SASO/ESMA/GSO/GSO 各国分支）。
+ */
+function buildImportCompliance(gccCountry: typeof gccCountries[0] | undefined): string {
+  if (!gccCountry || gccCountry.code === 'general-gcc') return '';
+  const info: Record<string, { regulator: string; cert: string; points: string[] }> = {
+    'saudi-arabia': {
+      regulator: 'SASO (الهيئة السعودية للمواصفات والمقاييس والجودة)',
+      cert: 'شهادة مطابقة SASO (SALEEM/SABER)',
+      points: [
+        'تسجيل المنتج في منصة SABER قبل الشحن، مع إرفاق تقرير اختبار من مختبر معتمد',
+        'ملصق المنتج بالعربية إلزامي، يتضمن العلامات التجارية وبيانات المستورد السعودي',
+        'شهادة منشأ (COO) من الغرفة التجارية في مقاطعة هوبي، الصين، موثقة',
+      ],
+    },
+    'uae': {
+      regulator: 'ESMA (هيئة الإمارات للمواصفات والمقاييس)',
+      cert: 'شهادة مطابقة ESMA (ECAS)',
+      points: [
+        'تسجيل المنتج في نظام ECAS قبل الاستيراد، مع إرفاق تقرير فحص من مختبر معتمد من MoIAT',
+        'الملصق يجب أن يكون ثنائي اللغة (عربي/إنجليزي) مع رمز ECAS',
+        'شهادة منشأ (COO) موثقة من الغرفة التجارية في هوبي',
+      ],
+    },
+    'qatar': {
+      regulator: 'Qatar Standards / وزارة التجارة والصناعة (MoCI)',
+      cert: 'شهادة مطابقة مواصفات GSO',
+      points: [
+        'المنتجات الصناعية تخضع لمواصفات GSO الموحدة؛ الجمارك يتطلب شهادة مطابقة',
+        'شهادة المنشأ (COO) معتمدة من الغرفة التجارية الصينية، وشهادة تحليل (COA) من المصنع',
+        'الملصق بالعربية أو ثنائي اللغة، مع رقم الدفعة (Batch No.) ورمز الاستيراد',
+      ],
+    },
+    'kuwait': {
+      regulator: 'Kuwait Conformity Assessment (KOWSAR) / الهيئة العامة للصناعة',
+      cert: 'شهادة مطابقة KOWSAR',
+      points: [
+        'المنتجات المقننة تخضع لبرنامج تقييم المطابقة KUCAS قبل الشحن',
+        'تقرير اختبار من مختبر معتمد، وشهادة منشأ موثقة',
+        'الملصق بالعربية مع بيانات المستورد الكويتي',
+      ],
+    },
+    'bahrain': {
+      regulator: 'Bahrain Standards & Metrology (BSMD)',
+      cert: 'شهادة مطابقة وفق مواصفات GSO',
+      points: [
+        'المنتجات تخضع لمواصفات GSO/BSMD؛ الجمارك تطلب شهادة مطابقة عند التخليص',
+        'شهادة المنشأ + تقرير تحليل من مختبر معتمد',
+        'الملصق بالعربية، مع بيانات المستورد المحلي',
+      ],
+    },
+    'oman': {
+      regulator: 'DGSSM (المديرية العامة للمواصفات والمقاييس) - عُمان',
+      cert: 'شهادة مطابقة Oman',
+      points: [
+        'المنتجات المقننة تخضع لطلب شهادة مطابقة عُمان',
+        'شهادة المنشأ + COA، والملصق بالعربية',
+        'تسجيل في نظام MoCI Oman قبل الاستيراد',
+      ],
+    },
+  };
+  const inf = info[gccCountry.code];
+  if (!inf) return '';
+  return `
+<h3>الجهة المنظمة ومتطلبات الامتثال في ${gccCountry.name}</h3>
+<p>الجهة المختصة: <strong>${inf.regulator}</strong>. الشهادة المطلوبة: <strong>${inf.cert}</strong>.</p>
+<ul class="plain-links">
+  ${inf.points.map(p => `<li>${p}</li>`).join('\n  ')}
+</ul>
+<p>نحن في MoTai نوفر شهادة مطابقة المصنع (COC) وشهادة تحليل (COA) لكل دفعة. <strong>الامتثال النهائي في بلد الوجهة مسؤولية المستورد</strong>؛ ونحن نتعاون بتقديم الوثائق المطلوبة.</p>`;
+}
+
+/**
+ * 行业/市场篇的标准与合规解读：泛海湾版给出 GSO 统一框架，
+ * 国家主版（qatar 等）给出该国监管机构的具体要求（复用地域寻源的合规数据）。
+ */
 function buildStandardsAnalysis(topic: TopicSpec, industry: typeof industries[0] | undefined, gccCountry: typeof gccCountries[0] | undefined): string {
-  return buildSafetyCompliance(topic, industry, gccCountry);
+  if (gccCountry && gccCountry.code !== 'general-gcc') {
+    return buildImportCompliance(gccCountry);
+  }
+  return `
+<h3>الإطار المعياري العام في الخليج (GSO)</h3>
+<ul class="plain-links">
+  <li><strong>FEPA P:</strong> نظام درجات الغرِت الأوروبي السائد، يُستخدم كمرجع أساسي في المواصفات الدولية</li>
+  <li><strong>ISO 6344:</strong> تحليل حجم حبيبات الغرِت، يضمن اتساق الدقة عبر الموردين</li>
+  <li><strong>GSO:</strong> المواصفات الخليجية الموحدة، تُطبق في جميع دول مجلس التعاون</li>
+  <li><strong>OSHA 1910.215 / NIOSH:</strong> مرجعية دولية للسلامة المهنية في عمليات الصنفرة</li>
+</ul>
+<p>الخلاصة: اكتب أي مواصفة بمعايير FEPA P + GSO، وأضف متطلبات البلد الوجهة عند التعاقد.</p>`;
 }
 
 function buildMarketData(topic: TopicSpec, industry: typeof industries[0] | undefined, gccCountry: typeof gccCountries[0] | undefined): string {
   return `
-<h3>بيانات السوق 참고 (مصادر عامة)</h3>
+<h3>بيانات السوق (مرجع عام)</h3>
 <ul class="plain-links">
   <li>حجم سوق المواد الكاشطة في الخليج: ~$1.2B سنوياً (تقديرات 2023–2024)</li>
   <li>معدل النمو السنوي المركب (CAGR): 6–8% حتى 2028</li>
@@ -1181,7 +1270,7 @@ function buildSampleApproval(topic: TopicSpec, model: typeof models[0] | null, p
   <li>العميل يفحص: أبعاد، طباعة، ألوان، جودة صنفرة، تغليف</li>
   <li>تعديلات (إن وجدت) → عينة ثانية خلال 5–7 أيام</li>
   <li>توقيع "موافقة عينة" رسمي → بدء الإنتاج الكمي</li>
-  <li>مهلة الإنتاج: 3–5 أسابيع حسب الكمية والتعقيد</li>
+  <li>مهلة الإنتاج: تُحدد في عرض السعر حسب الكمية والتعقيد</li>
 </ol>
 <p>معايير القبول: مطابقة المواصفة التقنية ± التسامح، جودة طباعة مقبولة، لا عيوب مرئية.</p>`;
 }
@@ -1378,7 +1467,7 @@ function buildOrderingInfo(topic: TopicSpec, model: typeof models[0] | null, pro
   <thead><tr><th>البند</th><th>التفاصيل</th></tr></thead>
   <tbody>
     <tr><td>MOQ</td><td>يُحدد حسب المقاس، الغرِت، التخصيص (راجع قسم الجملة/OEM)</td></tr>
-    <tr><td>مهلة الإنتاج</td><td>3–5 أسابيع من اعتماد المواصفة والعينة الموقعة</td></tr>
+    <tr><td>مهلة الإنتاج</td><td>تُحدد في عرض السعر بعد اعتماد المواصفة والعينة الموقعة</td></tr>
     <tr><td>الشحن البحري</td><td>25–35 يوماً إلى موانئ الخليج</td></tr>
     <tr><td>التغليف القياسي</td><td>كرتون مموج، وحدات/لفة حسب المنتج، ملصق تعريف</td></tr>
     <tr><td>تغليف OEM</td><td>حسب موافقة العميل، تكلفة إضافية، مهلة +5–7 أيام</td></tr>
@@ -1397,7 +1486,7 @@ function buildTop3FAQ(topic: TopicSpec, model: typeof models[0] | null, productC
   <dt>ما هو الحد الأدنى للطلب (MOQ)؟</dt>
   <dd>يُحدد بالمواصفة: المنتج القياسي أقل، OEM/تخصيص أعلى. اطلب العرض للرقم الدقيق.</dd>
   <dt>كم مدة التوريد الإجمالية؟</dt>
-  <dd>إنتاج 3–5 أسابيع + شحن بحري 25–35 يوماً = 6–10 أسابيع تقريباً. الجوي أسرع.</dd>
+  <dd>تُحدد المدة في عرض السعر بعد اعتماد المواصفة والعينة: مدة الإنتاج + الشحن (بحري أو جوي) وجهة الشحن. الرقم الدقيق في العرض.</dd>
 </dl>`;
 }
 
@@ -1406,6 +1495,36 @@ function buildDecisionReferenceTable(topic: TopicSpec, model: typeof models[0] |
 }
 
 // ========== 各类内容构建函数 ==========
+
+// 对比表 B 列（替代产品）的真实规格，取自同站 site.ts 产品族数据，避免「غير محدد」占位行
+function altSize(familySlug: string): string {
+  const alt = { 'abrasive-belts': 'sanding-discs', 'flap-discs': 'abrasive-belts', 'sanding-discs': 'abrasive-belts', 'hook-loop': 'sanding-discs', 'sanding-sponges': 'sanding-discs' }[familySlug] || 'sanding-discs';
+  const cat = productCategories.find(c => c.slug === alt);
+  const dim = cat?.specs?.find(s => /أقطار|أبعاد/i.test(s[0]))?.[1];
+  return dim || 'متعدد الأقطار';
+}
+function altBacking(familySlug: string): string {
+  const alt = { 'abrasive-belts': 'sanding-discs', 'flap-discs': 'abrasive-belts', 'sanding-discs': 'abrasive-belts', 'hook-loop': 'sanding-discs', 'sanding-sponges': 'sanding-discs' }[familySlug] || 'sanding-discs';
+  const cat = productCategories.find(c => c.slug === alt);
+  return cat?.specs?.find(s => /قاعدة|نوع/i.test(s[0]))?.[1] || 'حسب المنتج';
+}
+function altAttachment(familySlug: string): string {
+  const alt = { 'abrasive-belts': 'sanding-discs', 'flap-discs': 'abrasive-belts', 'sanding-discs': 'abrasive-belts', 'hook-loop': 'sanding-discs', 'sanding-sponges': 'sanding-discs' }[familySlug] || 'sanding-discs';
+  if (alt === 'sanding-discs') return 'هوك آند لوب / PSA / شبكي';
+  if (alt === 'abrasive-belts') return 'طريقة الوصل حسب الماكينة';
+  return 'حسب المنتج';
+}
+function altGritRange(familySlug: string): string {
+  const alt = { 'abrasive-belts': 'sanding-discs', 'flap-discs': 'abrasive-belts', 'sanding-discs': 'abrasive-belts', 'hook-loop': 'sanding-discs', 'sanding-sponges': 'sanding-discs' }[familySlug] || 'sanding-discs';
+  const cat = productCategories.find(c => c.slug === alt);
+  const g = cat?.specs?.find(s => /حبيبات|غرِت/i.test(s[0]))?.[1];
+  return g || 'حسب الطلب';
+}
+function getAltApplication(familySlug: string): string {
+  const alt = { 'abrasive-belts': 'sanding-discs', 'flap-discs': 'abrasive-belts', 'sanding-discs': 'abrasive-belts', 'hook-loop': 'sanding-discs', 'sanding-sponges': 'sanding-discs' }[familySlug] || 'sanding-discs';
+  const cat = productCategories.find(c => c.slug === alt);
+  return cat?.applications?.join('، ') || 'تطبيقات مكملة';
+}
 
 function buildComparisonTable(topic: TopicSpec, model: typeof models[0] | null, productCat: typeof productCategories[0] | undefined): string {
   const productName = model?.name || productCat?.name || getProductFamilyNameAr(topic.productFamily);
@@ -1418,12 +1537,12 @@ function buildComparisonTable(topic: TopicSpec, model: typeof models[0] | null, 
   </thead>
   <tbody>
     <tr><td>النوع</td><td>${productName}</td><td>${altProduct}</td><td>اختلاف في الشكل والاستخدام</td></tr>
-    <tr><td>مقاس شائع</td><td>${model?.sizeAr || 'متعدد'}</td><td>غير محدد</td><td>يُختار حسب الماكينة</td></tr>
-    <tr><td>نطاق الغرِت</td><td>${model?.gritRange.join(' – ') || '40–800'}</td><td>غير محدد</td><td>يعتمد على مرحلة العمل</td></tr>
-    <tr><td>القاعدة</td><td>${model?.backing || 'قماش/ورق/بوليمر'}</td><td>غير محدد</td><td>مرونة vs ثبات</td></tr>
-    <tr><td>نظام التثبيت</td><td>${model?.attachment || 'يُحدد مع الماكينة'}</td><td>غير محدد</td><td>توافق الماكينة حاسم</td></tr>
-    <tr><td>التطبيق الرئيسي</td><td>${getMainApplication(topic.productFamily)}</td><td>تطبيقات مكملة</td><td>قد تتداخل في بعض المراحل</td></tr>
-    <tr><td>MOQ تقريبي</td><td>يحتاج مواصفة</td><td>يحتاج مواصفة</td><td>يُحدد عند طلب العرض</td></tr>
+    <tr><td>مقاس شائع</td><td>${model?.sizeAr || 'متعدد'}</td><td>${altSize(topic.productFamily)}</td><td>يُختار حسب الماكينة</td></tr>
+    <tr><td>نطاق الغرِت</td><td>${model?.gritRange.join(' – ') || '40–800'}</td><td>${altGritRange(topic.productFamily)}</td><td>يعتمد على مرحلة العمل</td></tr>
+    <tr><td>القاعدة</td><td>${model?.backing || 'قماش/ورق/بوليمر'}</td><td>${altBacking(topic.productFamily)}</td><td>مرونة vs ثبات</td></tr>
+    <tr><td>نظام التثبيت</td><td>${model?.attachment || 'يُحدد مع الماكينة'}</td><td>${altAttachment(topic.productFamily)}</td><td>توافق الماكينة حاسم</td></tr>
+    <tr><td>التطبيق الرئيسي</td><td>${getMainApplication(topic.productFamily)}</td><td>${getAltApplication(topic.productFamily)}</td><td>قد تتداخل في بعض المراحل</td></tr>
+    <tr><td>الكمية الدنيا (MOQ)</td><td>يُحدد في العرض</td><td>يُحدد في العرض</td><td>حسب التخصيص والتغليف</td></tr>
   </tbody>
 </table>
 
@@ -1598,6 +1717,10 @@ function buildCostOptimization(topic: TopicSpec, model: typeof models[0] | null,
 }
 
 function buildProcurementTemplate(topic: TopicSpec, model: typeof models[0] | null, productCat: typeof productCategories[0] | undefined): string {
+  const gccCountryName = () => {
+    const c = gccCountries.find(g => g.code === topic.gccCountry);
+    return c && c.code !== 'general-gcc' ? `${c.industrialClusters[0]} (${c.name})` : '';
+  };
   const productName = model?.name || productCat?.name || getProductFamilyNameAr(topic.productFamily);
 
   return `
@@ -1608,19 +1731,19 @@ function buildProcurementTemplate(topic: TopicSpec, model: typeof models[0] | nu
   <thead><tr><th>الحقل</th><th>مثال / تنسيق</th><th>إلزامي؟</th></tr></thead>
   <tbody>
     <tr><td>اسم المنتج / العائلة</td><td>${productName}</td><td>نعم</td></tr>
-    <tr><td>المقاس (مم / إنش)</td><td>533 × 75 مم / 5 إنش</td><td>نعم</td></tr>
-    <tr><td>درجة الغرِت (FEPA)</td><td>80، 120، 240</td><td>نعم</td></tr>
+    <tr><td>المقاس (مم / إنش)</td><td>${model?.sizeAr || '533 × 75 مم / 5 إنش'}</td><td>نعم</td></tr>
+    <tr><td>درجة الغرِت (FEPA)</td><td>${model?.gritRange?.slice(0, 3).join('، ') || '80، 120، 240'}</td><td>نعم</td></tr>
     <tr><td>نوع الحبيبات</td><td>أكسيد ألومنيوم / زركونيا / سيراميك</td><td>يفضل</td></tr>
     <tr><td>القاعدة (Backing)</td><td>قماش X / ورق Y / بوليمر Z</td><td>يفضل</td></tr>
     <tr><td>نظام التثبيت</td><td>هوك آند لوب / PSA / شبكي</td><td>نعم</td></tr>
     <tr><td>الكمية التقديرية</td><td>5000 وحدة / شهر</td><td>نعم</td></tr>
     <tr><td>تكرار الطلب</td><td>شهري / ربع سنوي / سنوي</td><td>يفضل</td></tr>
     <tr><td>التطبيق / المادة</td><td>ستانلس ستيل، إزالة لحام</td><td>نعم</td></tr>
-    <tr><td>طراز الماكينة</td><td>Timesavers 1300 / haciendo belt</td><td>نعم</td></tr>
+    <tr><td>طراز الماكينة</td><td>${model?.attachment || 'Timesavers 1300 / ماكينة حزام قياسية'}</td><td>نعم</td></tr>
     <tr><td>طريقة الوصل (للأحزمة)</td><td>مستقيم / مائل / متداخل</td><td>للأحزمة فقط</td></tr>
     <tr><td>التغليف</td><td>صندوق كرتون / لفة / حزمة مخصصة</td><td>يفضل</td></tr>
     <tr><td>OEM / علامة تجارية</td><td>نعم / لا، ملف شعار مرفق</td><td>إذا مطبق</td></tr>
-    <tr><td>وجهة الشحن (الميناء/المدينة)</td><td>جدة / جبل علي / الدوحة</td><td>نعم</td></tr>
+    <tr><td>وجهة الشحن (الميناء/المدينة)</td><td>${gccCountryName() || 'جدة / جبل علي / الدوحة'}</td><td>نعم</td></tr>
     <tr><td>شروط الدفع المفضلة</td><td>LC / TT 30% مقدم</td><td>يفضل</td></tr>
     <tr><td>شهادات مطلوبة</td><td>COC / COA / SASO / ESMA</td><td>إذا مطبق</td></tr>
   </tbody>
@@ -1652,7 +1775,7 @@ function buildOEMOptions(topic: TopicSpec, model: typeof models[0] | null, produ
   <li>العميل يفحص: أبعاد، طباعة، ألوان، جودة صنفرة</li>
   <li>تعديلات (إن وجدت) → عينة ثانية خلال 5–7 أيام</li>
   <li>توقيع "موافقة عينة" → بدء الإنتاج الكمي</li>
-  <li>مهلة الإنتاج: 3–5 أسابيع حسب الكمية والتعقيد</li>
+  <li>مهلة الإنتاج: تُحدد في عرض السعر حسب الكمية والتعقيد</li>
 </ol>`;
 }
 
@@ -1746,7 +1869,7 @@ function buildSupportEscalation(): string {
 <h3>قنوات الدعم</h3>
 <ul class="plain-links">
   <li>البريد الإلكتروني: <a href="mailto:motai-01@motaiabrasive.com">motai-01@motaiabrasive.com</a></li>
-  <li>واتساب: <a href="https://wa.me/8618118635597">+86 181 1863 5597</a></li>
+  <li>واتساب: <a href="https://wa.me/8618118635597" rel="nofollow noopener" target="_blank">+86 181 1863 5597</a></li>
   <li>نموذج الاستفسار: <a href="/quote">صفحة طلب عرض السعر</a></li>
 </ul>
 
@@ -1843,7 +1966,7 @@ function buildContactInfo(): string {
   <h3>تواصل معنا</h3>
   <dl class="spec-dl">
     <div><dt>البريد الإلكتروني</dt><dd><a href="mailto:motai-01@motaiabrasive.com">motai-01@motaiabrasive.com</a></dd></div>
-    <div><dt>واتساب</dt><dd><a href="https://wa.me/8618118635597">+86 181 1863 5597</a></dd></div>
+    <div><dt>واتساب</dt><dd><a href="https://wa.me/8618118635597" rel="nofollow noopener" target="_blank">+86 181 1863 5597</a></dd></div>
     <div><dt>الهاتف</dt><dd>+86 181 1863 5597</dd></div>
     <div><dt>العنوان</dt><dd>رقم 88، شارع يولي، مدينة جونشوي، مقاطعة تونغتشنغ، شياننغ، هوبي، الصين</dd></div>
     <div><dt>ساعات الاستجابة</dt><dd>أيام العمل: 24 ساعة | عطلة نهاية الأسبوع: 48 ساعة</dd></div>
@@ -2017,7 +2140,7 @@ function buildFAQ(
     },
     {
       q: `كم تستغرق مدة التوريد (Lead Time)؟`,
-      a: `الإنتاج: 3–5 أسابيع من اعتماد المواصفة والعينة. الشحن البحري إلى ${countryName || 'الخليج'}: 25–35 يوماً. الإجمالي التقريبي: 6–10 أسابيع. الجوي أسرع لكن أغلى.`,
+      a: `تُحدد المدة في عرض السعر بعد اعتماد المواصفة والعينة، وتشمل الإنتاج ثم الشحن (بحري إلى ${countryName || 'الخليج'} أو جوي حسب المتطلبات). الرقم الدقيق يُرفق مع العرض.`,
     },
     {
       q: `هل تدعمون توريد OEM / علامة تجارية خاصة؟`,

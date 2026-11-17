@@ -170,11 +170,11 @@ async function main() {
   fs.writeFileSync(indexPath, JSON.stringify(combinedIndex, null, 2), 'utf-8');
   console.log(`索引文件: ${indexPath} (总计 ${combinedIndex.length} 篇)`);
 
-  // 生成后自动重打国家版 noindex 标记（A 去重），避免再生成清除已有的 noindex
-  const dedupe = path.resolve(__dirname, 'dedupe-country-versions.mjs');
+  // 生成后直接删除国家版/变体冗余（替代旧 noindex 方案，防规模化内容）
+  const dedupe = path.resolve(__dirname, 'delete-duplicate-articles.mjs');
   if (fs.existsSync(dedupe)) {
-    const r = spawnSync('node', [dedupe], { stdio: 'inherit' });
-    if (r.status !== 0) console.error('  ⚠ 国家版去重标记失败');
+    const r = spawnSync('node', [dedupe, '--execute'], { stdio: 'inherit' });
+    if (r.status !== 0) console.error('  ⚠ 冗余文章删除失败');
   }
 }
 
