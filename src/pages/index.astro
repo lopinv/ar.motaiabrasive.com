@@ -1,0 +1,417 @@
+---
+import Layout from '../layouts/Layout.astro';
+import WhatsAppButton from '../components/WhatsAppButton.astro';
+import CtaBand from '../components/CtaBand.astro';
+import FaqItem from '../components/FaqItem.astro';
+import { productCategoryLines, applicationScenes, companyFacts, qualitySteps, SITE } from '../data/site';
+
+const homeFaq = [
+  {
+    q: 'كيف أطلب عرض سعر من موتاى؟',
+    a: 'أرسل عبر نموذج الاستفسار نوع المنتج والمقاس والكمية وجهة التوصيل، أو تواصل مباشرة عبر واتساب. نراجع المواصفة ونعود إليك بتفاصيل تجارية مناسبة.',
+  },
+  {
+    q: 'هل يمكن توريد منتجات بعلامة تجارية خاصة؟',
+    a: 'نعم. يمكن تقييم OEM في مرحلة المواصفة. أرسل ملف الشعار وبيانات العبوة والوجهة لنتحقق من جدوى الطلب والتكلفة قبل الإنتاج.',
+  },
+  {
+    q: 'هل يمكن إرسال عينة قبل الطلب؟',
+    a: 'يمكن ذلك وفق نوع المنتج والاتفاق التجاري. نحدد تكلفة العينة وشحنها بعد مراجعة طلبك.',
+  },
+  {
+    q: 'ما المعلومات المطلوبة لتسريع التسعير؟',
+    a: 'نوع المنتج، المقاس أو القطر، درجة الحبيبات أو الخامة، طريقة التثبيت، الكمية، وجهة الشحن وتكرار الطلب المتوقع.',
+  },
+];
+
+const heroSpecs = [
+  { label: 'المصنع', value: 'هوبي، الصين' },
+  { label: 'التخصص', value: 'المواد الكاشطة الصناعية' },
+  { label: 'خدمة الطلب', value: 'OEM / ODM' },
+  { label: 'الحد الأدنى', value: 'وفق المواصفة' },
+];
+
+const spotlight = [
+  { value: '533–2200', label: 'مم · مقاسات الأحزمة', note: '4 مقاسات متاحة' },
+  { value: '40–5000', label: 'نطاق الحبيبات', note: 'حتى درجات اللمسة النهائية' },
+  { value: '4', label: 'أقطار الأقراص', note: '3 و4 و5 و6 إنش' },
+  { value: '5', label: 'مجموعات منتجات', note: 'أحزمة، شرائح، صنفرة، Hook & Loop، إسفنج' },
+];
+---
+
+<Layout
+  title="موتاى للمواد الكاشطة | مصنع مباشر لأحزمة وأقراص الصنفرة الصناعية"
+  description="مصنع موتاى في هوبي، الصين: توريد مباشر لأحزمة الصنفرة (533–2200 مم)، أقراص الشرائح، أقراص الصنفرة وإسفنج الصنفرة. مواصفات موثقة، طلبات OEM وكميات جملة للمستوردين الصناعيين."
+  image="/images/factory.jpg"
+>
+  <Fragment slot="head">
+    <!-- 性能：LCP 元素（hero 背景图）提前预载 -->
+    <link rel="preload" as="image" href="/images/factory.jpg" fetchpriority="high" />
+  </Fragment>
+
+  <section class="hero">
+    <div class="hero__bg" aria-hidden="true">
+      <img src="/images/factory.jpg" alt="" width="1920" height="1080" fetchpriority="high" />
+    </div>
+    <div class="hero__veil" aria-hidden="true"></div>
+
+    <div class="container hero__grid">
+      <div class="hero__main">
+        <div class="hero__eyebrow">
+          <span class="hero__flag">HUBEI · CN</span>
+          <span class="hero__divider" aria-hidden="true"></span>
+          <span>مصنع مباشر · توريد صناعي</span>
+        </div>
+
+        <h1>
+          المواد الكاشطة صناعية
+          <span class="hero__hl">مصنّعة بمواصفة تناسب خط إنتاجك</span>
+        </h1>
+
+        <p class="hero__lead">
+          أحزمة صنفرة بأربعة مقاسات (533 إلى 2200 مم)، أقراص الشرائح، أقراص صنفرة وإسفنج صنفرة. نحدد
+          نوع الحبيبات والقاعدة وطريقة التثبيت مع فريقك قبل التحويل إلى الإنتاج، ونوفر طلبات OEM
+          وتوريد الجملة للمستوردين.
+        </p>
+
+        <div class="hero__cta">
+          <a class="button button--accent button--lg" href="/quote">
+            طلب عرض سعر
+            <span aria-hidden="true">←</span>
+          </a>
+          <WhatsAppButton />
+          <a class="button button--ghost button--lg" href="/products">استعرض المقاسات</a>
+        </div>
+
+        <dl class="hero__specs">
+          {
+            heroSpecs.map((item) => (
+              <div>
+                <dt>{item.label}</dt>
+                <dd>{item.value}</dd>
+              </div>
+            ))
+          }
+        </dl>
+      </div>
+
+      <aside class="hero__panel" aria-label="ملخص القدرات">
+        <div class="hero__panel-head">
+          <span>بطاقة المصنع</span>
+          <span class="hero__panel-status"><i aria-hidden="true"></i> متاح للطلبات</span>
+        </div>
+        <dl class="hero__panel-body">
+          {
+            companyFacts.map((fact) => (
+              <div>
+                <dt>{fact.label}</dt>
+                <dd>{fact.value}</dd>
+              </div>
+            ))
+          }
+        </dl>
+        <div class="hero__panel-foot">
+          <a href="/quality">آلية ضبط الجودة ←</a>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <section class="spec-strip" data-reveal aria-label="قدرات المصنع الرقمية">
+    <div class="container spec-strip__grid">
+      {
+        spotlight.map((item) => (
+          <div class="spec-strip__item">
+            <strong>{item.value}</strong>
+            <span>{item.label}</span>
+            <small>{item.note}</small>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="section section--alt" data-reveal>
+    <div class="container">
+      <div class="section-heading section-heading--bar">
+        <div>
+          <span class="eyebrow">المنتجات</span>
+          <h2>تصنيفات المنتجات</h2>
+          <p>أربع خطوط استهلاكية موثّقة المواصفات، بتوريد مباشر من المصنع للمستوردين والتجار والعلامات الخاصة.</p>
+        </div>
+        <a class="button button--outline button--sm" href="/products">
+          كل المنتجات
+          <span aria-hidden="true">↗</span>
+        </a>
+      </div>
+
+      <div class="cat-grid">
+        {
+          productCategoryLines.map((line) => (
+            <article class="cat-card">
+              <a class="cat-card__media" href={line.href} aria-label={line.name}>
+                <img src={line.image} alt={line.name} width="600" height="450" loading="lazy" />
+              </a>
+              <div class="cat-card__body">
+                <span class="eyebrow cat-card__no" aria-hidden="true">{line.no}</span>
+                <h3>{line.name}</h3>
+                <p class="cat-desc">{line.description}</p>
+                <div class="cat-card__actions">
+                  <a
+                    class="button button--outline button--sm"
+                    href={`https://wa.me/${SITE.whatsapp}?text=${encodeURIComponent(`مرحبًا موتاى، أود الاستفسار عن ${line.name}.`)}`}
+                    target="_blank"
+                    rel="noopener nofollow"
+                  >
+                    واتساب
+                  </a>
+                  <a class="button button--sm" href={`/quote?product=${line.slug}`}>
+                    اطلب عرض السعر
+                    <span aria-hidden="true">↗</span>
+                  </a>
+                </div>
+              </div>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section" data-reveal>
+    <div class="container capability">
+      <div class="capability__media">
+        <img src="/images/factory.jpg" alt="مقر مصنع موتاى للمواد الكاشطة في هوبي، الصين" width="900" height="600" loading="lazy" />
+        <div class="capability__stamp">
+          <strong>مصنع موتاى</strong>
+          <span>توريد مباشر</span>
+        </div>
+      </div>
+
+      <div class="capability__content">
+        <span class="eyebrow">كيف نعمل</span>
+        <h2>المواصفة أولًا، ثم التحويل إلى الإنتاج</h2>
+        <p>
+          لا نبدأ التحويل قبل تثبيت النوع والمقاس والحبيبات والقاعدة وطريقة التثبيت. هذا النهج
+          يقلل أخطاء المطابقة ويجعل كل دفعة قابلة للتتبع والمراجعة.
+        </p>
+
+        <ol class="process">
+          {
+            qualitySteps.map((step, index) => (
+              <li>
+                <span class="process__num">{String(index + 1).padStart(2, '0')}</span>
+                <div>
+                  <strong>{step.title}</strong>
+                  <p>{step.text}</p>
+                </div>
+              </li>
+            ))
+          }
+        </ol>
+
+        <a class="button button--primary" href="/quality">تفاصيل آلية الفحص</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--alt scenes-section" data-reveal data-scenes-carousel>
+    <div class="container">
+      <div class="scenes__head">
+        <h2>مصمّمة للتشطيب التالي لديك.</h2>
+        <div class="scenes__controls">
+          <span class="scenes__position" aria-hidden="true">1 / {applicationScenes.length}</span>
+          <button type="button" data-scenes-prev aria-label="المشهد السابق">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14 6-6 6 6 6" /></svg>
+          </button>
+          <button type="button" data-scenes-next aria-label="المشهد التالي">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m10 6 6 6-6 6" /></svg>
+          </button>
+          <button
+            type="button"
+            data-scenes-pause
+            aria-pressed="false"
+            data-pause-label="إيقاف العرض التلقائي"
+            data-play-label="استئناف العرض التلقائي"
+            aria-label="إيقاف العرض التلقائي"
+          >
+            <svg class="scenes__pause-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5v14M15 5v14" /></svg>
+            <svg class="scenes__play-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l12-7.5Z" /></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="container scenes__viewport">
+      <div class="scenes__track" tabindex="0" role="group" aria-label="مشاهد التطبيق">
+        {
+          applicationScenes.map((scene) => (
+            <a class="scenes__card" href={scene.href} aria-label={`${scene.title}`}>
+              <img src={scene.image} alt={scene.title} width="800" height="450" loading="lazy" />
+              <span>
+                {scene.title}
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10" /></svg>
+              </span>
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section" data-reveal>
+    <div class="container">
+      <div class="section-heading section-heading--center">
+        <span class="eyebrow eyebrow--plain">مسار الطلب</span>
+        <h2>من استفسارك الأول إلى تسليم الشحنة</h2>
+        <p>كل مرحلة تجيب عن سؤال محدد، فيقل التخمين في التواصل التجاري.</p>
+      </div>
+
+      <div class="process-cards">
+        {
+          qualitySteps.map((step, index) => (
+            <article class="process-card">
+              <span class="process-card__num">{String(index + 1).padStart(2, '0')}</span>
+              <h3>{step.title}</h3>
+              <p>{step.text}</p>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--alt">
+    <div class="container faq-layout">
+      <div class="faq-layout__intro">
+        <span class="eyebrow">الأسئلة الشائعة</span>
+        <h2>إجابات مباشرة لمشتري المواد</h2>
+        <p>
+          لا تجد إجابتك؟ أرسل نوع التطبيق وسنرسل لك قائمة المواصفات التي نحتاجها لتسريع
+          العرض.
+        </p>
+        <a class="button button--outline" href="/contact">تواصل مع الفريق</a>
+      </div>
+      <div class="faq-list">
+        {homeFaq.map((item) => <FaqItem question={item.q} answer={item.a} />)}
+      </div>
+    </div>
+  </section>
+
+  <CtaBand
+    title="أرسل مواصفتك، ونعود إليك بخيار قابل للتوريد"
+    text="شارك نوع المنتج والمقاس والكمية ووجهة الشحن. نراجع الطلب ونقترح المواصفة الأنسب قبل إرسال عرض السعر."
+  />
+
+  <script
+    type="application/ld+json"
+    set:html={JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: homeFaq.map((item) => ({
+        '@type': 'Question',
+        name: item.q,
+        acceptedAnswer: { '@type': 'Answer', text: item.a },
+      })),
+    })}
+  ></script>
+
+  <script>
+    // مشاهد التطبيق: شريط أفقي بتمرير تلقائي (منطق motai-applications: 6ث تلقائي، إيقاف عند التمرير/التصوير/التنويع)
+    document.querySelectorAll('[data-scenes-carousel]').forEach((root) => {
+      const track = root.querySelector('.scenes__track') as HTMLElement;
+      if (!track) return;
+      const cards = Array.prototype.slice.call(track.children);
+      const prev = root.querySelector<HTMLButtonElement>('[data-scenes-prev]');
+      const next = root.querySelector<HTMLButtonElement>('[data-scenes-next]');
+      const pause = root.querySelector<HTMLButtonElement>('[data-scenes-pause]');
+      const position = root.querySelector<HTMLElement>('.scenes__position');
+      const motion = matchMedia('(prefers-reduced-motion: reduce)');
+      let index = 0;
+      let paused = motion.matches;
+      let hover = false;
+      let focused = false;
+      let visible = false;
+      let timer: ReturnType<typeof setInterval> | undefined;
+
+      // نقاط التوقف (مواضع أفقية) بين بداية الشريط وآخر بطاقة
+      function stops() {
+        const step = (cards[1] && cards[1].offsetLeft - cards[0].offsetLeft) || track.clientWidth;
+        const max = Math.max(0, track.scrollWidth - track.clientWidth);
+        const points = [];
+        for (let x = 0; x < max - 2; x += step) points.push(x);
+        points.push(max);
+        return points;
+      }
+
+      function update() {
+        const points = stops();
+        index = points.reduce(
+          (best, p, i) => (Math.abs(p - track.scrollLeft) < Math.abs(points[best] - track.scrollLeft) ? i : best),
+          0
+        );
+        const bounds = track.getBoundingClientRect();
+        const shown = cards
+          .map((card, i) => ({ rect: card.getBoundingClientRect(), i }))
+          .filter((s) => {
+            const overlap = Math.min(s.rect.right, bounds.right) - Math.max(s.rect.left, bounds.left);
+            return overlap > Math.min(s.rect.width, bounds.width) * 0.5;
+          });
+        const first = (shown[0] && shown[0].i) || index;
+        const last = (shown[shown.length - 1] && shown[shown.length - 1].i) || index;
+        if (position) {
+          position.textContent = (first === last ? String(first + 1) : first + 1 + '–' + (last + 1)) + ' / ' + cards.length;
+        }
+      }
+
+      function move(delta: number) {
+        const points = stops();
+        index = (index + delta + points.length) % points.length;
+        track.scrollTo({ left: points[index], behavior: motion.matches ? 'instant' : 'smooth' });
+      }
+
+      function schedule() {
+        clearInterval(timer);
+        if (!paused && !hover && !focused && visible && !document.hidden) {
+          timer = setInterval(() => move(1), 6000);
+        }
+      }
+
+      function paint() {
+        if (pause) {
+          pause.setAttribute('aria-pressed', String(paused));
+          pause.setAttribute('aria-label', paused ? pause.dataset.playLabel ?? '' : pause.dataset.pauseLabel ?? '');
+        }
+        schedule();
+      }
+
+      prev && prev.addEventListener('click', () => { move(-1); schedule(); });
+      next && next.addEventListener('click', () => { move(1); schedule(); });
+      pause && pause.addEventListener('click', () => { paused = !paused; paint(); });
+      track.addEventListener('scroll', () => requestAnimationFrame(update), { passive: true });
+      track.addEventListener('keydown', (e: Event) => {
+        const key = (e as KeyboardEvent).key;
+        if (e.target === track && (key === 'ArrowLeft' || key === 'ArrowRight')) {
+          (e as KeyboardEvent).preventDefault();
+          move(key === 'ArrowRight' ? 1 : -1);
+          schedule();
+        }
+      });
+      root.addEventListener('mouseenter', () => { hover = true; schedule(); });
+      root.addEventListener('mouseleave', () => { hover = false; schedule(); });
+      root.addEventListener('focusin', () => { focused = true; schedule(); });
+      root.addEventListener('focusout', (e: Event) => {
+        focused = !root.contains((e as FocusEvent).relatedTarget as Node | null);
+        schedule();
+      });
+      track.addEventListener('pointerdown', () => { if (timer !== undefined) clearInterval(timer); }, { passive: true });
+      track.addEventListener('pointerup', schedule, { passive: true });
+      document.addEventListener('visibilitychange', schedule);
+      motion.addEventListener('change', () => { paused = motion.matches; paint(); });
+      new IntersectionObserver((entries) => { visible = entries[0].isIntersecting; schedule(); }, { threshold: 0.3 }).observe(root);
+      new ResizeObserver(update).observe(track);
+      update();
+      paint();
+    });
+  </script>
+</Layout>

@@ -1,0 +1,93 @@
+---
+import Layout from '../layouts/Layout.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { SITE, qualitySteps, companyFacts } from '../data/site';
+---
+
+<Layout
+  title="عن مصنع موتاى للمواد الكاشطة | شركة صينية لتوريد الأدوات الصناعية"
+  description="تعرف على موتاى للمواد الكاشطة في هوبي، الصين: مورد مباشر لأحزمة الصنفرة والأقراص وإسفنج الصنفرة، يدعم التوريد التجاري وطلبات OEM للمشترين الصناعيين."
+  image="/images/factory.jpg"
+>
+  <section class="page-hero page-hero--image">
+    <div class="container page-hero__inner">
+      <span class="eyebrow eyebrow--light">عن موتاى</span>
+      <h1>مورّد صناعي مباشر من قلب منطقة التصنيع في هوبي</h1>
+      <p>
+        نخدم المشترين الصناعيين والمستوردين والموزعين عبر مواصفات واضحة، وتواصل مباشر، وخطوات
+        تحضير واضحة من الاستفسار إلى الشحن.
+      </p>
+    </div>
+  </section>
+
+  <section class="section section--light">
+    <div class="container">
+      <div class="story-grid">
+        <div class="story-grid__content">
+          <span class="eyebrow">ملف الشركة</span>
+          <h2>علاقة تجارية تبدأ من مواصفة واضحة</h2>
+          <p>
+            لا نستخدم نفس الوصف لكل عميل. نراجع نوع المادة، وطريقة التشغيل، والمقاس،
+            والكمية، ثم نحدد المنتجات والمواصفات والخدمات المطلوبة.
+          </p>
+        </div>
+        <div class="story-grid__media">
+          <img src="/images/workshop.jpg" alt="ورشة العمل داخل مصنع موتاى" width="720" height="520" loading="lazy" />
+        </div>
+      </div>
+
+      <div class="fact-grid">
+        {
+          companyFacts.map((fact) => (
+            <div class="fact-card"><strong>{fact.value}</strong><span>{fact.label}</span></div>
+          ))
+        }
+      </div>
+
+      <div class="company-values">
+        <div class="company-values__intro">
+          <span class="eyebrow">كيف نعمل</span>
+          <h2>ثلاثة مبادئ تحكم كل طلب</h2>
+          <p>الهدف ليس إرسال أسرع منتج، بل الوصول إلى مواصفة يمكن تكرارها وتوريدها بثقة.</p>
+        </div>
+        <div class="value-list">
+          <article><span>01</span><h3>المواصفة قبل الصفقة</h3><p>نثبت المقاس والدرجة والقاعدة والكمية والتغليف قبل تحويل أمر الإنتاج.</p></article>
+          <article><span>02</span><h3>العينة عند الحاجة</h3><p>يمكن للمشتري اختبار العينة على تشغيله قبل الالتزام بالكمية التجارية.</p></article>
+          <article><span>03</span><h3>التواصل مع المشتري</h3><p>نحافظ على قناة مباشرة مع فريق المشتريات لتسريع المتابعة بعد الاستفسار.</p></article>
+        </div>
+      </div>
+
+      <div class="content-block company-process">
+        <span class="eyebrow">مسار التنفيذ</span>
+        <h2>خمس مراحل من الاستفسار حتى الشحن</h2>
+        <div class="process-cards">
+          {
+            qualitySteps.map((step, index) => (
+              <article class="process-card"><span class="process-card__number">{String(index + 1).padStart(2, '0')}</span><h3>{step.title}</h3><p>{step.text}</p></article>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--band-3 company-contact-band">
+    <div class="container company-contact-band__grid">
+      <div>
+        <span class="eyebrow eyebrow--light">زيارة المصنع</span>
+        <h2>زرنا المصنع أو نسّق زيارة</h2>
+        <p>يمكن ترتيب زيارة المصنع بعد تأكيد الموعد والبيانات المطلوبة مع فريق التواصل.</p>
+      </div>
+      <div class="company-contact-band__data">
+        <div><span>البريد الإلكتروني</span><a href={`mailto:${SITE.email}`} dir="ltr">{SITE.email}</a></div>
+        <div><span>الهاتف وواتساب</span><a href={`https://wa.me/${SITE.whatsapp}`} target="_blank" rel="noopener nofollow" dir="ltr">{SITE.phone}</a></div>
+        <div><span>الموقع</span><address>{SITE.addressAr}</address></div>
+      </div>
+    </div>
+  </section>
+
+  <CtaBand
+    title="لنبدأ التأهيل مع موتاى كمورّدكم"
+    text="أرسل مواصفة أو طلب عينة. سنوضح لك المعلومات المطلوبة والحل التجاري الأنسب."
+  />
+</Layout>

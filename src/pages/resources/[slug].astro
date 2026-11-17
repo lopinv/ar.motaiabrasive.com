@@ -1,0 +1,114 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import RelatedArticles from '../../components/RelatedArticles.astro';
+import { resources, SITE } from '../../data/site';
+
+export function getStaticPaths() {
+  return resources.map((resource) => ({ params: { slug: resource.slug }, props: { resource } }));
+}
+
+const { resource } = Astro.props;
+const breadcrumbs = [
+  { name: 'الرئيسية', href: '/' },
+  { name: 'الموارد', href: '/resources' },
+  { name: resource.title, href: `/resources/${resource.slug}` },
+];
+
+const articleJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: resource.title,
+  description: resource.description,
+  image: new URL(resource.image, Astro.site).href,
+  inLanguage: 'ar',
+  author: { '@type': 'Organization', name: SITE.name, url: SITE.url },
+  publisher: { '@id': `${SITE.url}/#organization` },
+  mainEntityOfPage: { '@type': 'WebPage', '@id': `${SITE.url}/resources/${resource.slug}` },
+};
+---
+
+<Layout
+  title={`${resource.title} | موتاى للمواد الكاشطة`}
+  description={`${resource.title}: معلومات عملية تساعد فريق الشراء على تجهيز مواصفة دقيقة، مع خطوات واضحة قبل التواصل مع موتاى.`}
+  image={resource.image}
+  breadcrumbs={breadcrumbs}
+  jsonLd={[articleJsonLd]}
+>
+  <Breadcrumbs items={breadcrumbs} />
+
+  <section class="page-hero page-hero--image">
+    <div class="container page-hero__inner">
+      <span class="eyebrow eyebrow--light">{resource.type}</span>
+      <h1>{resource.title}</h1>
+      <p>{resource.description}</p>
+    </div>
+  </section>
+
+  <section class="section section--light">
+    <div class="container resource-layout">
+      <article class="resource-article">
+        <div class="content-block">
+          <span class="eyebrow">ملخص عملي</span>
+          <h2>ماذا يحدد هذا الدليل؟</h2>
+          <p>
+            {resource.description} استخدم هذه المعلومات لتجهيز طلب أكثر تحديدًا، فتقل الرسائل
+            المتبادلة ونصل إلى المواصفة والعرض الأنسب في وقت أقصر.
+          </p>
+        </div>
+        {
+          resource.sections.map((section, index) => (
+            <div class="content-block">
+              <span class="eyebrow">القسم {index + 1}</span>
+              <h2>{section.title}</h2>
+              <ol class="numbered-list">
+                {section.items.map((item) => <li>{item}</li>)}
+              </ol>
+            </div>
+          ))
+        }
+        <div class="content-block">
+          <span class="eyebrow">الخطوة التالية</span>
+          <h2>حوّل المعلومات إلى مواصفة قابلة للعرض</h2>
+          <p>
+            بعد تجهيز القوائم، أرسلها عبر نموذج الاستفسار مع الكمية ووجهة الشحن. سنراجعها
+            ونوضح ما يناسب تشغيلك.
+          </p>
+          <a class="button button--primary" href="/quote">ابدأ طلب التسعير</a>
+        </div>
+      </article>
+
+      <aside class="resource-sidebar">
+        <div class="sidebar-card">
+          <h3>معلومات سريعة</h3>
+          <dl class="spec-dl">
+            <div><dt>نوع الدليل</dt><dd>{resource.type}</dd></div>
+            <div><dt>اللغة</dt><dd>العربية</dd></div>
+            <div><dt>الاستخدام</dt><dd>تجهيز طلب التسعير</dd></div>
+          </dl>
+        </div>
+        <div class="sidebar-card sidebar-card--soft">
+          <h3>موارد أخرى</h3>
+          <ul class="plain-links">
+            {
+              resources
+                .filter((item) => item.slug !== resource.slug)
+                .map((item) => <li><a href={`/resources/${item.slug}`}>{item.title} ←</a></li>)
+            }
+            <li><a href="/products/abrasive-belts">أحزمة الصنفرة ←</a></li>
+            <li><a href="/industries">الحلول الصناعية ←</a></li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <section class="section section--alt">
+    <div class="container">
+      <RelatedArticles limit={3} />
+    </div>
+  </section>
+
+  <CtaBand title="هل لديك سؤال غير مشمول في الدليل؟" text="أرسل استفسارك الفني وسنجيبك مع توصية مواصفة مناسبة." />
+</Layout>

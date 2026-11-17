@@ -1,0 +1,157 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import { productCategories } from '../../data/site';
+import { models } from '../../data/models';
+
+const beltModels = models.filter((model) => model.categorySlug === 'abrasive-belts');
+const discModels = models.filter((model) => model.categorySlug === 'sanding-discs');
+---
+
+<Layout
+  title="منتجات المواد الكاشطة | أحزمة وأقراص وإسفنج | موتاى"
+  description="استعرض أحزمة الصنفرة وأقراص الشرائح والأقراص الشبكية وإسفنج الصنفرة من موتاى، مع المواصفات والتطبيقات وخيارات التخصيص للمساعدة على تحديد المنتج المناسب."
+  image="/images/workshop.jpg"
+>
+  <section class="page-hero page-hero--products">
+    <div class="container page-hero__inner">
+      <span class="eyebrow eyebrow--light">كتالوج المنتجات</span>
+      <h1>المواد الكاشطة مصممة لتجعل خط التشغيل أكثر ثباتًا</h1>
+      <p>
+        اختر فئة المنتج، ثم راجع الاستخدامات والمواصفات والخيارات المتوفرة. إذا لم تكن متأكدًا،
+        أرسل لنا نوع مادة العمل وطريقة التشغيل وسنساعدك في تحديد المواصفة.
+      </p>
+    </div>
+  </section>
+
+  <section class="section section--light">
+    <div class="container">
+      <div class="catalog-grid">
+        {
+          productCategories.map((product, index) => (
+            <article class="catalog-card">
+              <div class="catalog-card__media">
+                <img src={product.image} alt={`${product.name} من موتاى للمواد الكاشطة`} width="560" height="420" loading="lazy" />
+                <span class="catalog-card__number">0{index + 1}</span>
+              </div>
+              <div class="catalog-card__body">
+                <h2><a href={`/products/${product.slug}`}>{product.name}</a></h2>
+                <p>{product.description}</p>
+                <h3>مناسب لـ</h3>
+                <ul class="check-list">
+                  {product.applications.map((application) => <li>{application}</li>)}
+                </ul>
+                <a class="button button--outline button--small" href={`/products/${product.slug}`}>
+                  المواصفات الكاملة
+                </a>
+              </div>
+            </article>
+          ))
+        }
+      </div>
+
+      <div class="model-browser" data-model-browser>
+        <div class="section-heading section-heading--split">
+          <div>
+            <span class="eyebrow">المقاسات المتوفرة</span>
+            <h2>ابحث بالمقاس الذي يتوافق مع ماكينتك</h2>
+          </div>
+          <label class="model-search">
+            <span class="sr-only">ابحث بالمقاس أو المجموعة</span>
+            <input type="search" placeholder="مثال: 533، 1520، 6 إنش، Hook & Loop" data-model-search />
+          </label>
+        </div>
+
+        <div class="model-filters" role="group" aria-label="تصفية حسب مجموعة المنتج">
+          <button class="model-filter is-active" type="button" data-model-filter="all">الكل ({models.length})</button>
+          <button class="model-filter" type="button" data-model-filter="belt">أحزمة الصنفرة ({beltModels.length})</button>
+          <button class="model-filter" type="button" data-model-filter="disc">أقراص الصنفرة ({discModels.length})</button>
+        </div>
+
+        <p class="model-count" data-model-count aria-live="polite">عرض {models.length} مقاسًا</p>
+
+        <div class="model-table" data-model-table>
+          <div class="model-table__head" aria-hidden="true">
+            <span>المقاس</span><span>المجموعة</span><span>درجات الحبيبات</span><span>طريقة التثبيت</span><span></span>
+          </div>
+          {
+            models.map((model) => (
+              <a class="model-row" href={`/products/models/${model.slug}`} data-model-group={model.type} data-model-text={`${model.name} ${model.sizeLabel} ${model.family}`.toLowerCase()}>
+                <span class="model-row__name">{model.name}</span>
+                <span class="model-row__family">{model.family}</span>
+                <span class="model-row__grit">{model.gritRange.length} درجة · {model.gritRange[0]}–{model.gritRange[model.gritRange.length - 1]}</span>
+                <span class="model-row__attachment">{model.attachment}</span>
+                <span class="model-row__cta">التفاصيل ←</span>
+              </a>
+            ))
+          }
+        </div>
+
+        <p class="model-empty" data-model-empty hidden>لا يوجد مقاس مطابق لبحثك. جرّب كلمة أخرى أو أرسل لنا مواصفتك عبر نموذج الاستفسار.</p>
+      </div>
+
+      <div class="catalog-guide">
+        <div>
+          <span class="eyebrow">لا تعرف أي مواصفة مناسبة؟</span>
+          <h2>ابدأ من تطبيقك لا من اسم المنتج</h2>
+          <p>
+            أخبرنا بمادة العمل، والماكينة المستخدمة، ونوع التشطيب المطلوب. نساعدك على تحديد
+            شكل الأداة والحبيبات والقاعدة، ثم نرسل لك عرض سعر واضحًا.
+          </p>
+        </div>
+        <div class="catalog-guide__steps">
+          <div><strong>01</strong><span>اختر القطاع الصناعي</span></div>
+          <div><strong>02</strong><span>راجع توصيات المنتجات</span></div>
+          <div><strong>03</strong><span>أرسل المواصفة والكمية</span></div>
+        </div>
+        <div class="catalog-guide__actions">
+          <a class="button button--primary" href="/industries">استكشف الحلول</a>
+          <a class="button button--outline" href="/resources/abrasive-grit-guide">دليل الحبيبات</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <CtaBand
+    title="تريد مقارنة مواصفات عدة منتجات؟"
+    text="أرسل قائمة المنتجات والمقاسات والكمية. نراجعها ونقدم لك عرضًا موحدًا يسهل على فريق الشراء مقارنته."
+  />
+
+  <script>
+    const browser = document.querySelector('[data-model-browser]');
+    if (browser) {
+      const search = browser.querySelector<HTMLInputElement>('[data-model-search]');
+      const rows = [...browser.querySelectorAll<HTMLElement>('[data-model-group]')];
+      const filters = [...browser.querySelectorAll<HTMLButtonElement>('[data-model-filter]')];
+      const count = browser.querySelector<HTMLElement>('[data-model-count]');
+      const empty = browser.querySelector<HTMLElement>('[data-model-empty]');
+      let activeGroup = 'all';
+
+      const apply = () => {
+        const term = search?.value.trim().toLowerCase() ?? '';
+        let visible = 0;
+
+        for (const row of rows) {
+          const matchesGroup = activeGroup === 'all' || row.dataset.modelGroup === activeGroup;
+          const matchesTerm = !term || (row.dataset.modelText ?? '').includes(term);
+          const show = matchesGroup && matchesTerm;
+          row.hidden = !show;
+          if (show) visible += 1;
+        }
+
+        if (count) count.textContent = `عرض ${visible} مقاسًا`;
+        if (empty) empty.hidden = visible > 0;
+      };
+
+      search?.addEventListener('input', apply);
+
+      for (const filter of filters) {
+        filter.addEventListener('click', () => {
+          activeGroup = filter.dataset.modelFilter ?? 'all';
+          filters.forEach((item) => item.classList.toggle('is-active', item === filter));
+          apply();
+        });
+      }
+    }
+  </script>
+</Layout>

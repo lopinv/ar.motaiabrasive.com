@@ -1,0 +1,67 @@
+---
+import Layout from '../layouts/Layout.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { productCategories } from '../data/site';
+---
+
+<Layout
+  title="الصفحة غير موجودة | موتاى للمواد الكاشطة"
+  description="الصفحة المطلوبة غير موجودة. يمكنك العودة إلى كتالوج المنتجات، أو استكشاف الحلول الصناعية، أو إرسال طلب عرض سعر مباشرة إلى موتاى."
+  noindex
+>
+  <section class="page-hero page-hero--simple">
+    <div class="container page-hero__inner">
+      <span class="eyebrow eyebrow--light">خطأ 404</span>
+      <h1>الصفحة المطلوبة غير موجودة</h1>
+      <p>
+        ربما تم نقل الصفحة أو أن الرابط مكتوب بشكل غير صحيح. استخدم الاختصارات أدناه للوصول إلى
+        كتالوج المنتجات أو طلب عرض السعر مباشرة.
+      </p>
+    </div>
+  </section>
+
+  <section class="section section--light">
+    <div class="container">
+      <div class="section-heading section-heading--center">
+        <span class="eyebrow">اختصارات سريعة</span>
+        <h2>إلى أين تريد الذهاب؟</h2>
+      </div>
+
+      <div class="catalog-grid">
+        {
+          productCategories.map((product) => (
+            <article class="catalog-card">
+              <div class="catalog-card__media">
+                <img src={product.image} alt={`${product.name} من موتاى`} width="560" height="420" loading="lazy" />
+              </div>
+              <div class="catalog-card__body">
+                <h2><a href={`/products/${product.slug}`}>{product.name}</a></h2>
+                <p>{product.description}</p>
+                <a class="button button--outline button--small" href={`/products/${product.slug}`}>
+                  المواصفات الكاملة
+                </a>
+              </div>
+            </article>
+          ))
+        }
+      </div>
+
+      <div class="catalog-guide">
+        <div>
+          <span class="eyebrow">لم تجد ما تبحث عنه؟</span>
+          <h2>أرسل لنا المواصفة وسنرشدك</h2>
+          <p>
+            اذكر نوع المنتج والمقاس والكمية وجهة الشحن. نراجع الطلب ونقترح المواصفة الأنسب
+            لطريقة عملك.
+          </p>
+        </div>
+        <div class="catalog-guide__actions">
+          <a class="button button--primary" href="/quote">طلب عرض سعر</a>
+          <a class="button button--outline" href="/contact">تواصل معنا</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <CtaBand title="دعنا نساعدك في الوصول" text="اتصل بنا مباشرة عبر واتساب وسنوجهك إلى المنتج أو المواصفة المناسبة." />
+</Layout>

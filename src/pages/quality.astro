@@ -1,0 +1,112 @@
+---
+import Layout from '../layouts/Layout.astro';
+import CtaBand from '../components/CtaBand.astro';
+import FaqItem from '../components/FaqItem.astro';
+import { qualitySteps } from '../data/site';
+
+const qualityFaq = [
+  {
+    q: 'ماذا يتم فحصه قبل الشحن؟',
+    a: 'تتم مراجعة بنية المنتج ومقاسه ونوع حبيباته ووسيلة تثبيته والتغليف، بحسب المواصفة المعتمدة مع المشتري. وتختلف قائمة الفحص التفصيلية حسب المنتج والطلب.',
+  },
+  {
+    q: 'هل يمكن اعتماد معايير فحص خاصة؟',
+    a: 'نعم. نراجع متطلبات الفحص في مرحلة المواصفة ونوضح ما يمكن تطبيقه ضمن العملية قبل اعتماد أمر الإنتاج.',
+  },
+  {
+    q: 'هل توفرون تقارير أو شهادات؟',
+    a: 'يمكن توضيح المستندات المتاحة لكل مواصفة وطلب. لا ننشر شهادات أو ادعاءات غير موثقة، ونؤكد أي متطلب خاص أثناء مراجعة الطلب.',
+  },
+  {
+    q: 'كيف تتم مطابقة العينة؟',
+    a: 'ترسل العينة وفق المواصفة المعتمدة، ويُسجل رأي المشتري في التشغيل ونتيجة الفحص قبل قرار الكمية النهائية.',
+  },
+];
+
+const faqJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: qualityFaq.map((item) => ({
+    '@type': 'Question',
+    name: item.q,
+    acceptedAnswer: { '@type': 'Answer', text: item.a },
+  })),
+};
+---
+
+<Layout
+  title="ضمان الجودة وفحص المواد الكاشطة | موتاى"
+  description="تعرف على مراحل ضبط الجودة في موتاى للمواد الكاشطة: تأكيد المواصفة، فحص العينة، التحويل، المراجعة والتغليف، وإجراءات مطابقة الشحن مع المشتري."
+  image="/images/converting.jpg"
+  jsonLd={[faqJsonLd]}
+>
+  <section class="page-hero page-hero--image">
+    <div class="container page-hero__inner">
+      <span class="eyebrow eyebrow--light">ضمان الجودة</span>
+      <h1>الجودة تبدأ من المواصفة، لا من آخر مرحلة</h1>
+      <p>
+        نراجع المتطلبات مع المشتري، ونوثق العينة، ونفحص المنتج قبل تجهيز الشحنة. بهذه الطريقة
+        تصبح مطابقة كل دفعة قابلة للفهم والتتبع.
+      </p>
+    </div>
+  </section>
+
+  <section class="section section--light">
+    <div class="container">
+      <div class="quality-intro">
+        <div>
+          <span class="eyebrow">منهج الفحص</span>
+          <h2>خمس نقاط مراجعة تغطي المسار من الطلب إلى الشحن</h2>
+          <p>
+            لا نقدّم نظام إدارة معقدًا للمشتري. نركّز على نقاط المراجعة العملية التي تمنع
+            الأخطاء الشائعة: اختلاف المقاس، عدم توافق طريقة التثبيت، واختلاف درجات الحبيبات
+            أو نوع التغليف.
+          </p>
+        </div>
+        <div class="quality-intro__aside">
+          <strong>ملاحظة مهمة</strong>
+          <p>
+            الشهادات والاعتمادات غير المنشورة لا نذكرها كميزة. أي متطلب تنظيمي أو شهادة يطلبها
+            المشتري نتحقق من صلاحيته ونذكره في العرض.
+          </p>
+        </div>
+      </div>
+
+      <div class="quality-steps">
+        {
+          qualitySteps.map((step, index) => (
+            <article class="quality-step">
+              <span class="quality-step__number">{String(index + 1).padStart(2, '0')}</span>
+              <div><h2>{step.title}</h2><p>{step.text}</p></div>
+              <div class="quality-step__check"><span>مراجعة</span></div>
+            </article>
+          ))
+        }
+      </div>
+
+      <div class="content-block checklist-block">
+        <span class="eyebrow">قائمة التحقق قبل اعتماد الطلب</span>
+        <h2>المعلومات التي تقلل أخطاء المطابقة</h2>
+        <div class="checklist-grid">
+          <div><strong>تعريف المنتج</strong><ul class="check-list"><li>الاسم والنوع</li><li>المقاس أو القطر</li><li>الدرجة والخامة</li></ul></div>
+          <div><strong>التشغيل</strong><ul class="check-list"><li>نوع الماكينة</li><li>طريقة التثبيت</li><li>مادة العمل</li></ul></div>
+          <div><strong>التوريد</strong><ul class="check-list"><li>الكمية</li><li>التغليف والعلامة</li><li>الوجهة وموعد الشحن</li></ul></div>
+          <div><strong>الفحص</strong><ul class="check-list"><li>متطلبات العينة</li><li>معايير القبول</li><li>مستندات الدفعة</li></ul></div>
+        </div>
+      </div>
+
+      <div class="content-block">
+        <span class="eyebrow">الأسئلة الشائعة</span>
+        <h2>أسئلة عن الجودة والمطابقة</h2>
+        <div class="faq-list">
+          {qualityFaq.map((item) => <FaqItem question={item.q} answer={item.a} />)}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <CtaBand
+    title="اطلب مواصفة فحص تناسب مشروعك"
+    text="اذكر متطلبات الدفعة والعينة والعبوة. نراجعها ونضعها ضمن مراحل اعتماد الطلب."
+  />
+</Layout>

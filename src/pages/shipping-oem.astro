@@ -1,0 +1,141 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import CtaBand from '../components/CtaBand.astro';
+import FaqItem from '../components/FaqItem.astro';
+
+const breadcrumbs = [
+  { name: 'الرئيسية', href: '/' },
+  { name: 'التوريد و OEM', href: '/shipping-oem' },
+];
+
+const shippingSteps = [
+  { title: 'تأكيد المواصفة', text: 'نثبت المنتج والمقاس والدرجة والقاعدة والكمية والتغليف مع المشتري قبل الإنتاج.' },
+  { title: 'إنتاج وتحويل', text: 'يتم التحويل وفق المواصفة المعتمدة. مدة الإنتاج التقريبية: 3–5 أسابيع من اعتماد العينة.' },
+  { title: 'تغليف وتجهيز', text: 'تغليف صناعي أو بعلامة OEM. عبوات قياسية أو مخصصة حسب الاتفاق. وثائق الشحن تُجهز في هذه المرحلة.' },
+  { title: 'شحن بحري/جوي', text: 'الشحن البحري إلى الخليج: 25–35 يومًا. الشحن الجوي أسرع لكن أعلى تكلفة. ننظم الشحن أو FOB حسب طلب المشتري.' },
+  { title: 'تخليص جمركي', text: 'يُقدم المستورد وثائق الاستيراد المحلية (SASO/ESMA/GSO حسب الدولة). نوفر COC و COA لدعم التخليص.' },
+  { title: 'تسليم', text: 'تسليم إلى الميناء أو المستودع حسب شروط التسليم المتفق عليها (FOB/CIF/DDP).' },
+];
+
+const oemSteps = [
+  { title: 'ملف العلامة', text: 'يرسل المشتري ملف الشعار (فيكتور/AI) ورسومات التغليف وألوان العلامة.' },
+  { title: 'مراجعة الجدوى', text: 'نراجع متطلبات OEM مع فريق الإنتاج ونحدد أثرها على MOQ والتكلفة والمدة.' },
+  { title: 'عينة موافقة', text: 'ننتج عينة بالعلامة المطلوبة للمشتري للموافقة قبل الإنتاج الكمي.' },
+  { title: 'إنتاج كمي', text: 'بعد الموافقة، يبدأ الإنتاج الكمي بالعلامة والتغليف المعتمدين.' },
+];
+
+const packagingOptions = [
+  { type: 'تغليف صناعي', desc: 'عبوات بلاستيكية أو كرتونية قياسية للجملة. مناسب للتجار والموزعين.' },
+  { type: 'تغليف OEM', desc: 'عبوات بشعار المشتري ورسومات الطباعة المخصصة. يتطلب ملفات العلامة والتصميم.' },
+  { type: 'تغليف مضاد للرطوبة', desc: 'حماية إضافية للشحن البحري لمسافات طويلة. يُوصى به للخليج.' },
+];
+
+const shippingFaq = [
+  {
+    q: 'ما هي مدة التوريد الإجمالية من الصين إلى الخليج؟',
+    a: 'الإنتاج: 3–5 أسابيع من اعتماد المواصفة والعينة. الشحن البحري: 25–35 يومًا. الإجمالي التقريبي: 6–10 أسابيع. الشحن الجوي أسرع (5–10 أيام) لكن التكلفة أعلى بكثير.',
+  },
+  {
+    q: 'هل توفرون شهادة المطابقة (COC) وشهادة التحليل (COA)؟',
+    a: 'نعم. نوفر COC و COA وفق مواصفة المنتج. اعتماد SASO (السعودية) و ESMA (الإمارات) و GSO (الخليج) مسؤولية المستورد في بلد الاستيراد، لكننا نتعاون بتقديم الوثائق المطلوبة لدعم التخليص الجمركي.',
+  },
+  {
+    q: 'ما هي شروط التسليم المتاحة؟',
+    a: 'FOB (تسليم على ظهر السفينة في ميناء الصين)، CIF (تكلفة وتأمين وشحن إلى ميناء الوجهة)، و DDP (تسليم مدفوع الرسوم إلى المستودع). ننظم الشحن عبر شركاء لوجستيين أو نعمل مع المعرّف الذي يحدده المشتري.',
+  },
+  {
+    q: 'ما الحد الأدنى لكمية طلب OEM؟',
+    a: 'يُحدد MOQ لكل مواصفة على حدة حسب المنتج، نوع التخصيص، والتغليف. المنتجات القياسية لها MOQ أقل، بينما OEM بعلامة مخصصة وتغليف مطبوع يتطلب كميات أعلى. اطلب عرض السعر للحصول على الرقم الدقيق.',
+  },
+];
+
+const faqJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: shippingFaq.map((item) => ({
+    '@type': 'Question',
+    name: item.q,
+    acceptedAnswer: { '@type': 'Answer', text: item.a },
+  })),
+};
+---
+
+<Layout
+  title="التوريد و OEM من الصين إلى الخليج | مراحل الشحن والتغليف | موتاى"
+  description="دليل التوريد الكامل: مراحل الشحن من الصين إلى الخليج (FOB/CIF/DDP)، مدة التوريد، خيارات التغليف و OEM، ووثائق COC/COA. معلومات عملية لمشتري المواد الكاشطة الصناعيين."
+  image="/images/factory.jpg"
+  breadcrumbs={breadcrumbs}
+  jsonLd={[faqJsonLd]}
+>
+  <Breadcrumbs items={breadcrumbs} />
+
+  <section class="page-hero">
+    <div class="container page-hero__inner">
+      <span class="eyebrow eyebrow--light">التوريد والتصنيع</span>
+      <h1>التوريد و OEM من الصين إلى الخليج</h1>
+      <p>
+        من تأكيد المواصفة حتى التسليم: مراحل الشحن، خيارات التغليف، عملية OEM،
+        والوثائق الداعمة للتخليص الجمركي في دول الخليج.
+      </p>
+    </div>
+  </section>
+
+  <section class="section section--light">
+    <div class="container">
+      <!--  -->
+      <div class="content-block">
+        <span class="eyebrow">مراحل التوريد</span>
+        <h2>من المواصفة إلى التسليم في ست خطوات</h2>
+        <ol class="numbered-list">
+          {shippingSteps.map((step) => (
+            <li><strong>{step.title}</strong><p>{step.text}</p></li>
+          ))}
+        </ol>
+      </div>
+
+      <!-- OEM  -->
+      <div class="content-block">
+        <span class="eyebrow">التصنيع بعلامة العميل</span>
+        <h2>عملية OEM في أربع خطوات</h2>
+        <div class="process-cards">
+          {oemSteps.map((step, index) => (
+            <article class="process-card">
+              <span class="process-card__num">{String(index + 1).padStart(2, '0')}</span>
+              <h3>{step.title}</h3>
+              <p>{step.text}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+
+      <!--  -->
+      <div class="content-block">
+        <span class="eyebrow">خيارات التغليف</span>
+        <h2>أنواع التغليف المتاحة</h2>
+        <div class="knowledge-hub__grid">
+          {packagingOptions.map((p) => (
+            <div class="sidebar-card">
+              <strong>{p.type}</strong>
+              <p>{p.desc}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- FAQ -->
+      <div class="content-block">
+        <span class="eyebrow">الأسئلة الشائعة</span>
+        <h2>أسئلة التوريد والشحن</h2>
+        <div class="faq-list">
+          {shippingFaq.map((item) => <FaqItem question={item.q} answer={item.a} />)}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <CtaBand
+    title="جاهز لبدء طلب التوريد؟"
+    text="أرسل المواصفة والكمية ووجهة الشحن وشروط التسليم المطلوبة. نراجع الطلب ونعود إليك بعرض تجاري واضح."
+  />
+</Layout>

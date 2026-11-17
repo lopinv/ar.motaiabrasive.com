@@ -1,0 +1,70 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import { industries } from '../../data/site';
+---
+
+<Layout
+  title="حلول الصنفرة حسب القطاع الصناعي | موتاى"
+  description="حلول المواد الكاشطة لنجارة الخشب، وتشطيب المعادن، وصيانة السيارات. راجع تحديات كل قطاع والتوصيات المناسبة للمنتج والتطبيق."
+  image="/images/workshop.jpg"
+>
+  <section class="page-hero page-hero--industries">
+    <div class="container page-hero__inner">
+      <span class="eyebrow eyebrow--light">حلول حسب التطبيق</span>
+      <h1>ابدأ من تحدي التشغيل، لا من اسم المنتج</h1>
+      <p>
+        لكل قطاع مواد عمل وطرق تشغيل مختلفة. نربط بين السطح المطلوب والعملية والأداة المناسبة،
+        حتى تكون توصياتنا قابلة للتطبيق داخل خط الإنتاج.
+      </p>
+    </div>
+  </section>
+
+  <section class="section section--light">
+    <div class="container">
+      <div class="industry-list">
+        {
+          industries.map((industry, index) => (
+            <article class="industry-row">
+              <div class="industry-row__media">
+                <img src={industry.image} alt="" width="520" height="360" loading="lazy" />
+                <span>0{index + 1}</span>
+              </div>
+              <div class="industry-row__content">
+                <span class="eyebrow">قطاع {industry.name}</span>
+                <h2><a href={`/industries/${industry.slug}`}>{industry.title}</a></h2>
+                <p>{industry.description}</p>
+                <h3>أبرز تحديات القطاع</h3>
+                <ul class="check-list">
+                  {industry.challenges.map((challenge) => <li>{challenge}</li>)}
+                </ul>
+                <a class="button button--outline button--small" href={`/industries/${industry.slug}`}>
+                  تفاصيل الحل والمواد
+                </a>
+              </div>
+            </article>
+          ))
+        }
+      </div>
+
+      <div class="catalog-guide">
+        <div>
+          <span class="eyebrow">طلب خاص</span>
+          <h2>هل لديك تطبيق غير مدرج؟</h2>
+          <p>
+            قطاعات أخرى مثل السيارات أو الأدوات الدقيقة قد تحتاج решения نفسها لتحديد المواصفة.
+            أرسل لنا وصف العمل وسنحدد الخيار الأقرب.
+          </p>
+        </div>
+        <div class="catalog-guide__actions">
+          <a class="button button--primary" href="/quote">أرسل تفاصيل طلبك</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <CtaBand
+    title="لنبدأ من تشغيلك الفعلي"
+    text="مادة العمل، نوع الماكينة، ونتيجة التشطيب المطلوبة تكفي للبدء. نساعدك على تحويلها إلى مواصفة قابلة للتوريد."
+  />
+</Layout>

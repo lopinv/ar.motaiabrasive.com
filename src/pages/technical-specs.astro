@@ -1,0 +1,185 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import CtaBand from '../components/CtaBand.astro';
+import FaqItem from '../components/FaqItem.astro';
+
+const breadcrumbs = [
+  { name: 'الرئيسية', href: '/' },
+  { name: 'المواصفات الفنية', href: '/technical-specs' },
+];
+
+/*** FEPA P grit table (objective international standard) ***/
+const fepaGrades = [
+  { p: 'P40', range: 'خشن جدًا', use: 'إزالة سريعة للمادة الخشنة' },
+  { p: 'P60', range: 'خشن', use: 'إزالة الطلاء والصدأ' },
+  { p: 'P80', range: 'خشن متوسط', use: 'تجهيز السطح قبل التشطيب' },
+  { p: 'P100', range: 'متوسط', use: 'تشطيب أولي للألواح' },
+  { p: 'P120', range: 'متوسط ناعم', use: 'تنعيم الحواف' },
+  { p: 'P150', range: 'ناعم', use: 'تشطيب منتظم' },
+  { p: 'P180', range: 'ناعم', use: 'تجهيز قبل الدهان' },
+  { p: 'P240', range: 'ناعم جدًا', use: 'لمسة نهائية أولية' },
+  { p: 'P320', range: 'دقيق', use: 'تنعيم بين طبقات الدهان' },
+  { p: 'P400', range: 'دقيق', use: 'تلميع أولي' },
+  { p: 'P600', range: 'دقيق جدًا', use: 'تلميع المعدن' },
+  { p: 'P800', range: 'فائق النعومة', use: 'لمسة نهائية للمعدن' },
+  { p: 'P1000', range: 'فائق', use: 'تلميع الطلاء' },
+  { p: 'P3000', range: 'فائق', use: 'تلميع نهائي عالي اللمعان' },
+  { p: 'P5000', range: 'فائق', use: 'تلميع مرآوي' },
+];
+
+/*** Unit conversions (objective) ***/
+const unitConversions = [
+  { from: 'إنش', to: 'مم', ratio: '1 إنش = 25.4 مم' },
+  { from: 'إنش 3', to: 'مم 75', ratio: '3 × 25.4' },
+  { from: 'إنش 4', to: 'مم 100', ratio: '4 × 25.4' },
+  { from: 'إنش 5', to: 'مم 125', ratio: '5 × 25.4' },
+  { from: 'إنش 6', to: 'مم 150', ratio: '6 × 25.4' },
+];
+
+/*** Backing types (industry fact) ***/
+const backingTypes = [
+  { type: 'ورق', desc: 'مرن وخفيف، يناسب الأسطح المستوية والأحزمة الرفيعة. مقاومة محدودة للرطوبة.' },
+  { type: 'قماش (قطن/بوليستر)', desc: 'متين ومرن، يناسب الأحزمة الثقيلة والتطبيقات المعدنية. مقاوم للحرارة.' },
+  { type: 'ألياف بوليمرية', desc: 'عالية المتانة، مقاومة للتمزق والماء. تستخدم في التطبيقات الصناعية الثقيلة.' },
+  { type: 'شبكة مفتوحة', desc: 'تسمح بتفريغ الغبار أثناء الصنفرة. تستخدم في الأقراص الشبكية.' },
+];
+
+const grainTypes = [
+  { type: 'أكسيد الألومنيوم (Al₂O₃)', desc: 'الأكثر شيوعًا. يناسب الخشب والمعدن العام. توازن جيد بين السعر والأداء.' },
+  { type: 'زركونيا الألومينا (ZrO₂)', desc: 'أصلب وأطول عمرًا. يناسب المعادن الصلبة والإزالة الثقيلة.' },
+  { type: 'سيراميك', desc: 'الأعلى أداء. حبيبات دقيقة ذاتية السن. للعمليات الصناعية المكثفة.' },
+  { type: 'كربيد السيليكون (SiC)', desc: 'حاد وسريع التآكل. يناسب الحجر والزجاج واللمسات النهائية.' },
+];
+
+const specFaq = [
+  {
+    q: 'ما الفرق بين درجات FEPA P و CAMI؟',
+    a: 'FEPA P هو المعيار الأوروبي/الدولي (المعتمد في معظم العالم بما فيه الخليج)، و CAMI هو المعيار الأمريكي. أرقامهما لا تتطابق تمامًا (مثلًا P120 ≈ CAMI 120 لكن P400 ≠ CAMI 400). نوصي بتحديد FEPA P في طلبات التوريد لتجنب الالتباس.',
+  },
+  {
+    q: 'كيف أختار نوع الحبيبات المناسب لمادتي؟',
+    a: 'للخشب والأعمال العامة: أكسيد الألومنيوم. للمعادن الصلبة والإزالة الثقيلة: زركونيا. للعمليات الصناعية عالية الأداء: سيراميك. للحجر والزجاج واللمسات النهائية: كربيد السيليكون.',
+  },
+  {
+    q: 'ما القاعدة الأنسب لتطبيقي؟',
+    a: 'الأسطح المستوية والأحزمة الرفيعة: ورق. الأحزمة الثقيلة والمعدن: قماش. البيئات الرطبة أو الثقيلة: ألياف بوليمرية. الصنفرة مع شفط الغبار: شبكة مفتوحة.',
+  },
+];
+
+const faqJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: specFaq.map((item) => ({
+    '@type': 'Question',
+    name: item.q,
+    acceptedAnswer: { '@type': 'Answer', text: item.a },
+  })),
+};
+---
+
+<Layout
+  title="المواصفات الفنية لمواد الكشط | جداول FEPA والقواعد والحبيبات | موتاى"
+  description="مرجع فني شامل: جدول درجات FEPA P الكامل، أنواع الحبيبات (أكسيد الألومنيوم/زركونيا/سيراميك/SiC)، أنواع القواعد، وتحويلات إنش/مم. بيانات موضوعية من معايير الصناعة الدولية."
+  image="/images/grit-reference.png"
+  breadcrumbs={breadcrumbs}
+  jsonLd={[faqJsonLd]}
+>
+  <Breadcrumbs items={breadcrumbs} />
+
+  <section class="page-hero">
+    <div class="container page-hero__inner">
+      <span class="eyebrow eyebrow--light">مرجع فني</span>
+      <h1>المواصفات الفنية لمواد الكشط</h1>
+      <p>
+        جداول مرجعية لدرجات FEPA P، أنواع الحبيبات والقواعد، وتحويلات الوحدات —
+        مرتبة لتساعدك على بناء مواصفة دقيقة قبل طلب التسعير.
+      </p>
+    </div>
+  </section>
+
+  <section class="section section--light">
+    <div class="container">
+      
+      <div class="content-block">
+        <span class="eyebrow">جدول درجات الحبيبات</span>
+        <h2>درجات FEPA P والتطبيقات</h2>
+        <p>
+          معيار FEPA P (Federation of European Producers of Abrasives) هو المعيار الدولي
+          المعتمد لترقيم خشونة الحبيبات. كلما زاد الرقم، قلّت خشونة الحبيبة.
+        </p>
+        <div class="table-wrap">
+          <table>
+            <caption>جدول مرجعي لدرجات FEPA P الشائعة من P40 إلى P5000</caption>
+            <thead>
+              <tr><th scope="col">الدرجة</th><th scope="col">الخشونة</th><th scope="col">التطبيق النموذجي</th></tr>
+            </thead>
+            <tbody>
+              {fepaGrades.map((g) => (
+                <tr><th scope="row" class="mono">{g.p}</th><td>{g.range}</td><td>{g.use}</td></tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      
+      <div class="content-block">
+        <span class="eyebrow">تحويلات الوحدات</span>
+        <h2>تحويل إنش إلى ملّيمتر</h2>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th scope="col">القطر (إنش)</th><th scope="col">القطر (مم)</th><th scope="col">الحساب</th></tr></thead>
+            <tbody>
+              {unitConversions.map((u) => (
+                <tr><th scope="row">{u.from}</th><td class="mono">{u.to}</td><td>{u.ratio}</td></tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      
+      <div class="content-block">
+        <span class="eyebrow">أنواع الحبيبات</span>
+        <h2>أربعة أنواع رئيسية لحبيبات الكشط</h2>
+        <div class="knowledge-hub__grid">
+          {grainTypes.map((g) => (
+            <div class="sidebar-card">
+              <strong>{g.type}</strong>
+              <p>{g.desc}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      
+      <div class="content-block">
+        <span class="eyebrow">أنواع القواعد</span>
+        <h2>قواعد الأحزمة والأقراص</h2>
+        <div class="knowledge-hub__grid">
+          {backingTypes.map((b) => (
+            <div class="sidebar-card">
+              <strong>{b.type}</strong>
+              <p>{b.desc}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- FAQ -->
+      <div class="content-block">
+        <span class="eyebrow">الأسئلة الشائعة</span>
+        <h2>أسئلة فنية عن المواصفات</h2>
+        <div class="faq-list">
+          {specFaq.map((item) => <FaqItem question={item.q} answer={item.a} />)}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <CtaBand
+    title="حدد مواصفتك باستخدام هذا المرجع"
+    text="اختر الدرجة ونوع الحبيبات والقاعدة من الجداول أعلاه، ثم أرسلها عبر نموذج عرض السعر لتحصل على تسعير دقيق."
+  />
+</Layout>

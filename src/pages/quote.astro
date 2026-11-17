@@ -1,0 +1,422 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import { SITE, productCategories } from '../data/site';
+import { models } from '../data/models';
+
+const breadcrumbs = [
+  { name: 'الرئيسية', href: '/' },
+  { name: 'طلب عرض سعر', href: '/quote' },
+];
+
+const selectedProduct = Astro.url.searchParams.get('product') ?? '';
+const selectedModel = models.find((model) => model.slug === selectedProduct);
+const initialCategory = selectedModel?.categorySlug ?? '';
+
+const steps = [
+  { id: 'product', title: 'المنتج', hint: 'ما الذي تحتاجه؟' },
+  { id: 'spec', title: 'المواصفة', hint: 'المقاس والكمية' },
+  { id: 'delivery', title: 'التوريد', hint: 'الوجهة والتكرار' },
+  { id: 'contact', title: 'التواصل', hint: 'للعرض والرد' },
+];
+---
+
+<Layout
+  title="طلب عرض سعر للمواد الكاشطة | مصنع موتاى"
+  description="أرسل طلب عرض سعر لموتاى في 4 خطوات: اختر المنتج، حدد المواصفة والكمية، وبيّن الوجهة والتكرار، ثم اترك بيانات التواصل. عرض سعر واضح خلال يوم عمل."
+  image="/images/factory.jpg"
+>
+  <Breadcrumbs items={breadcrumbs} />
+
+  <div class="quote-funnel">
+    <header class="funnel__head">
+      <div class="container">
+        <div class="funnel__intro">
+          <span class="eyebrow eyebrow--light">طلب عرض سعر · 4 خطوات</span>
+          <h1>خبرنا بما تحتاجه، وسنعود إليك بعرض واضح</h1>
+          <p>
+            الخطوات قصيرة عن قصد. أكمل الحقول الأساسية في كل خطوة، واترك ما لا ينطبق فارغًا —
+            نراجع المواصفة ونرجع إليك بأي سؤال لازم قبل التسعير.
+          </p>
+        </div>
+
+        <ol class="funnel__progress" data-funnel-progress>
+          {
+            steps.map((step, index) => (
+              <li class:list={{ 'is-active': index === 0 }} data-step={index}>
+                <span class="funnel__progress-num">{String(index + 1).padStart(2, '0')}</span>
+                <span class="funnel__progress-text">
+                  <strong>{step.title}</strong>
+                  <small>{step.hint}</small>
+                </span>
+                {index < steps.length - 1 && <span class="funnel__progress-bar" aria-hidden="true"></span>}
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+    </header>
+
+    <div class="container funnel__body">
+      <form
+        class="funnel-form"
+        action="https://form.lopins.cn/lopinx@duck.com/ad7aa0dd52e0afa55f85f7b2"
+        method="POST"
+        data-funnel-form
+      >
+        <input type="hidden" name="_subject" value="طلب عرض سعر - MoTai Abrasives" />
+        <input type="hidden" name="_template" value="table" />
+        <input type="hidden" name="_captcha" value="false" />
+        <input type="text" name="_honey" class="honeypot" tabindex="-1" autocomplete="off" aria-hidden="true" />
+
+        
+        <section class="funnel-step" data-panel="0" aria-labelledby="step-title-0">
+          <div class="funnel-step__head">
+            <span class="funnel-step__num">01</span>
+            <div>
+              <h2 id="step-title-0">ما مجموعة المنتج المطلوبة؟</h2>
+              <p>اختر المجموعة الأنسب لتطبيقك، ثم حدد المقاس إن كان معروفًا.</p>
+            </div>
+          </div>
+
+          <div class="quickpick quickpick--4" role="radiogroup" aria-label="مجموعة المنتج" data-quickpick="category">
+            {
+              productCategories.map((product) => (
+                <label class:list={['quickpick__item']} data-choice>
+                  <input
+                    type="radio"
+                    name="product_category"
+                    value={product.name}
+                    required
+                    checked={initialCategory === product.slug}
+                  />
+                  <span class="quickpick__item-label">
+                    <strong>{product.name}</strong>
+                    <small>{product.applications.slice(0, 2).join(' · ')}</small>
+                  </span>
+                </label>
+              ))
+            }
+          </div>
+
+          <label class="field field--full">
+            <span>المقاس المحدد (إن كان معروفًا)</span>
+            <select name="model_slug" data-model-select>
+              <option value="">غير محدد — سأوضح المواصفة لاحقًا</option>
+              {
+                models.map((model) => (
+                  <option value={model.name} selected={model.slug === selectedProduct}>
+                    {model.name} — {model.sizeAr}
+                  </option>
+                ))
+              }
+            </select>
+          </label>
+        </section>
+
+        
+        <section class="funnel-step" data-panel="1" aria-labelledby="step-title-1" hidden>
+          <div class="funnel-step__head">
+            <span class="funnel-step__num">02</span>
+            <div>
+              <h2 id="step-title-1">ما درجة الحبيبات والكمية؟</h2>
+              <p>اختر درجة الحبيبات القريبة من احتياجك — سنؤكد الدرجة الدقيقة قبل الإنتاج.</p>
+            </div>
+          </div>
+
+          <div class="quickpick quickpick--4" role="radiogroup" aria-label="درجة الحبيبات" data-quickpick="grit">
+            <label class="quickpick__item">
+              <input type="radio" name="grit" value="خشنة (36-80)" required />
+              <span class="quickpick__item-label">
+                <strong>خشنة 36–80</strong>
+                <small>إزالة سريعة للأكاسيد والطلاء</small>
+              </span>
+            </label>
+            <label class="quickpick__item">
+              <input type="radio" name="grit" value="متوسطة (100-180)" />
+              <span class="quickpick__item-label">
+                <strong>متوسطة 100–180</strong>
+                <small>صنفرة عامة وتقليل السماكة</small>
+              </span>
+            </label>
+            <label class="quickpick__item">
+              <input type="radio" name="grit" value="ناعمة (220-400)" />
+              <span class="quickpick__item-label">
+                <strong>ناعمة 220–400</strong>
+                <small>تشطيب وتجهيز ما قبل الدهان</small>
+              </span>
+            </label>
+            <label class="quickpick__item">
+              <input type="radio" name="grit" value="فائقة النعومة (500+)" />
+              <span class="quickpick__item-label">
+                <strong>فائقة 500–5000</strong>
+                <small>لمسات نهائية وتلميع</small>
+              </span>
+            </label>
+          </div>
+
+          <div class="funnel-fields">
+            <label class="field">
+              <span>الكمية المطلوبة *</span>
+              <input name="quantity" type="text" required placeholder="مثال: 5000 حزام / 100 عبوة" />
+            </label>
+
+            <label class="field">
+              <span>هل تحتاج OEM أو تغليفًا خاصًا؟</span>
+              <select name="oem">
+                <option value="لا">لا، توريد عادي</option>
+                <option value="نعم، علامة تجارية خاصة">نعم، علامة تجارية خاصة</option>
+                <option value="قيد التقييم">قيد التقييم</option>
+              </select>
+            </label>
+
+            <label class="field field--full">
+              <span>مادة العمل ونتيجة التشطيب المطلوبة *</span>
+              <textarea name="application" rows="3" required placeholder="صف المادة (خشب، ألومنيوم، فولاذ) والنتيجة المطلوبة (إزالة الصدأ، لمعان، تجهيز قبل الطلاء)."></textarea>
+            </label>
+
+            <label class="field field--full">
+              <span>الماكينة وطريقة التثبيت</span>
+              <input name="machine" type="text" placeholder="طراز الماكينة، طريقة الوصل أو نظام التثبيت" />
+            </label>
+          </div>
+        </section>
+
+        
+        <section class="funnel-step" data-panel="2" aria-labelledby="step-title-2" hidden>
+          <div class="funnel-step__head">
+            <span class="funnel-step__num">03</span>
+            <div>
+              <h2 id="step-title-2">إلى أين تُشحن، وبأي إيقاع؟</h2>
+              <p>الوجهة وتكرار الطلب يحددان خطة الشحن وشروط التوريد في العرض.</p>
+            </div>
+          </div>
+
+          <div class="funnel-fields">
+            <label class="field">
+              <span>بلد الوجهة *</span>
+              <select name="destination" data-destination-select required>
+                <option value="" disabled selected>اختر الدولة</option>
+                <option>المملكة العربية السعودية</option>
+                <option>الإمارات العربية المتحدة</option>
+                <option>الكويت</option>
+                <option>قطر</option>
+                <option>البحرين</option>
+                <option>عُمان</option>
+                <option>مصر</option>
+                <option>السودان</option>
+                <option>الجزائر</option>
+                <option>تونس</option>
+                <option>المغرب</option>
+                <option>الأردن</option>
+                <option>لبنان</option>
+                <option>سوريا</option>
+                <option>العراق</option>
+                <option>اليمن</option>
+                <option>فلسطين</option>
+                <option>دولة أخرى</option>
+              </select>
+            </label>
+
+            <label class="field">
+              <span>تكرار الطلب المتوقع</span>
+              <select name="frequency">
+                <option value="طلب تجريبي / عينة">طلب تجريبي / عينة</option>
+                <option value="طلب واحد">طلب واحد</option>
+                <option value="توريد متكرر شهري">توريد متكرر شهري</option>
+                <option value="توريد ربع سنوي">توريد ربع سنوي</option>
+              </select>
+            </label>
+
+            <label class="field field--full">
+              <span>ملاحظات: موعد التسليم، شروط الفحص، أو أي متطلب خاص</span>
+              <textarea name="notes" rows="3" placeholder="مثال: نحتاج شهادة مطابقة مع كل دفعة، والتسليم خلال 45 يومًا."></textarea>
+            </label>
+          </div>
+        </section>
+
+        
+        <section class="funnel-step" data-panel="3" aria-labelledby="step-title-3" hidden>
+          <div class="funnel-step__head">
+            <span class="funnel-step__num">04</span>
+            <div>
+              <h2 id="step-title-3">كيف نتواصل معك؟</h2>
+              <p>نرسل العرض التجاري على القناة التي تختارها. لا نستخدم بياناتك لأي غرض آخر.</p>
+            </div>
+          </div>
+
+          <div class="funnel-fields">
+            <label class="field">
+              <span>الاسم *</span>
+              <input name="name" type="text" required autocomplete="name" placeholder="الاسم الكامل" />
+            </label>
+
+            <label class="field">
+              <span>الشركة *</span>
+              <input name="company" type="text" required autocomplete="organization" placeholder="اسم الشركة" />
+            </label>
+
+            <label class="field">
+              <span>البريد الإلكتروني *</span>
+              <input name="email" type="email" required autocomplete="email" placeholder="name@company.com" dir="ltr" />
+            </label>
+
+            <label class="field">
+              <span>واتساب / الهاتف *</span>
+              <input name="phone" type="tel" required autocomplete="tel" placeholder="رقم مع رمز الدولة" dir="ltr" />
+            </label>
+          </div>
+
+          <div class="quickpick quickpick--3" role="radiogroup" aria-label="لغة التواصل المفضلة" data-quickpick="lang">
+            <label class="quickpick__item">
+              <input type="radio" name="preferred_contact" value="واتساب / العربية" checked />
+              <span class="quickpick__item-label">
+                <strong>واتساب — العربية</strong>
+                <small>أسرع ردّ عبر المحادثة</small>
+              </span>
+            </label>
+            <label class="quickpick__item">
+              <input type="radio" name="preferred_contact" value="البريد الإلكتروني" />
+              <span class="quickpick__item-label">
+                <strong>البريد الإلكتروني</strong>
+                <small>مناسب للملفات والتفاصيل</small>
+              </span>
+            </label>
+            <label class="quickpick__item">
+              <input type="radio" name="preferred_contact" value="الهاتف / English" />
+              <span class="quickpick__item-label">
+                <strong>الهاتف — English</strong>
+                <small>للمكالمات المباشرة</small>
+              </span>
+            </label>
+          </div>
+
+          <label class="funnel-consent">
+            <input name="consent" type="checkbox" required />
+            <span>أوافق على استخدام هذه البيانات للرد على طلبي، وفق <a href="/privacy">سياسة الخصوصية</a>.</span>
+          </label>
+        </section>
+
+        
+        <div class="funnel-actions">
+          <button class="button button--outline" type="button" data-funnel-prev disabled>السابق</button>
+          <span class="funnel-actions__hint" data-funnel-hint>الخطوة 1 من 4</span>
+          <div class="funnel-actions__next">
+            <button class="button button--primary" type="button" data-funnel-next>متابعة</button>
+            <button class="button button--accent" type="submit" data-funnel-submit hidden>
+              إرسال طلب عرض السعر
+            </button>
+          </div>
+        </div>
+
+        <div class="funnel-status" data-funnel-status role="status" aria-live="polite"></div>
+      </form>
+
+      
+      <aside class="funnel-aside">
+        <div class="funnel-card">
+          <h2 class="funnel-card__title">تفضّل قناة أسرع؟</h2>
+          <p>أرسل لنا على واتساب أو البريد مباشرة، ولا نحتاج أي نموذج.</p>
+          <a class="button button--whatsapp button--block" href={`https://wa.me/${SITE.whatsapp}`} target="_blank" rel="noopener nofollow">
+            واتساب مباشر
+          </a>
+          <a class="button button--outline button--block" href={`mailto:${SITE.email}`} dir="ltr">{SITE.email}</a>
+        </div>
+
+        <div class="funnel-card funnel-card--soft">
+          <h2 class="funnel-card__title">ماذا يحدث بعد الإرسال؟</h2>
+          <ol class="funnel-pipeline">
+            <li><strong>مراجعة أولية</strong><span>نتحقق من اكتمال المواصفة وقد نرجع بسؤال تقني موجز.</span></li>
+            <li><strong>عرض تجاري</strong><span>السعر والحد الأدنى للكمية وشروط التغليف.</span></li>
+            <li><strong>عينة / عرض</strong><span>إذا طلبت عينة أو شهادة مطابقة نرتبها ضمن العملية.</span></li>
+          </ol>
+        </div>
+
+        <div class="funnel-card funnel-card--meta">
+          <h2 class="funnel-card__title">للاشارة</h2>
+          <dl class="spec-dl">
+            <div><dt>الرد</dt><dd>خلال يوم عمل</dd></div>
+            <div><dt>المصنع</dt><dd dir="ltr">Xianning, Hubei, CN</dd></div>
+            <div><dt>اللغات</dt><dd dir="ltr">العربية · EN · ZH</dd></div>
+          </dl>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <script>
+    const form = document.querySelector('[data-funnel-form]');
+    const steps = form ? [...form.querySelectorAll<HTMLElement>('[data-panel]')] : [];
+    const progressItems = form ? [...form.querySelectorAll<HTMLElement>('[data-step]')] : [];
+    const prevBtn = form?.querySelector<HTMLButtonElement>('[data-funnel-prev]');
+    const nextBtn = form?.querySelector<HTMLButtonElement>('[data-funnel-next]');
+    const submitBtn = form?.querySelector<HTMLButtonElement>('[data-funnel-submit]');
+    const hint = form?.querySelector<HTMLElement>('[data-funnel-hint]');
+    const status = form?.querySelector<HTMLElement>('[data-funnel-status]');
+    let current = 0;
+
+    const render = () => {
+      steps.forEach((section, index) => {
+        section.hidden = index !== current;
+      });
+
+      progressItems.forEach((item, index) => {
+        item.classList.toggle('is-active', index === current);
+        item.classList.toggle('is-done', index < current);
+      });
+
+      if (prevBtn) prevBtn.disabled = current === 0;
+      if (hint) hint.textContent = `الخطوة ${current + 1} من ${steps.length}`;
+      if (nextBtn) nextBtn.hidden = current === steps.length - 1;
+      if (submitBtn) submitBtn.hidden = current !== steps.length - 1;
+    };
+
+    const validForCurrent = () => {
+      const section = steps[current];
+      if (!section) return true;
+      const inputs = section.querySelectorAll<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>(
+        'input:not([type="hidden"]):not(.honeypot), select, textarea'
+      );
+
+      for (const input of inputs) {
+        if (input.type === 'radio') {
+          const group = section.querySelectorAll<HTMLInputElement>(`input[name="${input.name}"]`);
+          const anyChecked = [...group].some((item) => item.checked);
+          if (!anyChecked) return false;
+        } else if (input.required && !input.reportValidity()) {
+          return false;
+        }
+      }
+
+      return true;
+    };
+
+    nextBtn?.addEventListener('click', () => {
+      if (!validForCurrent()) {
+        (form as HTMLFormElement)?.reportValidity?.();
+        return;
+      }
+
+      current = Math.min(current + 1, steps.length - 1);
+      render();
+      form?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+
+    prevBtn?.addEventListener('click', () => {
+      current = Math.max(current - 1, 0);
+      render();
+    });
+
+    form?.addEventListener('submit', (event) => {
+      if (!(form as HTMLFormElement).checkValidity()) {
+        event.preventDefault();
+        (form as HTMLFormElement).reportValidity();
+        return;
+      }
+
+      if (status) status.textContent = 'جارٍ إرسال الطلب…';
+    });
+
+    render();
+  </script>
+</Layout>

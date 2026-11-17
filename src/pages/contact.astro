@@ -1,0 +1,61 @@
+---
+import Layout from '../layouts/Layout.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { SITE } from '../data/site';
+---
+
+<Layout
+  title="تواصل مع مصنع موتاى للمواد الكاشطة | طلب عرض سعر"
+  description="تواصل مباشرة مع فريق موتاى للمواد الكاشطة في هوبي، الصين عبر البريد الإلكتروني أو واتساب، أو استخدم نموذج الاستفسار لطلب عرض سعر."
+  image="/images/factory.jpg"
+>
+  <section class="page-hero page-hero--contact">
+    <div class="container page-hero__inner">
+      <span class="eyebrow eyebrow--light">تواصل معنا</span>
+      <h1>ابدأ الطلب من القناة الأنسب لك</h1>
+      <p>
+        للاستفسار السريع استخدم واتساب. أما الطلبات التي تتطلب مواصفة وكمية وتسعيرًا، فاستخدم
+        نموذج الاستفسار المخصص لتصلنا بكل التفاصيل في رسالة واحدة.
+      </p>
+    </div>
+  </section>
+
+  <section class="section section--light">
+    <div class="container contact-layout">
+      <div class="contact-methods">
+        <article class="contact-card contact-card--primary">
+          <span class="eyebrow eyebrow--light">الأسرع</span>
+          <h2>محادثة واتساب</h2>
+          <p>أرسل صورة أو رقم المنتج، واذكر الكمية والوجهة. نستخدم المحادثة لتأكيد المواصفة قبل إرسال العرض.</p>
+          <a class="button button--accent" href={`https://wa.me/${SITE.whatsapp}`} target="_blank" rel="noopener nofollow">فتح واتساب</a>
+        </article>
+        <article class="contact-card">
+          <span class="eyebrow">للتواصل الرسمي</span>
+          <h2>البريد الإلكتروني</h2>
+          <p>مناسب لطلبات OEM، والتوريدات المتكررة، وإرسال ملفات الشعار والمواصفات.</p>
+          <a class="button button--outline" href={`mailto:${SITE.email}`} dir="ltr">{SITE.email}</a>
+        </article>
+        <article class="contact-card">
+          <span class="eyebrow">الهاتف</span>
+          <h2>اتصال مباشر</h2>
+          <p>لمناقشة التفاصيل التجارية أو ترتيب زيارة المصنع بعد تأكيد الموعد.</p>
+          <a class="button button--outline" href={`tel:${SITE.phone.replace(/\s/g, '')}`} dir="ltr">{SITE.phone}</a>
+        </article>
+      </div>
+
+      <div class="contact-details">
+        <span class="eyebrow">معلومات المصنع</span>
+        <h2>موتاى للمواد الكاشطة</h2>
+        <dl class="spec-dl">
+          <div><dt>الشركة</dt><dd dir="ltr">{SITE.legalName}</dd></div>
+          <div><dt>العنوان</dt><dd>{SITE.addressAr}</dd></div>
+          <div><dt>ساعات الرد</dt><dd>الاثنين–السبت، حسب المنطقة الزمنية للمصنع</dd></div>
+          <div><dt>اللغات</dt><dd>العربية، الإنجليزية، الصينية</dd></div>
+        </dl>
+        <p class="fine-print">نستقبل الاستفسارات بين مسار التوريد الفعلي. لتفادي تأخر الرد في العطلات، استخدم واتساب مع تحديد الموضوع.</p>
+      </div>
+    </div>
+  </section>
+
+  <CtaBand title="جاهز لطلب عرض سعر؟" text="جهّز نوع المنتج والمقاس والكمية وجهة الشحن، وسنكمل معك بقية التفاصيل." />
+</Layout>
