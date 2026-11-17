@@ -1,0 +1,218 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "publishDate": {
+      "type": "string"
+    },
+    "updatedDate": {
+      "type": "string"
+    },
+    "author": {
+      "default": "MoTai Abrasives",
+      "type": "string"
+    },
+    "category": {
+      "type": "string"
+    },
+    "productFamily": {
+      "type": "string"
+    },
+    "productModel": {
+      "type": "string"
+    },
+    "industry": {
+      "type": "string"
+    },
+    "gccCountry": {
+      "type": "string"
+    },
+    "keywords": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "primaryKeyword": {
+      "type": "string"
+    },
+    "secondaryKeywords": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "longTailKeywords": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "searchIntent": {
+      "type": "string"
+    },
+    "featuredImage": {
+      "type": "string"
+    },
+    "featuredImageAlt": {
+      "type": "string"
+    },
+    "internalLinks": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string"
+          },
+          "anchorText": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "url",
+          "anchorText"
+        ]
+      }
+    },
+    "externalLinks": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string"
+          },
+          "anchorText": {
+            "type": "string"
+          },
+          "source": {
+            "type": "string"
+          },
+          "year": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "url",
+          "anchorText"
+        ]
+      }
+    },
+    "cta": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string"
+        },
+        "text": {
+          "type": "string"
+        },
+        "targetUrl": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "text",
+        "targetUrl"
+      ]
+    },
+    "faq": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "q": {
+            "type": "string"
+          },
+          "a": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "q",
+          "a"
+        ]
+      }
+    },
+    "specsTable": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "object",
+        "propertyNames": {
+          "type": "string"
+        },
+        "additionalProperties": {}
+      }
+    },
+    "infoBoxes": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "content": {
+            "anyOf": [
+              {
+                "type": "array",
+                "items": {}
+              },
+              {
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "required": [
+          "type",
+          "title",
+          "content"
+        ]
+      }
+    },
+    "voiceSearchQueries": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "buyerJourneyStage": {
+      "type": "string"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "$schema": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "title",
+    "description",
+    "publishDate",
+    "category"
+  ]
+}
