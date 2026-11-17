@@ -10,10 +10,14 @@ import { getAllTemplateTypes, getTemplate } from './article-templates';
 
 // ========== 基础维度定义 ==========
 
+// 纯 Hook&Loop 变体只归属 hook-loop 家族（从 sanding-discs 剔除），
+// 避免同一型号在两家族生成重复标题
+const HOOK_ONLY_MODEL_SLUGS = new Set(['hook-loop-disc', 'hook-loop-disc-multi-hole', 'hook-loop-disc-film']);
+
 export const productFamilies = [
   { slug: 'abrasive-belts', name: 'أحزمة الصنفرة', models: models.filter(m => m.categorySlug === 'abrasive-belts') },
   { slug: 'flap-discs', name: 'أقراص كوت (Flap Discs)', models: models.filter(m => m.categorySlug === 'flap-discs') },
-  { slug: 'sanding-discs', name: 'أقراص الصنفرة', models: models.filter(m => m.categorySlug === 'sanding-discs') },
+  { slug: 'sanding-discs', name: 'أقراص الصنفرة', models: models.filter(m => m.categorySlug === 'sanding-discs' && !HOOK_ONLY_MODEL_SLUGS.has(m.slug)) },
   { slug: 'hook-loop', name: 'أقراص هوك آند لوب', models: models.filter(m => m.categorySlug === 'sanding-discs' && m.attachment.includes('Hook')) },
   { slug: 'sanding-sponges', name: 'إسفنجيات صنفرة', models: models.filter(m => m.categorySlug === 'sanding-sponges') },
 ] as const;
@@ -28,14 +32,15 @@ export const gccCountries = [
   { code: 'general-gcc', name: 'الخليج العربي', nameEn: 'GCC General', industrialClusters: [] },
 ] as const;
 
+// titleName: عنوان مختصر مخصص لبناء عناوين SEO (≤ 70 خانة) — يوضع في generateTitleVariants
 export const industrySegments = [
-  { code: 'woodworking', name: 'نجارة الخشب', nameEn: 'Woodworking', keyProcesses: ['تجهيز الألواح', 'تشطيب الحواف', 'أثاث', 'أرضيات'] },
-  { code: 'metalworking', name: 'تشطيب المعادن', nameEn: 'Metalworking', keyProcesses: ['إزالة الشavings والحواف', 'إزالة الصدأ', 'طحن اللحام', 'تهيئة الأسطح', 'الصفائح المعدنية'] },
-  { code: 'automotive', name: 'السيارات والصيانة', nameEn: 'Automotive', keyProcesses: ['صنفرة هيكل السيارة', 'صنفرة البرايمر', 'الإصلاح', 'التلميع الدقيق'] },
-  { code: 'shipbuilding', name: 'التصنيع البحري وصيانة السفن', nameEn: 'Shipbuilding', keyProcesses: ['إزالة صدأ الصفائح الفولاذية', 'معالجة اللحام', 'معالجة ما قبل الطلاء', 'مضاد انزلاق السطح'] },
-  { code: 'oil-gas', name: 'النفط والغاز - تهيئة الأسطح', nameEn: 'Oil & Gas', keyProcesses: ['إزالة صدأ الأنابيب', 'الأسطح الداخلية للخزانات', 'صيانة المنصات البحرية', 'معالجة ما قبل الطلاء المضاد للتآكل'] },
-  { code: 'construction', name: 'مواد البناء المعالجة', nameEn: 'Construction Materials', keyProcesses: ['ألواح الخشب', 'صنفرة اللوح الجصي', 'تلميع الحجر', 'صنفرة الخرسانة'] },
-  { code: 'general', name: 'الصناعة العامة', nameEn: 'General Industrial', keyProcesses: ['الصيانة والإصلاح', 'الصنفرة العامة', 'تنظيف الأسطح'] },
+  { code: 'woodworking', name: 'نجارة الخشب', titleName: 'النجارة', nameEn: 'Woodworking', keyProcesses: ['تجهيز الألواح', 'تشطيب الحواف', 'أثاث', 'أرضيات'] },
+  { code: 'metalworking', name: 'تشطيب المعادن', titleName: 'المعادن', nameEn: 'Metalworking', keyProcesses: ['إزالة الشavings والحواف', 'إزالة الصدأ', 'طحن اللحام', 'تهيئة الأسطح', 'الصفائح المعدنية'] },
+  { code: 'automotive', name: 'السيارات والصيانة', titleName: 'السيارات', nameEn: 'Automotive', keyProcesses: ['صنفرة هيكل السيارة', 'صنفرة البرايمر', 'الإصلاح', 'التلميع الدقيق'] },
+  { code: 'shipbuilding', name: 'التصنيع البحري وصيانة السفن', titleName: 'حوض السفن', nameEn: 'Shipbuilding', keyProcesses: ['إزالة صدأ الصفائح الفولاذية', 'معالجة اللحام', 'معالجة ما قبل الطلاء', 'مضاد انزلاق السطح'] },
+  { code: 'oil-gas', name: 'النفط والغاز - تهيئة الأسطح', titleName: 'النفط والغاز', nameEn: 'Oil & Gas', keyProcesses: ['إزالة صدأ الأنابيب', 'الأسطح الداخلية للخزانات', 'صيانة المنصات البحرية', 'معالجة ما قبل الطلاء المضاد للتآكل'] },
+  { code: 'construction', name: 'مواد البناء المعالجة', titleName: 'البناء', nameEn: 'Construction Materials', keyProcesses: ['ألواح الخشب', 'صنفرة اللوح الجصي', 'تلميع الحجر', 'صنفرة الخرسانة'] },
+  { code: 'general', name: 'الصناعة العامة', titleName: 'الصناعة', nameEn: 'General Industrial', keyProcesses: ['الصيانة والإصلاح', 'الصنفرة العامة', 'تنظيف الأسطح'] },
 ] as const;
 
 export const articleTypes = getAllTemplateTypes();
@@ -172,38 +177,42 @@ function generateTitleVariants(
   articleType: string
 ): Array<{ title: string; focus: string }> {
   const variants: Array<{ title: string; focus: string }> = [];
-  const modelName = model ? model.name : productFamily.name;
+  // 标题用 shortName（型号短名）控制长度；无型号时回落家族名
+  const modelName = model ? (model.shortName || model.name) : productFamily.name;
   const countryName = gccCountry.code === 'general-gcc' ? 'الخليج العربي' : gccCountry.name;
   const industryName = industry.name;
 
+  // العنوان يستخدم اسم القطاع المختصر (titleName) ليبقى ضمن 70 خانة
+  const iName = (industry as any).titleName || industryName;
+
   switch (articleType) {
     case 'product-comparison':
-      // 对比同家族不同规格，或跨家族
+      // 对比同家族不同规格，或跨家族（型号名保留为唯一性锚点）
       variants.push({
-        title: `${modelName} أم ${getAlternativeProduct(productFamily.slug)}؟ دليل الاختيار لـ ${industryName}`,
+        title: `${modelName} أم ${getAlternativeProduct(productFamily.slug)} لـ ${iName} في ${countryName}؟`,
         focus: 'vs-alternative',
       });
       variants.push({
-        title: `كيف تختار ${modelName} المناسب لـ ${industryName} في ${countryName}؟`,
+        title: `كيف تختار ${modelName} لـ ${iName} في ${countryName}؟`,
         focus: 'selection-guide',
       });
       break;
 
     case 'multi-product-comparison':
       variants.push({
-        title: `مقارنة شاملة: ${modelName} - الخلفيات، الحبيبات، وأنظمة التثبيت لـ ${industryName}`,
+        title: `مقارنة ${modelName} لـ ${iName} في ${countryName}`,
         focus: 'full-matrix',
       });
       break;
 
     case 'buying-guide':
       variants.push({
-        title: `دليل شراء ${modelName} لـ ${industryName}: المواصفات، الدرجات، والتوافق`,
+        title: `دليل شراء ${modelName} لـ ${iName} في ${countryName}`,
         focus: 'complete-guide',
       });
       if (model) {
         variants.push({
-          title: `كيف تحدد درجة الغرِت والمقاس لـ ${modelName} في تطبيقات ${industryName}؟`,
+          title: `الغرِت والمقاس لـ ${modelName} ${iName} ${countryName}`,
           focus: 'grit-size-selection',
         });
       }
@@ -211,28 +220,28 @@ function generateTitleVariants(
 
     case 'technical-guide':
       variants.push({
-        title: `فهم ${getTechnicalTopicForModel(productFamily.slug, model)}: المعايير، الأنواع، والأداء في ${industryName}`,
+        title: `معايير وأنواع ${modelName} للأداء في ${iName} ${countryName}`,
         focus: 'technical-deep-dive',
       });
       break;
 
     case 'application-guide':
       variants.push({
-        title: `${modelName} في ${industryName}: تسلسل الدرجات، المعايير، وأفضل الممارسات في ${countryName}`,
+        title: `${modelName} في ${iName}: تسلسل الدرجات والممارسات في ${countryName}`,
         focus: 'industry-application',
       });
       break;
 
     case 'process-tutorial':
       variants.push({
-        title: `خطوات ${getProcessName(industry.code)} باستخدام ${modelName}: تسلسل الغرِت والمعلمات`,
+        title: `${getProcessName(industry.code)} بـ ${modelName} لـ ${iName} ${countryName}`,
         focus: 'step-by-step',
       });
       break;
 
     case 'troubleshooting':
       variants.push({
-        title: `حل مشاكل ${modelName} الشائعة: تآكل، انسداد، انحراف - تشخيص وحلول لـ ${industryName}`,
+        title: `مشاكل ${modelName} في ${iName} ${countryName}`,
         focus: 'failure-modes',
       });
       break;
@@ -240,7 +249,7 @@ function generateTitleVariants(
     case 'product-spec-detail':
       if (model) {
         variants.push({
-          title: `مواصفات ${modelName} الكاملة: الأبعاد، الدرجات، القاعدة، وخيارات التخصيص`,
+          title: `مواصفات ${modelName} لـ ${iName} في ${countryName}`,
           focus: 'full-specs',
         });
       }
@@ -248,21 +257,21 @@ function generateTitleVariants(
 
     case 'procurement-guide':
       variants.push({
-        title: `دليل المشتري الصناعي: كيف تحدد مواصفات ${modelName} وتقيم الموردين لـ ${industryName}؟`,
+        title: `تقييم موردين ${modelName} لـ ${iName} في ${countryName}`,
         focus: 'procurement-process',
       });
       break;
 
     case 'wholesale-oem-guide':
       variants.push({
-        title: `دليل الجملة و OEM لـ ${modelName}: التخصيص، الحد الأدنى، والتغليف لسوق ${countryName}`,
+        title: `دليل OEM والجملة لـ ${modelName} ${iName} ${countryName}`,
         focus: 'wholesale-oem',
       });
       break;
 
     case 'industry-market':
       variants.push({
-        title: `اتجاهات ${industryName} في ${countryName}: المعايير، التقنيات، وتأثيرها على قرارات شراء ${modelName}`,
+        title: `اتجاهات ${iName} ${countryName} وتأثيرها على ${modelName}`,
         focus: 'market-trends',
       });
       break;
@@ -270,11 +279,11 @@ function generateTitleVariants(
     case 'gcc-regional-sourcing':
       if (gccCountry.code !== 'general-gcc') {
         variants.push({
-          title: `استيراد ${modelName} إلى ${countryName}: اللوائح، الموانئ، الموزعون، وشروط الدفع`,
+          title: `استيراد ${modelName} إلى ${countryName} لقطاع ${iName}`,
           focus: 'import-guide',
         });
         variants.push({
-          title: `سوق ${modelName} في ${countryName}: التحديات اللوجستية، الجمارك، واستراتيجيات التوريد`,
+          title: `سوق ${modelName} في ${countryName} لقطاع ${iName}`,
           focus: 'market-logistics',
         });
       }
@@ -282,7 +291,7 @@ function generateTitleVariants(
 
     case 'faq-buyers-guide':
       variants.push({
-        title: `أهم أسئلة مشتري ${modelName} في ${industryName}: المواصفات، العينات، الأسعار، والشحن`,
+        title: `أسئلة مشتري ${modelName} ${iName} ${countryName}`,
         focus: 'buyer-faq',
       });
       break;

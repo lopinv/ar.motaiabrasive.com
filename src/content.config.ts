@@ -74,6 +74,9 @@ const articles = defineCollection({
     voiceSearchQueries: z.array(z.string()).default([]),
     buyerJourneyStage: z.string().optional(),
     notes: z.string().optional(),
+    // 国家版去重：非主版国家文章标记 noindex 并 canonical 指向 qatar 主版
+    noindex: z.boolean().optional(),
+    canonicalSlug: z.string().optional(),
   }),
 });
 

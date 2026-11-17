@@ -9,6 +9,27 @@ import { glossary } from '../data/glossary';
 import { articleTemplates, getTemplate, ArticleTemplate } from './article-templates';
 import { TopicSpec, topicMatrix, gccCountries, industrySegments, keywordLibrary } from './topic-matrix';
 
+// ========== 确定性种子（slug → 0..N 变体选择，保证可复现） ==========
+
+/**
+ * FNV-1a 32 位：同一 slug 永远同值（可增量重建），不同 slug 均匀落桶。
+ * 用于驱动措辞模板/FAQ 滑窗/可选章节的确定性变体，降低同质化且无随机性。
+ */
+export function seedOf(slug: string, mod: number): number {
+  let h = 0x811c9dc5;
+  for (let i = 0; i < slug.length; i++) {
+    h ^= slug.charCodeAt(i);
+    h = Math.imul(h, 0x01000193);
+  }
+  return (h >>> 0) % mod;
+}
+
+/** 按种子从数组中取一个元素（空数组返回 undefined） */
+function pickBySeed<T>(arr: T[], seed: number, mod: number): T | undefined {
+  if (!arr?.length) return undefined;
+  return arr[seed % arr.length];
+}
+
 // ========== 术语表快速查找 ==========
 
 const termMap = new Map(glossary.map(g => [g.term.toLowerCase(), g.ar]));
@@ -173,6 +194,9 @@ function buildArticleHTML(
   // 根容器
   sections.push('<div dir="rtl" lang="ar" class="article-content">');
 
+  // 型号真实规格差异块（根 div 内、BLUF 前），保证同类目跨型号正文可区分（B 去重）
+  sections.push(buildModelSpecBlock(model));
+
   // BLUF + 直接回答块
   sections.push(buildBLUF(topic, model, productCat, industry, gccCountry));
   sections.push(buildDirectAnswerBlock(topic, model, productCat, industry, gccCountry));
@@ -183,6 +207,23 @@ function buildArticleHTML(
     if (sectionHtml) sections.push(sectionHtml);
   });
 
+  // 广度差异化：按种子插入 0–2 个可选附加章节（复用现有构建器，章节数随 slug 浮动）
+  const optSeed = seedOf(topic.slug + ':opt', 1_000_000);
+  const optionalSections: Array<{ title: string; build: () => string }> = [
+    { title: 'تحسين التكلفة على دورة الاستخدام', build: () => buildCostOptimization(topic, model, productCat) },
+    { title: 'الصيانة الوقائية والعمر التشغيلي', build: () => buildPreventiveMaintenance(topic, model) },
+    { title: 'بطاقة المصطلحات السريعة', build: () => buildGlossaryCard(topic) },
+  ];
+  // 选 0–2 个：bit 各独立决定一个章节是否插入（k0 ~50%，k1 ~33%）
+  for (let k = 0; k < 2; k++) {
+    const on = k === 0 ? optSeed % 2 === 0 : optSeed % 3 === 0;
+    if (on) {
+      const sec = optionalSections[k];
+      const html = sec.build();
+      if (html) sections.push(`<h2>${sec.title}</h2>\n${html}`);
+    }
+  }
+
   // FAQ
   sections.push(buildFAQSection(topic, model, productCat, industry, gccCountry));
 
@@ -192,6 +233,24 @@ function buildArticleHTML(
   sections.push('</div>');
 
   return sections.join('\n\n');
+}
+
+/** 型号真实规格差异块（根 div 内、BLUF 前），保证同类目跨型号正文可区分（B 去重） */
+function buildModelSpecBlock(model: typeof models[0] | null): string {
+  if (!model) return '';
+  const grits = model.gritRange.slice(0, 4).join('–') + (model.gritRange.length > 4 ? '…' : '');
+  const lines = [
+    '<!-- model-spec-block -->',
+    `<h2>مواصفات ${model.name} (الفروقات الجوهرية)</h2>`,
+    `<ul class="plain-links">`,
+    `  <li><strong>درجات الغرِت المتاحة:</strong> ${grits}</li>`,
+    `  <li><strong>القاعدة/الخلف:</strong> ${model.backing}</li>`,
+    `  <li><strong>نظام التثبيت:</strong> ${model.attachment}</li>`,
+    ...model.useCases.map((u) => `  <li><strong>استخدام أساسي:</strong> ${u}</li>`),
+    ...model.notes.slice(0, 2).map((n) => `  <li><strong>ملاحظة فنية:</strong> ${n}</li>`),
+    `</ul>`,
+  ];
+  return lines.join('\n');
 }
 
 /**
@@ -207,48 +266,114 @@ function buildBLUF(
   const productName = model?.name || productCat?.name || getProductFamilyNameAr(topic.productFamily);
   const industryName = industry?.name || industrySegments.find(i => i.code === topic.industry)?.name || '';
   const countryName = gccCountry?.name || '';
+  // 确定性种子：同一 slug 永远同一组变体（可复现），不同 slug 均匀分散
+  const sv = seedOf(topic.slug, 1_000_000);
+  const pick3 = <T,>(arr: T[]) => pickBySeed(arr, sv, 3) ?? arr[0];
+  const pick2 = <T,>(arr: T[]) => pickBySeed(arr, Math.floor(sv / 3), 2) ?? arr[0];
+  // 型号专属数据注入（有型号才加）
+  const useCase = model?.useCases?.length ? ` من التطبيقات الداعمة: ${pick2([...model.useCases])}.` : '';
+  const note = model?.notes?.length ? ` ${pick2([...model.notes])}.` : '';
+  // 行业痛点注入（3 行业 site.ts + 4 行业 fallback）
+  const challenge = industry?.challenges?.length ? ` أبرز التحدي: ${industry.challenges[sv % industry.challenges.length]}.` : '';
 
   let bluf = '';
 
   switch (topic.articleType) {
     case 'product-comparison':
-      bluf = `اختيار ${productName} يعتمد على مادة القطعة، مرحلة التشطيب، ونوع الماكينة. للـ ${industryName}${countryName ? ` في ${countryName}` : ''}، تُحدد درجة الغرِت، عرض الحزام/قطر القرص، ونظام التثبيت قبل الطلب.`;
+      bluf = pick3([
+        `اختيار ${productName} يعتمد على مادة القطعة، مرحلة التشطيب، ونوع الماكينة. للـ ${industryName}${countryName ? ` في ${countryName}` : ''}، تُحدد درجة الغرِت، عرض الحزام/قطر القرص، ونظام التثبيت قبل الطلب.`,
+        `قرار ${productName} مقابل البدائل يُبنى على ثلاث محاور: المادة، مرحلة العمل، والتوافق مع الماكينة. للـ ${industryName}${countryName ? ` في ${countryName}` : ''}، المقاس ونظام التثبيت يحددان الخاطئ من الصائب.`,
+        `قبل الطلب، حدّد للمادة والمرحلة والماكينة، ثم اختر من ${productName} المواصفة المناسبة لـ ${industryName}${countryName ? ` في ${countryName}` : ''}. الدرجات، القياس، ونظام التثبيت محاور القرار الأساسية.`,
+      ]);
+      bluf += useCase;
       break;
     case 'buying-guide':
-      bluf = `تحديد مواصفات ${productName} يتم في ثلاث خطوات: مادة العمل → مرحلة التشطيب → توافق الماكينة. هذا الدليل يغطي المعايير، تسلسل الدرجات، ونموذج طلب عرض سعر جاهز للاستخدام.`;
+      bluf = pick3([
+        `تحديد مواصفات ${productName} يتم في ثلاث خطوات: مادة العمل → مرحلة التشطيب → توافق الماكينة. هذا الدليل يغطي المعايير، تسلسل الدرجات، ونموذج طلب عرض سعر جاهز للاستخدام.`,
+        `إعداد طلب ${productName} بدقة يبدأ من ثلاثة أسئلة: ما المادة، ما مرحلة التشطيب، وأي ماكينة ستُستخدم. الدليل التالي يربط الإجابات بمواصفة قابلة للاستفسار.`,
+        `قبل طلب عرض سعر لـ ${productName}، حدد المادة، المرحلة، ونظام التثبيت: هذه المحاور الثلاثة تبني عليها المواصفة النهائية مع تسلسل الدرجات ونموذج الاستفسار.`,
+      ]);
+      bluf += useCase + challenge;
       break;
     case 'technical-guide':
-      bluf = `${productName} يعتمد على نوع الحبيبات (أكسيد الألومنيوم، زركونيا، سيراميك)، القاعدة (قماش/ورق/بوليمر)، والرابطة الإسفنجية. معايير FEPA/ISO تحدد درجة الغرِت بدقة.`;
+      bluf = pick3([
+        `${productName} يعتمد على نوع الحبيبات (أكسيد الألومنيوم، زركونيا، سيراميك)، القاعدة (قماش/ورق/بوليمر)، والرابطة الإسفنجية. معايير FEPA/ISO تحدد درجة الغرِت بدقة.`,
+        `ثلاثة مكونات تحدد أداء ${productName}: الحبيبات، القاعدة، والرابطة. اختيار الحبيبات وفق المادة، والقاعدة وفق الماكينة، والدرجة وفق FEPA P.`,
+        `فهم ${productName} يبدأ من نوع الحبيبات (Al₂O₃/SiC/زركونيا/سيراميك) ثم القاعدة والرابطة، ثم قراءة درجة الغرِت وفق FEPA P دون خلطها بـ ANSI أو JIS.`,
+      ]);
+      bluf += note;
       break;
     case 'application-guide':
-      bluf = `في ${industryName}${countryName ? ` (${countryName})` : ''}، دورة ${productName} تشمل: إزالة → تشطيب متوسط → لمسة نهائية. تسلسل الغرِت النموذجي: 60–80 → 120–180 → 240–400 حسب المادة.`;
+      bluf = pick3([
+        `في ${industryName}${countryName ? ` (${countryName})` : ''}، دورة ${productName} تشمل: إزالة → تشطيب متوسط → لمسة نهائية. تسلسل الغرِت النموذجي: 60–80 → 120–180 → 240–400 حسب المادة.`,
+        `تطبيق ${productName} في ${industryName}${countryName ? ` (${countryName})` : ''} يمر بثلاث مراحل: الإزالة الخشنة، التسوية، واللمسة النهائية، مع تسلسل غرِت يبدأ من 60–80 وينتهي عند 240–400 أو أعلى.`,
+        `للعمل على ${industryName}${countryName ? ` في ${countryName}` : ''}، رتّب تشغيل ${productName} من الخشن إلى الناعم: إزالة (60–80) ثم تسوية (120–180) ثم تشطيب (240–400+) حسب المادة والنتيجة.`,
+      ]);
+      bluf += useCase + challenge;
       break;
     case 'process-tutorial':
-      bluf = `العملية القياسية لـ ${industry?.name || 'التطبيق'} باستخدام ${productName}: تجهيز السطح → درجة خشنة للإزالة → درجة متوسطة للتسوية → درجة ناعمة للتشطيب. كل مرحلة لها معلمات ماكينة محددة.`;
+      bluf = pick2([
+        `العملية القياسية لـ ${industryName || 'التطبيق'} باستخدام ${productName}: تجهيز السطح → درجة خشنة للإزالة → درجة متوسطة للتسوية → درجة ناعمة للتشطيب. كل مرحلة لها معلمات ماكينة محددة.`,
+        `تسلسل تشغيل ${productName} في ${industryName || 'التطبيق'}: نظّف السطح، ثم صنفرة الإزالة، ثم التسوية، ثم التشطيب. المعلمات (سرعة، ضغط، تغذية) تُضبط لكل مرحلة.`,
+      ]);
+      bluf += note;
       break;
     case 'troubleshooting':
-      bluf = `أعطال ${productName} الشائعة (تآكل سريع، انسداد، انحراف) تعود عادةً إلى: درجة غرِت غير مناسبة، ضغط زائد، سرعة غير مطابقة، أو ضعف سحب الغبار. الجدول أدناه يربط العارض بالسبب والحل.`;
+      bluf = pick3([
+        `أعطال ${productName} الشائعة (تآكل سريع، انسداد، انحراف) تعود عادةً إلى: درجة غرِت غير مناسبة، ضغط زائد، سرعة غير مطابقة، أو ضعف سحب الغبار. الجدول أدناه يربط العارض بالسبب والحل.`,
+        `عند ملاحظة تآكل غير طبيعي أو انسداد أو انحراف في ${productName}، راجع بالترتيب: الغرِت، الضغط، السرعة، ثم نظام الشفط. كل عارض له سبب محدد وحل مباشر في الجدول التالي.`,
+        `تشخيص مشاكل ${productName} يبدأ من العارض المرصود (سرعة العطل، نمط الانسداد، اتجاه الانحراف) ثم يطابق السبب: غير ملاءمة الغرِت، تحميل زائد، أو قصور في الشفط.`,
+      ]);
+      bluf += useCase;
       break;
     case 'product-spec-detail':
-      bluf = `${model?.name || productName}: ${model?.summary || productCat?.description || 'مواصفات كاملة في الأسفل'}. المقاس: ${model?.sizeAr || 'متعدد'}، الدرجات: ${model?.gritRange.join('، ') || 'حسب الطلب'}، القاعدة: ${model?.backing || 'يُحدد مع المشتري'}.`;
+      bluf = pick2([
+        `${model?.name || productName}: ${model?.summary || productCat?.description || 'مواصفات كاملة في الأسفل'}. المقاس: ${model?.sizeAr || 'متعدد'}، الدرجات: ${model?.gritRange.join('، ') || 'حسب الطلب'}، القاعدة: ${model?.backing || 'يُحدد مع المشتري'}.`,
+        `${model?.name || productName} يتوفر بالمقاس ${model?.sizeAr || 'متعدد'} بدرجات ${model?.gritRange.join('–') || 'حسب الطلب'} وقاعدة ${model?.backing || 'تُحدد مع المشتري'}. التفاصيل الكاملة وخيارات التخصيص في الجداول أدناه.`,
+      ]);
+      bluf += note;
       break;
     case 'procurement-guide':
-      bluf = `شراء ${productName} باحترافية: 1) اكتب مواصفة تقنية كاملة 2) اطلب عينات للمقارنة 3) قيّم الموردين بمصفوفة موحدة 4) قارن العروض الكلية (سعر+شحن+شروط) 5) ثبت شروط التعاقد والجودة.`;
+      bluf = pick3([
+        `شراء ${productName} باحترافية: 1) اكتب مواصفة تقنية كاملة 2) اطلب عينات للمقارنة 3) قيّم الموردين بمصفوفة موحدة 4) قارن العروض الكلية (سعر+شحن+شروط) 5) ثبت شروط التعاقد والجودة.`,
+        `دورة شراء ${productName} تبدأ من مواصفة مكتوبة واضحة، ثم عينات مطابقة، ثم تقييم الموردين بمعايير موحدة قبل قارن العروض الشاملة وتثبيت بنود التعاقد.`,
+        `لشراء ${productName} بالجملة دون مفاجآت: صُغ المواصفة، اطلب عينة، قيّم الموردين بمصفوفة واحدة، وقارن العروض على السعر الشامل والمهلة والشروط. الخطوات مفصلة أدناه.`,
+      ]);
+      bluf += useCase + challenge;
       break;
     case 'wholesale-oem-guide':
-      bluf = `التعاون بالجملة/OEM لـ ${productName}: نحدد خيارات التخصيص (الشعار، التغليف، الألوان)، الحد الأدنى للكمية، مراحل تأكيد العينة، وجدول التوريد. كل التفاصيل في الدليل أدناه.`;
+      bluf = pick3([
+        `التعاون بالجملة/OEM لـ ${productName}: نحدد خيارات التخصيص (الشعار، التغليف، الألوان)، الحد الأدنى للكمية، مراحل تأكيد العينة، وجدول التوريد. كل التفاصيل في الدليل أدناه.`,
+        `لطلب OEM/جملة على ${productName}، جهّز ملف الشعار والتغليف والدرجات المطلوبة، ثم تمر عبر العينة المؤكدة قبل الإنتاج الكمي. خيارات التخصيص والحد الأدنى موضحان أدناه.`,
+        `مسار الجملة و OEM لـ ${productName} يمر بخمسة محطات: المواصفة، العينة، التأكيد، الإنتاج الكمي، والتسليم الموثق. خيارات التغليف والتخصيص محددة في الدليل التالي.`,
+      ]);
+      bluf += note;
       break;
     case 'industry-market':
-      bluf = `قطاع ${industryName} في ${gccCountry?.name || 'الخليج'} يشهد تحديث معايير (FEPA/ISO/SASO/ESMA) واتجاه نحو حبيبات سيراميك/زركوريا للأداء الأعلى. التأثير على قرارات شراء ${productName}: مواصفات أدق، دورات أقصر.`;
+      bluf = pick2([
+        `قطاع ${industryName} في ${gccCountry?.name || 'الخليج'} يشهد تحديث معايير (FEPA/ISO/SASO/ESMA) واتجاه نحو حبيبات سيراميك/زركوريا للأداء الأعلى. التأثير على قرارات شراء ${productName}: مواصفات أدق، دورات أقصر.`,
+        `تحولات قطاع ${industryName} في ${gccCountry?.name || 'الخليج'} (معايير FEPA/ISO، حبيبات متطورة، توثيق أدق) تعني أن شراء ${productName} أصبح قرارًا بالمواصفة لا بالاسم التجاري.`,
+      ]);
+      bluf += challenge;
       break;
     case 'gcc-regional-sourcing':
-      bluf = `استيراد ${productName} إلى ${gccCountry?.name}: مطلب SASO/ESMA/GSO للامتثال، ميناء ${getMainPort(gccCountry?.code)} للتخليص، مهلة بحري 25–35 يوماً، دفع LC/TT. لا نملك مخزوناً محلياً ولا مكتباً في ${gccCountry?.name}.`;
+      bluf = pick3([
+        `استيراد ${productName} إلى ${gccCountry?.name}: مطلب SASO/ESMA/GSO للامتثال، ميناء ${getMainPort(gccCountry?.code)} للتخليص، مهلة بحري 25–35 يوماً، دفع LC/TT. لا نملك مخزوناً محلياً ولا مكتباً في ${gccCountry?.name}.`,
+        `خطة توريد ${productName} إلى ${gccCountry?.name} تعني: مطابقة SASO/ESMA/GSO، التخليص عبر ميناء ${getMainPort(gccCountry?.code)}، مهلة بحرية 25–35 يوماً، وشروط دفع LC/TT. الشحن من المصنع مباشرة دون مخزون محلي.`,
+        `لضمان سلاسة استيراد ${productName} إلى ${gccCountry?.name}: جهّز شهادات المطابقة، حدد ميناء التخليص (${getMainPort(gccCountry?.code)})، ونسق الدفع (LC/TT). لا يوجد مخزون أو مكتب محلي لدينا.`,
+      ]);
+      bluf += useCase;
       break;
     case 'faq-buyers-guide':
-      bluf = `أهم 3 أسئلة لمشتري ${productName}: 1) أي درجة غرِت لـ ${industryName}؟ → تعتمد على مرحلة العمل. 2) ما الحد الأدنى للطلب؟ → يُحدد بالمواصفة. 3) كم مدة التوريد؟ → 3–6 أسابيع من اعتماد المواصفة. التفاصيل في الأسئلة أدناه.`;
+      bluf = pick2([
+        `أهم 3 أسئلة لمشتري ${productName}: 1) أي درجة غرِت لـ ${industryName}؟ → تعتمد على مرحلة العمل. 2) ما الحد الأدنى للطلب؟ → يُحدد بالمواصفة. 3) كم مدة التوريد؟ → 3–6 أسابيع من اعتماد المواصفة. التفاصيل في الأسئلة أدناه.`,
+        `مشترو ${productName} يسألون عادةً عن: اختيار الغرِت لـ ${industryName}، حد الكمية الأدنى، ومهلة التوريد. الإجابات المباشرة في قسم الأسئلة أدناه مع نموذج الاستفسار الجاهز.`,
+      ]);
+      bluf += challenge;
       break;
     default:
       bluf = `${productName} لـ ${industryName}${countryName ? ` في ${countryName}` : ''}: المواصفات، الدرجات، وخطوات الطلب موضحة أدناه.`;
+      bluf += useCase;
   }
 
   return `<p class="bluf"><strong>${bluf}</strong></p>`;
@@ -534,7 +659,7 @@ function buildSection(
       content = buildProcessOverview(topic, model, industry);
     }
     else if (h2Title.includes('分步') || h2Title.includes('步骤') || h2Title.includes('指南') || h2Title.includes('详细') || h2Title.includes('إجراء')) {
-      content = buildProcessSteps(topic, model, industry);
+      content = buildProcessSteps(topic, model, productCat, industry);
     }
     else if (h2Title.includes('递进') || h2Title.includes('序列') || h2Title.includes('تسلسل') || h2Title.includes('原则')) {
       content = buildGritProgressionTable(topic, model, industry);
@@ -627,7 +752,7 @@ function buildSection(
     }
     // 通用步骤
     else if (h2Title.includes('步骤') || h2Title.includes('工序') || h2Title.includes('خطوات') || h2Title.includes('تسلسل') || h2Title.includes('إجراء')) {
-      content = buildProcessSteps(topic, model, industry);
+      content = buildProcessSteps(topic, model, productCat, industry);
     }
     // 通用安全
     else if (h2Title.includes('安全') || h2Title.includes('合规') || h2Title.includes('سلامة') || h2Title.includes('تنبيهات') || h2Title.includes('标准')) {
@@ -1102,13 +1227,19 @@ function buildPartnershipFramework(topic: TopicSpec, model: typeof models[0] | n
 
 function buildPainPoints(topic: TopicSpec, model: typeof models[0] | null, productCat: typeof productCategories[0] | undefined, industry: typeof industries[0] | undefined): string {
   const industryName = industry?.name || '';
+  // 行业痛点优先用 site.ts 已验证的 challenges；无数据行业回落通用痛点
+  const painItems = industry?.challenges?.length
+    ? industry.challenges.map(ch => `<li><strong>${ch}:</strong> ${model?.name || productCat?.name || t(topic.productFamily)} بتسلسل غرِت موحد وعينات مرجعية → اتساق النتائج وتقليل إعادة العمل</li>`)
+    : [
+        '<li><strong>تشتت جودة التشطيب:</strong> تسلسل غرِت موحد + عينات مرجعية → اتساق بين الدفعات</li>',
+        '<li><tt>توقف الماكينة المتكرر:</strong> أحزمة/أقراص بعمر أطول + صيانة وقائية → توفر أعلى</li>',
+        '<li><strong>اختيار الغرِت الخاطئ:</strong> دليل تسلسل + استشارة فنية → قرار صحيح من المرة الأولى</li>',
+        '<li><strong>تكلفة الوحدة المرتفعة:</strong> حساب TCO (سعر + عمر + توقف) → قرار اقتصادي حقيقي</li>',
+      ];
   return `
 <h3>نقاط الألم في ${industryName} وحلول ${model?.name || productCat?.name || t(topic.productFamily)}</h3>
 <ul class="plain-links">
-  <li><strong>تشتت جودة التشطيب:</strong> تسلسل غرِت موحد + عينات مرجعية → اتساق بين الدفعات</li>
-  <li><tt>توقف الماكينة المتكرر:</strong> أحزمة/أقراص بعمر أطول + صيانة وقائية → توفر أعلى</li>
-  <li><strong>اختيار الغرِت الخاطئ:</strong> دليل تسلسل + استشارة فنية → قرار صحيح من المرة الأولى</li>
-  <li><strong>تكلفة الوحدة المرتفعة:</strong> حساب TCO (سعر + عمر + توقف) → قرار اقتصادي حقيقي</li>
+  ${painItems.join('\n  ')}
 </ul>`;
 }
 
@@ -1374,11 +1505,14 @@ function buildApplicationSection(topic: TopicSpec, model: typeof models[0] | nul
     <tr><td>تشطيب ناعم</td><td>240 – 400</td><td>تحضير للدهان/الطلاء</td><td>تجنب اللمعان المفرط</td></tr>
     <tr><td>لمسة نهائية</td><td>600 – 1500+</td><td>أسطح مرئية/دقيقة</td><td>للأثاث، السيارات، دقة</td></tr>
   </tbody>
-</table>`;
+</table>
+${gccCountry?.industrialClusters?.length ? `
+<h3>مراكز الطلب في ${countryName}</h3>
+<p>${countryName} تتركز فيه الطلبات الصناعية أساسًا في مناطق: ${gccCountry.industrialClusters.join('، ')}. تُنسق الكميات ومواعيد التوريد وفق أقرب ميناء لهذه المناطق، مع مراعاة ظروف التخزين لكل موقع.</p>` : ''}`;
 }
 
-function buildProcessSteps(topic: TopicSpec, model: typeof models[0] | null, industry: typeof industries[0] | undefined): string {
-  const productName = model?.nameAr || t(topic.productFamily);
+function buildProcessSteps(topic: TopicSpec, model: typeof models[0] | null, productCat: typeof productCategories[0] | undefined, industry: typeof industries[0] | undefined): string {
+  const productName = model?.name || productCat?.name || t(topic.productFamily);
   const industryName = industry?.name || '';
 
   return `
@@ -1912,7 +2046,18 @@ function buildFAQ(
 
   const extraFAQs = typeFAQs[topic.articleType] || [];
 
-  return [...baseFAQs, ...extraFAQs].slice(0, 8);
+  // 行业专属 FAQ（site.ts industries.faq，7 行业全覆盖）：让 FAQ 随行业变化
+  const industryFAQs = industry?.faq?.map(f => ({ q: f.q, a: f.a })) || [];
+
+  // 型号专属 FAQ（来自 models.ts 的已验证数据）：让 FAQ 随型号变化
+  const modelFAQs = model?.faq?.slice(0, 2).map(f => ({ q: f.q, a: f.a })) || [];
+
+  // 种子滑窗：baseFAQs 7 条中取 4 条（窗口起点随 slug 变化）→ 同类型文章 FAQ 组合不同
+  const fSeed = seedOf(topic.slug, 1_000_000);
+  const win = fSeed % baseFAQs.length;
+  const baseWindow = [0, 1, 2, 3].map(i => baseFAQs[(win + i) % baseFAQs.length]);
+
+  return [...modelFAQs, ...industryFAQs, ...baseWindow, ...extraFAQs].slice(0, 8);
 }
 
 function buildSpecsTable(topic: TopicSpec, model: typeof models[0] | null, productCat: typeof productCategories[0] | undefined) {
@@ -2028,17 +2173,27 @@ function buildCTA(
 ) {
   const productName = model?.name || productCat?.name || getProductFamilyNameAr(topic.productFamily);
   const isHard = ['product-spec-detail', 'procurement-guide', 'wholesale-oem-guide', 'gcc-regional-sourcing', 'buying-guide', 'product-comparison', 'faq-buyers-guide'].includes(topic.articleType);
+  const cv = seedOf(topic.slug, 1_000_000);
+  const pick = <T,>(arr: T[]) => pickBySeed(arr, cv, arr.length) ?? arr[0];
 
   if (isHard) {
     return {
       type: 'hard' as const,
-      text: `اطلب عرض سعر جملة لـ ${productName}. أرفع النوع، الأبعاد، درجة الغرِت، القاعدة/التثبيت، الكمية، التطبيق، وجهة الشحن، ومتطلبات OEM إن وجدت.`,
+      text: pick([
+        `اطلب عرض سعر جملة لـ ${productName}. أرفق النوع، الأبعاد، درجة الغرِت، القاعدة/التثبيت، الكمية، التطبيق، وجهة الشحن، ومتطلبات OEM إن وجدت.`,
+        `لطلب جملة على ${productName}: حدد المقاس، الغرِت، نظام التثبيت، الكمية التقديرية، وجهة الشحن. سيراجع الفريق المواصفة ويرد بعرض سعر.`,
+        `جهز ملف المواصفة لـ ${productName} (الأبعاد، الغرِت، التثبيت، الكمية، وجهة الشحن) واطلب عرض الجملة — يتضمن خيارات OEM والتغليف عند الحاجة.`,
+      ]),
       targetUrl: '/quote',
     };
   } else {
     return {
       type: 'soft' as const,
-      text: `هل لديك استفسار فني عن ${productName}؟ شاركنا مادة القطعة، مرحلة العمل، والماكينة لنوصي بالمواصفة الأنسب.`,
+      text: pick([
+        `هل لديك استفسار فني عن ${productName}؟ شاركنا مادة القطعة، مرحلة العمل، والماكينة لنوصي بالمواصفة الأنسب.`,
+        `اسأل فنيًا عن ${productName}: أرسل المادة، مرحلة التشغيل، ونوع الماكينة، وسنحدد الغرّت والقاعدة المناسبة دون افتراض.`,
+        `محتار في اختيار ${productName}؟ صِفتنا فنية: أرسَل تطبيقك (المادة + الماكينة + المرحلة) ونقترح المواصفة مع تسلسل الغرِت.`,
+      ]),
       targetUrl: '/quote',
     };
   }

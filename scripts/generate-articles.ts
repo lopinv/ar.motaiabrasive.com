@@ -7,6 +7,7 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { spawnSync } from 'child_process';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -168,6 +169,13 @@ async function main() {
   
   fs.writeFileSync(indexPath, JSON.stringify(combinedIndex, null, 2), 'utf-8');
   console.log(`索引文件: ${indexPath} (总计 ${combinedIndex.length} 篇)`);
+
+  // 生成后自动重打国家版 noindex 标记（A 去重），避免再生成清除已有的 noindex
+  const dedupe = path.resolve(__dirname, 'dedupe-country-versions.mjs');
+  if (fs.existsSync(dedupe)) {
+    const r = spawnSync('node', [dedupe], { stdio: 'inherit' });
+    if (r.status !== 0) console.error('  ⚠ 国家版去重标记失败');
+  }
 }
 
 main().catch(console.error);

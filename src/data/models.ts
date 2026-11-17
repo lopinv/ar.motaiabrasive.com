@@ -1,6 +1,7 @@
 export interface ModelSpec {
   slug: string;
   name: string;
+  shortName?: string; // 标题专用短名（控制 SEO 标题 ≤ 70 字符），缺省回落 name
   family: string;
   categorySlug: string;
   sizeLabel: string;
@@ -21,6 +22,7 @@ export const models: ModelSpec[] = [
   {
     slug: 'abrasive-belt-533x75',
     name: 'أحزمة صنفرة 533×75 مم',
+    shortName: 'أحزمة الصنفرة 533×75 مم',
     family: 'أحزمة الصنفرة',
     categorySlug: 'abrasive-belts',
     sizeLabel: '533 × 75 mm',
@@ -57,6 +59,7 @@ export const models: ModelSpec[] = [
   {
     slug: 'abrasive-belt-610x100',
     name: 'أحزمة صنفرة 610×100 مم',
+    shortName: 'أحزمة الصنفرة 610×100 مم',
     family: 'أحزمة الصنفرة',
     categorySlug: 'abrasive-belts',
     sizeLabel: '610 × 100 mm',
@@ -89,6 +92,7 @@ export const models: ModelSpec[] = [
   {
     slug: 'abrasive-belt-1520x630',
     name: 'أحزمة صنفرة 1520×630 مم',
+    shortName: 'أحزمة الصنفرة 1520×630 مم',
     family: 'أحزمة الصنفرة',
     categorySlug: 'abrasive-belts',
     sizeLabel: '1520 × 630 mm',
@@ -121,6 +125,7 @@ export const models: ModelSpec[] = [
   {
     slug: 'abrasive-belt-2200x1330',
     name: 'أحزمة صنفرة 2200×1330 مم',
+    shortName: 'أحزمة الصنفرة 2200×1330 مم',
     family: 'أحزمة الصنفرة',
     categorySlug: 'abrasive-belts',
     sizeLabel: '2200 × 1330 mm',
@@ -153,6 +158,7 @@ export const models: ModelSpec[] = [
   {
     slug: 'mesh-disc-5-inch',
     name: 'قرص صنفرة شبكي 5 إنش',
+    shortName: 'قرص صنفرة شبكي 5 إنش',
     family: 'أقراص الصنفرة',
     categorySlug: 'sanding-discs',
     sizeLabel: '5 inch / 125 mm',
@@ -185,6 +191,7 @@ export const models: ModelSpec[] = [
   {
     slug: 'mesh-disc-6-inch',
     name: 'قرص صنفرة شبكي 6 إنش',
+    shortName: 'قرص صنفرة شبكي 6 إنش',
     family: 'أقراص الصنفرة',
     categorySlug: 'sanding-discs',
     sizeLabel: '6 inch / 150 mm',
@@ -217,6 +224,7 @@ export const models: ModelSpec[] = [
   {
     slug: 'psa-disc-3-inch',
     name: 'قرص صنفرة لاصق 3 إنش',
+    shortName: 'قرص صنفرة لاصق 3 إنش',
     family: 'أقراص الصنفرة',
     categorySlug: 'sanding-discs',
     sizeLabel: '3 inch / 75 mm',
@@ -249,6 +257,7 @@ export const models: ModelSpec[] = [
   {
     slug: 'psa-disc-4-inch',
     name: 'قرص صنفرة لاصق 4 إنش',
+    shortName: 'قرص صنفرة لاصق 4 إنش',
     family: 'أقراص الصنفرة',
     categorySlug: 'sanding-discs',
     sizeLabel: '4 inch / 100 mm',
@@ -281,6 +290,7 @@ export const models: ModelSpec[] = [
   {
     slug: 'psa-disc-5-inch',
     name: 'قرص صنفرة لاصق 5 إنش',
+    shortName: 'قرص صنفرة لاصق 5 إنش',
     family: 'أقراص الصنفرة',
     categorySlug: 'sanding-discs',
     sizeLabel: '5 inch / 125 mm',
@@ -313,6 +323,7 @@ export const models: ModelSpec[] = [
   {
     slug: 'solid-disc-6-inch',
     name: 'قرص صنفرة صلب 6 إنش',
+    shortName: 'قرص صنفرة صلب 6 إنش',
     family: 'أقراص الصنفرة',
     categorySlug: 'sanding-discs',
     sizeLabel: '6 inch / 150 mm',
@@ -345,6 +356,7 @@ export const models: ModelSpec[] = [
   {
     slug: 'hook-loop-disc',
     name: 'أقراص صنفرة Hook & Loop',
+    shortName: 'أقراص هوك آند لوب',
     family: 'أقراص الصنفرة',
     categorySlug: 'sanding-discs',
     sizeLabel: '3 / 4 / 5 / 6 inch',
@@ -382,6 +394,7 @@ export const models: ModelSpec[] = [
   {
     slug: 'flap-disc-115-plastic',
     name: 'قرص شرائح 115 مم قاعدة بلاستيكية',
+    shortName: 'قرص كوت 115 مم بلاستيك',
     family: 'أقراص الشرائح',
     categorySlug: 'flap-discs',
     sizeLabel: '115 mm',
@@ -390,7 +403,7 @@ export const models: ModelSpec[] = [
     type: 'disc',
     backing: 'قاعدة بلاستيكية',
     attachment: 'مكينة زاوية 22.23 مم',
-    image: '/images/flap-115-plastic.webp',
+    image: '/images/flap-disc.jpg',
     imageAlt: 'قرص شرائح 115 مم قاعدة بلاستيكية من موتاى',
     summary: 'قرص شرائح بقطر 115 مم وقاعدة بلاستيكية، مناسب للمكائن الزاوية القياسية. يغطي درجات حبيبات 40–240 لأعمال إزالة الصدأ والتشطيب المتوسط.',
     useCases: ['إزالة الصدأ', 'تنظيف اللحام', 'تجهيز المعدن للطلاء'],
@@ -403,6 +416,7 @@ export const models: ModelSpec[] = [
   {
     slug: 'flap-disc-125-plastic',
     name: 'قرص شرائح 125 مم قاعدة بلاستيكية',
+    shortName: 'قرص كوت 125 مم بلاستيك',
     family: 'أقراص الشرائح',
     categorySlug: 'flap-discs',
     sizeLabel: '125 mm',
@@ -411,7 +425,7 @@ export const models: ModelSpec[] = [
     type: 'disc',
     backing: 'قاعدة بلاستيكية',
     attachment: 'مكينة زاوية 22.23 مم',
-    image: '/images/flap-125-plastic.webp',
+    image: '/images/flap-disc.jpg',
     imageAlt: 'قرص شرائح 125 مم قاعدة بلاستيكية من موتاى',
     summary: 'قرص شرائح بقطر 125 مم وقاعدة بلاستيكية، الخيار الأكثر شيوعاً للورش. نطاق حبيبات 40–240 يغطي دورة التشطيب الكاملة.',
     useCases: ['صيانة المعدات', 'إزالة الطلاء', 'تجهيز الأسطح'],
@@ -424,6 +438,7 @@ export const models: ModelSpec[] = [
   {
     slug: 'flap-disc-180-fiberglass',
     name: 'قرص شرائح 180 مم قاعدة ألياف زجاجية',
+    shortName: 'قرص كوت 180 مم زجاجية',
     family: 'أقراص الشرائح',
     categorySlug: 'flap-discs',
     sizeLabel: '180 mm',
@@ -432,7 +447,7 @@ export const models: ModelSpec[] = [
     type: 'disc',
     backing: 'قاعدة ألياف زجاجية',
     attachment: 'مكينة زاوية 22.23 مم',
-    image: '/images/flap-180-fiberglass.webp',
+    image: '/images/flap-disc.jpg',
     imageAlt: 'قرص شرائح 180 مم قاعدة ألياف زجاجية من موتاى',
     summary: 'قرص شرائح بقطر 180 مم وقاعدة ألياف زجاجية معززة، مصمم للأعمال الثقيلة والاستخدام المطول على المكائن الزاوية الكبيرة.',
     useCases: ['إزالة الصدأ الثقيل', 'صيانة هيكلية', 'أعمال السفن والمنشآت'],
@@ -445,6 +460,7 @@ export const models: ModelSpec[] = [
   {
     slug: 'flap-disc-125-ceramic',
     name: 'قرص شرائح 125 مم حبيبات سيراميك',
+    shortName: 'قرص كوت 125 مم سيراميك',
     family: 'أقراص الشرائح',
     categorySlug: 'flap-discs',
     sizeLabel: '125 mm',
@@ -453,7 +469,7 @@ export const models: ModelSpec[] = [
     type: 'disc',
     backing: 'قاعدة ألياف زجاجية',
     attachment: 'مكينة زاوية 22.23 مم',
-    image: '/images/flap-125-ceramic.webp',
+    image: '/images/flap-disc.jpg',
     imageAlt: 'قرص شرائح 125 مم حبيبات سيراميك من موتاى',
     summary: 'قرص شرائح عالي الأداء بحبيبات سيراميك، عمر أطول وسرعة قطع أعلى للمعادن الصلبة والفولاذ المقاوم للصدأ.',
     useCases: ['ستانلس ستيل', 'فولاذ عالي الصلادة', 'إنتاجية عالية مطلوبة'],
@@ -466,6 +482,7 @@ export const models: ModelSpec[] = [
   {
     slug: 'flap-disc-180-steel-back',
     name: 'قرص شرائح 180 مم قاعدة فولاذية',
+    shortName: 'قرص كوت 180 مم فولاذي',
     family: 'أقراص الشرائح',
     categorySlug: 'flap-discs',
     sizeLabel: '180 mm',
@@ -474,7 +491,7 @@ export const models: ModelSpec[] = [
     type: 'disc',
     backing: 'قاعدة فولاذية',
     attachment: 'مكينة زاوية 22.23 مم',
-    image: '/images/flap-180-steel.webp',
+    image: '/images/flap-disc.jpg',
     imageAlt: 'قرص شرائح 180 مم قاعدة فولاذية من موتاى',
     summary: 'قرص شرائح بقطر 180 مم وقاعدة فولاذية، أقصى متانة للأعمال الصناعية الشاقة والبيئات القاسية.',
     useCases: ['الصيانة الثقيلة', 'منشآت بحرية', 'إزالة الطلاء السميك'],
@@ -488,6 +505,7 @@ export const models: ModelSpec[] = [
   {
     slug: 'sanding-sponge-block-medium',
     name: 'كتلة إسفنج صنفرة متوسطة',
+    shortName: 'كتلة إسفنج متوسطة',
     family: 'إسفنج الصنفرة',
     categorySlug: 'sanding-sponges',
     sizeLabel: '115×140×5 mm',
@@ -496,7 +514,7 @@ export const models: ModelSpec[] = [
     type: 'sponge',
     backing: 'إسفنج مرن متوسط الكثافة',
     attachment: 'يدوي',
-    image: '/images/sponge-block-medium.webp',
+    image: '/images/sponge.jpg',
     imageAlt: 'كتلة إسفنج صنفرة متوسطة من موتاى',
     summary: 'كتلة إسفنج صنفرة بأبعاد 115×140×5 مم، كثافة متوسطة للأعمال اليدوية المتنوعة. تغطي درجات 60–240 من الإزالة للتشطيب.',
     useCases: ['تشطيب حواف الخشب', 'إصلاح دهان', 'أعمال ديكور'],
@@ -509,6 +527,7 @@ export const models: ModelSpec[] = [
   {
     slug: 'sanding-sponge-block-fine',
     name: 'كتلة إسفنج صنفرة ناعمة',
+    shortName: 'كتلة إسفنج ناعمة',
     family: 'إسفنج الصنفرة',
     categorySlug: 'sanding-sponges',
     sizeLabel: '115×140×5 mm',
@@ -517,7 +536,7 @@ export const models: ModelSpec[] = [
     type: 'sponge',
     backing: 'إسفنج مرن ناعم الكثافة',
     attachment: 'يدوي',
-    image: '/images/sponge-block-fine.webp',
+    image: '/images/sponge.jpg',
     imageAlt: 'كتلة إسفنج صنفرة ناعمة من موتاى',
     summary: 'كتلة إسفنج ناعمة لللمسات النهائية والتشطيب الدقيق. درجات 240–1000 مثالية لتجهيز الأسطح قبل الدهان أو للتشطيب المرئي.',
     useCases: ['تحضير ما قبل الدهان', 'تشطيب أثاث فاخر', 'إصلاح خدوش دقيقة'],
@@ -530,6 +549,7 @@ export const models: ModelSpec[] = [
   {
     slug: 'sanding-sponge-pad-hookloop',
     name: 'وسادة إسفنج Hook & Loop',
+    shortName: 'وسادة إسفنج هوك آند لوب',
     family: 'إسفنج الصنفرة',
     categorySlug: 'sanding-sponges',
     sizeLabel: '125 mm / 150 mm',
@@ -538,7 +558,7 @@ export const models: ModelSpec[] = [
     type: 'sponge',
     backing: 'إسفنج بنظام Hook & Loop',
     attachment: 'قاعدة Hook & Loop قياسية',
-    image: '/images/sponge-pad-hookloop.webp',
+    image: '/images/sponge.jpg',
     imageAlt: 'وسادة إسفنج Hook & Loop من موتاى',
     summary: 'وسادات إسفنج بنظام Hook & Loop بأقطار 125 و 150 مم. درجات فائقة النعومة 180–3000 للتشطيب النهائي عالي الجودة على الأسطح المستوية.',
     useCases: ['تشطيب سيارات', 'أثاث عالي الجودة', 'أسطح مرئية'],
@@ -551,6 +571,7 @@ export const models: ModelSpec[] = [
   {
     slug: 'sanding-sponge-flexible-sheet',
     name: 'صفيحة إسفنج مرنة',
+    shortName: 'صفيحة إسفنج مرنة',
     family: 'إسفنج الصنفرة',
     categorySlug: 'sanding-sponges',
     sizeLabel: '230×280 mm',
@@ -559,7 +580,7 @@ export const models: ModelSpec[] = [
     type: 'sponge',
     backing: 'صفيحة إسفنج رقيقة مرنة',
     attachment: 'يدوي أو حامل',
-    image: '/images/sponge-sheet-flexible.webp',
+    image: '/images/sponge.jpg',
     imageAlt: 'صفيحة إسفنج مرنة من موتاى',
     summary: 'صفيحة إسفنج كبيرة 230×280 مم، مرنة جداً للأسطح المنحنية الواسعة والجص الجاف. يمكن قصها بالحجم المطلوب.',
     useCases: ['لوح جصي', 'أسطح منحنية كبيرة', 'قص بالحجم المخصص'],
@@ -573,6 +594,7 @@ export const models: ModelSpec[] = [
   {
     slug: 'abrasive-belt-915x100',
     name: 'أحزمة صنفرة 915×100 مم',
+    shortName: 'أحزمة الصنفرة 915×100 مم',
     family: 'أحزمة الصنفرة',
     categorySlug: 'abrasive-belts',
     sizeLabel: '915 × 100 mm',
@@ -581,7 +603,7 @@ export const models: ModelSpec[] = [
     type: 'belt',
     backing: 'قماش أو ألياف بوليمرية، يُحدد مع المشتري',
     attachment: 'يُراجع طراز الماكينة وطريقة الوصل قبل الإنتاج',
-    image: '/images/belt-915.webp',
+    image: '/images/belt-610.webp',
     imageAlt: 'أحزمة صنفرة 915 × 100 مم من موتاى',
     summary: 'حزام صنفرة بمقاس 915 × 100 مم، مقاس شائع لماكينات الحزام المتوسطة في النجارة والتشطيب المعدني.',
     useCases: ['نجارة متوسطة', 'تشطيب معدني', 'صيانة عامة'],
@@ -594,6 +616,7 @@ export const models: ModelSpec[] = [
   {
     slug: 'abrasive-belt-1220x150',
     name: 'أحزمة صنفرة 1220×150 مم',
+    shortName: 'أحزمة الصنفرة 1220×150 مم',
     family: 'أحزمة الصنفرة',
     categorySlug: 'abrasive-belts',
     sizeLabel: '1220 × 150 mm',
@@ -602,7 +625,7 @@ export const models: ModelSpec[] = [
     type: 'belt',
     backing: 'قماش أو ألياف بوليمرية، يُحدد مع المشتري',
     attachment: 'يُراجع طراز الماكينة وطريقة الوصل قبل الإنتاج',
-    image: '/images/belt-1220.webp',
+    image: '/images/belt-610.webp',
     imageAlt: 'أحزمة صنفرة 1220 × 150 مم من موتاى',
     summary: 'حزام صنفرة عرض 150 مم بطول 1220 مم، للإنتاجية الأعلى على ماكينات الحزام العريضة.',
     useCases: ['تشطيب ألواح عريضة', 'خطوط أثاث', 'معالجة حواف واسعة'],
@@ -616,6 +639,7 @@ export const models: ModelSpec[] = [
   {
     slug: 'mesh-disc-3-inch',
     name: 'قرص صنفرة شبكي 3 إنش',
+    shortName: 'قرص صنفرة شبكي 3 إنش',
     family: 'أقراص الصنفرة',
     categorySlug: 'sanding-discs',
     sizeLabel: '3 inch / 75 mm',
@@ -624,7 +648,7 @@ export const models: ModelSpec[] = [
     type: 'disc',
     backing: 'شبكة مفتوحة تدعم تفريغ الغبار',
     attachment: 'يحدد نظام التثبيت مع قاعدة الماكينة',
-    image: '/images/disc-mesh-3.webp',
+    image: '/images/disc-mesh-5.webp',
     imageAlt: 'قرص صنفرة شبكي 3 إنش من موتاى',
     summary: 'قرص شبكي صغير 3 إنش (75 مم) للتفاصيل والأماكن الضيقة مع تفريغ غبار فعال.',
     useCases: ['تفاصيل دقيقة', 'زوايا ضيقة', 'أعمال يدوية'],
@@ -637,6 +661,7 @@ export const models: ModelSpec[] = [
   {
     slug: 'psa-disc-6-inch',
     name: 'قرص صنفرة لاصق 6 إنش',
+    shortName: 'قرص صنفرة لاصق 6 إنش',
     family: 'أقراص الصنفرة',
     categorySlug: 'sanding-discs',
     sizeLabel: '6 inch / 150 mm',
@@ -645,7 +670,7 @@ export const models: ModelSpec[] = [
     type: 'disc',
     backing: 'ورق صلب غير مثقب',
     attachment: 'PSA لاصق قابل للفصل',
-    image: '/images/disc-psa-6.webp',
+    image: '/images/disc-psa-5.webp',
     imageAlt: 'قرص صنفرة لاصق 6 إنش من موتاى',
     summary: 'قرص PSA بقطر 6 إنش (150 مم)، غير مثقب، للمساحات الأكبر مع نفس سهولة التركيب اللاصق.',
     useCases: ['أسطح متوسطة', 'صيانة عامة', 'تجهيز قبل الدهان'],
@@ -658,6 +683,7 @@ export const models: ModelSpec[] = [
   {
     slug: 'solid-disc-5-inch',
     name: 'قرص صنفرة صلب 5 إنش',
+    shortName: 'قرص صنفرة صلب 5 إنش',
     family: 'أقراص الصنفرة',
     categorySlug: 'sanding-discs',
     sizeLabel: '5 inch / 125 mm',
@@ -666,7 +692,7 @@ export const models: ModelSpec[] = [
     type: 'disc',
     backing: 'ورق صلب غير مثقب عالي الكثافة',
     attachment: 'غير مثقب، لأنظمة الأقراص الكاملة',
-    image: '/images/disc-solid-5.webp',
+    image: '/images/disc-solid-6.webp',
     imageAlt: 'قرص صنفرة صلب 5 إنش من موتاى',
     summary: 'قرص صلب 5 إنش (125 مم) للتشطيب الدقيق والتحكم في الحواف، مدى حبيبات 60–5000.',
     useCases: ['تشطيب دقيق', 'حواف', 'أثاث', 'سيارات'],
@@ -680,6 +706,7 @@ export const models: ModelSpec[] = [
   {
     slug: 'flap-disc-115-fiberglass',
     name: 'قرص شرائح 115 مم قاعدة ألياف زجاجية',
+    shortName: 'قرص كوت 115 مم زجاجية',
     family: 'أقراص الشرائح',
     categorySlug: 'flap-discs',
     sizeLabel: '115 mm',
@@ -688,7 +715,7 @@ export const models: ModelSpec[] = [
     type: 'disc',
     backing: 'قاعدة ألياف زجاجية',
     attachment: 'مكينة زاوية 22.23 مم',
-    image: '/images/flap-115-fiberglass.webp',
+    image: '/images/flap-disc.jpg',
     imageAlt: 'قرص شرائح 115 مم قاعدة ألياف زجاجية من موتاى',
     summary: 'قرص شرائح 115 مم بقاعدة ألياف زجاجية، أقوى من البلاستيكية للأعمال المتوسطة والثقيلة على المكائن الصغيرة.',
     useCases: ['إزالة صدأ متوسط', 'تنظيف لحام', 'صيانة معدات'],
@@ -701,6 +728,7 @@ export const models: ModelSpec[] = [
   {
     slug: 'flap-disc-125-zirconia',
     name: 'قرص شرائح 125 مم زركونيا ألومينا',
+    shortName: 'قرص كوت 125 مم زركونيا',
     family: 'أقراص الشرائح',
     categorySlug: 'flap-discs',
     sizeLabel: '125 mm',
@@ -709,7 +737,7 @@ export const models: ModelSpec[] = [
     type: 'disc',
     backing: 'قاعدة ألياف زجاجية',
     attachment: 'مكينة زاوية 22.23 مم',
-    image: '/images/flap-125-zirconia.webp',
+    image: '/images/flap-disc.jpg',
     imageAlt: 'قرص شرائح 125 مم زركونيا من موتاى',
     summary: 'قرص شرائح زركونيا ألومينا 125 مم، أداء أعلى من أكسيد الألومنيوم على المعادن، تكلفة متوازنة.',
     useCases: ['فولاذ عام', 'ستانلس ستيل خفيف', 'إنتاجية متوازنة'],
@@ -723,6 +751,7 @@ export const models: ModelSpec[] = [
   {
     slug: 'sanding-sponge-dual-angle',
     name: 'إسفنج صنفرة ثنائي الزاوية',
+    shortName: 'إسفنج ثنائي الزاوية',
     family: 'إسفنج الصنفرة',
     categorySlug: 'sanding-sponges',
     sizeLabel: '125×85×12 mm',
@@ -731,7 +760,7 @@ export const models: ModelSpec[] = [
     type: 'sponge',
     backing: 'إسفنج بزاويتين مختلفتين',
     attachment: 'يدوي',
-    image: '/images/sponge-dual-angle.webp',
+    image: '/images/sponge.jpg',
     imageAlt: 'إسفنج صنفرة ثنائي الزاوية من موتاى',
     summary: 'إسفنج بتصميم ثنائي الزاوية (حادّة ومستديرة) للوصول للزوايا والحواف المختلفة في قطعة واحدة.',
     useCases: ['زوايا أثاث', 'إطارات نوافذ', 'أعمال ديكور دقيقة'],
@@ -744,6 +773,7 @@ export const models: ModelSpec[] = [
   {
     slug: 'sanding-sponge-detail-finger',
     name: 'إسفنج صنفرة أصبع التفاصيل',
+    shortName: 'إسفنج أصبع التفاصيل',
     family: 'إسفنج الصنفرة',
     categorySlug: 'sanding-sponges',
     sizeLabel: '100×25×10 mm',
@@ -752,7 +782,7 @@ export const models: ModelSpec[] = [
     type: 'sponge',
     backing: 'إسفنج ضيق عالي المرونة',
     attachment: 'يدوي',
-    image: '/images/sponge-finger.webp',
+    image: '/images/sponge.jpg',
     imageAlt: 'إسفنج صنفرة أصبع التفاصيل من موتاى',
     summary: 'إسفنج ضيق بطول 100 مم للتفاصيل الدقيقة، الشقوق، والمناطق شديدة الضيق التي لا تصلها أدوات أخرى.',
     useCases: ['شقوق', 'تفاصيل نحت', 'إصلاح ضيق', 'مجوهرات'],
@@ -766,6 +796,7 @@ export const models: ModelSpec[] = [
   {
     slug: 'hook-loop-disc-multi-hole',
     name: 'أقراص Hook & Loop متعددة الثقوب',
+    shortName: 'أقراص هوك آند لوب مثقبة',
     family: 'أقراص الصنفرة',
     categorySlug: 'sanding-discs',
     sizeLabel: '5 inch / 125 mm',
@@ -774,7 +805,7 @@ export const models: ModelSpec[] = [
     type: 'disc',
     backing: 'ورق مثقب متعدد الثقوب',
     attachment: 'Hook & Loop مع ثقوب تفريغ',
-    image: '/images/disc-hookloop-multihole.webp',
+    image: '/images/disc-hook-loop.webp',
     imageAlt: 'أقراص Hook & Loop متعددة الثقوب من موتاى',
     summary: 'أقراص Hook & Loop 5 إنش بنمط ثقوب متعددة لتفريغ غبار محسن، متوافقة مع معظم مكائن الصنفرة المدارية.',
     useCases: ['صنفرة مدارية مع شفط', 'أعمال داخلية', 'تقليل الغبار'],
@@ -787,6 +818,7 @@ export const models: ModelSpec[] = [
   {
     slug: 'hook-loop-disc-film',
     name: 'أقراص Hook & Loop فيلم بوليستر',
+    shortName: 'أقراص هوك آند لوب فيلم',
     family: 'أقراص الصنفرة',
     categorySlug: 'sanding-discs',
     sizeLabel: '6 inch / 150 mm',
@@ -795,7 +827,7 @@ export const models: ModelSpec[] = [
     type: 'disc',
     backing: 'قاعدة فيلم بوليستر فائقة النعومة',
     attachment: 'Hook & Loop',
-    image: '/images/disc-hookloop-film.webp',
+    image: '/images/disc-hook-loop.webp',
     imageAlt: 'أقراص Hook & Loop فيلم من موتاى',
     summary: 'أقراص فيلم بوليستر 6 إنش للتشطيب فائق النعومة والتلميع. قاعدة فيلم مقاومة للتمزق، درجات 800–5000.',
     useCases: ['تلميع سيارات', 'تشطيب مرآة', 'أسطح عالية اللمعان'],
