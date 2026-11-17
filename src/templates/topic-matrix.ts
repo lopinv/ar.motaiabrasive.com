@@ -191,7 +191,7 @@ function generateTitleVariants(
 
     case 'multi-product-comparison':
       variants.push({
-        title: `مقارنة شاملة: ${productFamily.name} - الخلفيات، الحبيبات، وأنظمة التثبيت لـ ${industryName}`,
+        title: `مقارنة شاملة: ${modelName} - الخلفيات، الحبيبات، وأنظمة التثبيت لـ ${industryName}`,
         focus: 'full-matrix',
       });
       break;
@@ -211,14 +211,14 @@ function generateTitleVariants(
 
     case 'technical-guide':
       variants.push({
-        title: `فهم ${getTechnicalTopic(productFamily.slug)}: المعايير، الأنواع، والأداء في ${industryName}`,
+        title: `فهم ${getTechnicalTopicForModel(productFamily.slug, model)}: المعايير، الأنواع، والأداء في ${industryName}`,
         focus: 'technical-deep-dive',
       });
       break;
 
     case 'application-guide':
       variants.push({
-        title: `${productFamily.name} في ${industryName}: تسلسل الدرجات، المعايير، وأفضل الممارسات في ${countryName}`,
+        title: `${modelName} في ${industryName}: تسلسل الدرجات، المعايير، وأفضل الممارسات في ${countryName}`,
         focus: 'industry-application',
       });
       break;
@@ -248,21 +248,21 @@ function generateTitleVariants(
 
     case 'procurement-guide':
       variants.push({
-        title: `دليل المشتري الصناعي: كيف تحدد مواصفات ${productFamily.name} وتقيم الموردين لـ ${industryName}؟`,
+        title: `دليل المشتري الصناعي: كيف تحدد مواصفات ${modelName} وتقيم الموردين لـ ${industryName}؟`,
         focus: 'procurement-process',
       });
       break;
 
     case 'wholesale-oem-guide':
       variants.push({
-        title: `دليل الجملة و OEM لـ ${productFamily.name}: التخصيص، الحد الأدنى، والتغليف لسوق ${countryName}`,
+        title: `دليل الجملة و OEM لـ ${modelName}: التخصيص، الحد الأدنى، والتغليف لسوق ${countryName}`,
         focus: 'wholesale-oem',
       });
       break;
 
     case 'industry-market':
       variants.push({
-        title: `اتجاهات ${industryName} في ${countryName}: المعايير، التقنيات، وتأثيرها على قرارات شراء ${productFamily.name}`,
+        title: `اتجاهات ${industryName} في ${countryName}: المعايير، التقنيات، وتأثيرها على قرارات شراء ${modelName}`,
         focus: 'market-trends',
       });
       break;
@@ -270,11 +270,11 @@ function generateTitleVariants(
     case 'gcc-regional-sourcing':
       if (gccCountry.code !== 'general-gcc') {
         variants.push({
-          title: `استيراد ${productFamily.name} إلى ${countryName}: اللوائح، الموانئ، الموزعون، وشروط الدفع`,
+          title: `استيراد ${modelName} إلى ${countryName}: اللوائح، الموانئ، الموزعون، وشروط الدفع`,
           focus: 'import-guide',
         });
         variants.push({
-          title: `سوق ${productFamily.name} في ${countryName}: التحديات اللوجستية، الجمارك، واستراتيجيات التوريد`,
+          title: `سوق ${modelName} في ${countryName}: التحديات اللوجستية، الجمارك، واستراتيجيات التوريد`,
           focus: 'market-logistics',
         });
       }
@@ -282,7 +282,7 @@ function generateTitleVariants(
 
     case 'faq-buyers-guide':
       variants.push({
-        title: `أهم أسئلة مشتري ${productFamily.name} في ${industryName}: المواصفات، العينات، الأسعار، والشحن`,
+        title: `أهم أسئلة مشتري ${modelName} في ${industryName}: المواصفات، العينات، الأسعار، والشحن`,
         focus: 'buyer-faq',
       });
       break;
@@ -413,6 +413,18 @@ function getTechnicalTopic(productFamilySlug: string): string {
     'sanding-sponges': 'إسفنج الصنفرة (الكثافة، الحبيبات، المرونة)',
   };
   return topics[productFamilySlug] || 'التقنية';
+}
+
+/**
+ * 技术主题词带型号名：有型号时用「产品名 (技术维度)」，
+ * 无型号时回落纯技术主题。保证 technical-guide 标题含具体型号，避免同族撞题。
+ */
+function getTechnicalTopicForModel(
+  productFamilySlug: string,
+  model: typeof models[0] | null
+): string {
+  if (model) return `${model.name} (الحبيبات، القاعدة، الرابطة)`;
+  return getTechnicalTopic(productFamilySlug);
 }
 
 function getProcessName(industryCode: string): string {
