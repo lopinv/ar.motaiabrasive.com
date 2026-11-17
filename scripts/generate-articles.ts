@@ -35,6 +35,15 @@ function escapeYamlString(str: string): string {
     .replace(/\t/g, '\\t');
 }
 
+function yamlValueOf(v: any): string {
+  // 嵌套值（字符串数组等）必须序列化为 YAML flow 数组，否则逗号拼接的
+  // 无引号标量在 frontmatter 中含冒号时会破坏 YAML 解析
+  if (Array.isArray(v)) {
+    return '[' + v.map((x) => (typeof x === 'string' ? `"${escapeYamlString(x)}"` : x)).join(', ') + ']';
+  }
+  return typeof v === 'string' ? `"${escapeYamlString(v)}"` : String(v);
+}
+
 function frontmatterToYaml(fm: Record<string, any>): string {
   const lines: string[] = ['---'];
 
@@ -49,25 +58,20 @@ function frontmatterToYaml(fm: Record<string, any>): string {
         for (const item of value) {
           lines.push('  - ');
           for (const [k, v] of Object.entries(item)) {
-            const yamlValue = typeof v === 'string' ? `"${escapeYamlString(v)}"` : v;
-            lines.push(`    ${k}: ${yamlValue}`);
+            lines.push(`    ${k}: ${yamlValueOf(v)}`);
           }
         }
       } else {
         // Simple array
-        const arrStr = '[' + value.map(v => typeof v === 'string' ? `"${escapeYamlString(v)}"` : v).join(', ') + ']';
-        lines.push(`${key}: ${arrStr}`);
+        lines.push(`${key}: ${yamlValueOf(value)}`);
       }
     } else if (typeof value === 'object') {
       lines.push(`${key}:`);
       for (const [k, v] of Object.entries(value)) {
-        const yamlValue = typeof v === 'string' ? `"${escapeYamlString(v)}"` : v;
-        lines.push(`  ${k}: ${yamlValue}`);
+        lines.push(`  ${k}: ${yamlValueOf(v)}`);
       }
-    } else if (typeof value === 'string') {
-      lines.push(`${key}: "${escapeYamlString(value)}"`);
     } else {
-      lines.push(`${key}: ${value}`);
+      lines.push(`${key}: ${yamlValueOf(value)}`);
     }
   }
 
