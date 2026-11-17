@@ -6,7 +6,7 @@ export interface ModelSpec {
   sizeLabel: string;
   sizeAr: string;
   gritRange: string[];
-  type: 'belt' | 'disc';
+  type: 'belt' | 'disc' | 'sponge';
   backing: string;
   attachment: string;
   image: string;
