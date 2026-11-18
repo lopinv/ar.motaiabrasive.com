@@ -384,7 +384,14 @@
 .cat-card__actions .button {
   flex: 1 1 0;
   min-width: 0;
+  gap: 6px;
   white-space: nowrap;
+}
+
+/* 卡片内 WhatsApp 按钮：图标略缩，避免 4 列窄卡拥挤 */
+.cat-card__actions .button svg {
+  width: 16px;
+  height: 16px;
 }
 
 /* ============================================================

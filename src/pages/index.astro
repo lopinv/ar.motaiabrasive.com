@@ -3,7 +3,7 @@ import Layout from '../layouts/Layout.astro';
 import WhatsAppButton from '../components/WhatsAppButton.astro';
 import CtaBand from '../components/CtaBand.astro';
 import FaqItem from '../components/FaqItem.astro';
-import { productCategoryLines, applicationScenes, companyFacts, qualitySteps, SITE } from '../data/site';
+import { productCategoryLines, applicationScenes, companyFacts, qualitySteps } from '../data/site';
 
 const homeFaq = [
   {
@@ -157,14 +157,7 @@ const spotlight = [
                 <h3>{line.name}</h3>
                 <p class="cat-desc">{line.description}</p>
                 <div class="cat-card__actions">
-                  <a
-                    class="button button--outline button--sm"
-                    href={`https://wa.me/${SITE.whatsapp}?text=${encodeURIComponent(`مرحبًا موتاى، أود الاستفسار عن ${line.name}.`)}`}
-                    target="_blank"
-                    rel="noopener nofollow"
-                  >
-                    واتساب
-                  </a>
+                  <WhatsAppButton compact product={line.name} />
                   <a class="button button--sm" href={`/quote?product=${line.slug}`}>
                     اطلب عرض السعر
                     <span aria-hidden="true">↗</span>
