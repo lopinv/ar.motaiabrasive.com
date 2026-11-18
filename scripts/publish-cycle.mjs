@@ -22,7 +22,13 @@ import { fileURLToPath } from 'node:url';
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const DIST = path.join(ROOT, 'dist');
 const WT = path.join(ROOT, '.ghpages-worktree');
-const sh = (cmd, opts = {}) => execSync(cmd, { stdio: 'inherit', cwd: ROOT, ...opts }).toString().trim();
+const sh = (cmd, opts = {}) => {
+  // inherit 模式实时输出、execSync 返回 null；pipe 模式捕获 stdout
+  const out = execSync(cmd, { stdio: 'inherit', cwd: ROOT, ...opts });
+  return out == null ? '' : out.toString().trim();
+};
+const shCapture = (cmd, opts = {}) =>
+  execSync(cmd, { stdio: 'pipe', cwd: ROOT, ...opts }).toString().trim();
 
 // ---- 并发锁：cron 30min 间隔、单次 run 约 5-10min；上一轮未结束（或进程被杀残留锁）时跳过 ----
 // 锁龄 > 45min 视为陈旧并抢占（进程被杀场景自愈）
@@ -57,7 +63,14 @@ if (!existsSync(path.join(ROOT, 'node_modules', '.bin', 'astro'))) {
 }
 
 // ---- 选题池耗尽则让定时任务自行暂停 ----
-const peek = sh('npx tsx scripts/publish-next.ts --peek');
+// peek 需要捕获 stdout（pipe）；耗尽时 publish-next.ts exit 3 会抛错 → 捕获后暂停
+let peek = '';
+try {
+  peek = shCapture('npx tsx scripts/publish-next.ts --peek');
+} catch (e) {
+  console.log('PUBLISH_EXHAUSTED');
+  process.exit(0);
+}
 const m = peek.match(/next=(\S+)/);
 if (!m || m[1] === '(none)') {
   console.log('PUBLISH_EXHAUSTED');
@@ -118,6 +131,15 @@ function deployGhPages(s) {
   sh(`git -C ${WT} commit -m "pages: publish ${s}" --allow-empty`);
   // detached 状态无本地 gh-pages 分支：推送 HEAD 到远端 gh-pages
   sh(`git -C ${WT} push origin HEAD:gh-pages`);
+
+  // 本地 gh-pages ref 快进对齐（仅当本地 ref 是远端祖先时；非破坏性，避免本地 ref 落后）
+  try {
+    sh(`git fetch -q origin gh-pages`);
+    const isAncestor = sh(`git merge-base --is-ancestor gh-pages origin/gh-pages`);
+    if (isAncestor === '') {
+      sh(`git update-ref refs/heads/gh-pages origin/gh-pages`);
+    }
+  } catch { /* 本地 ref 同步失败不影响发布 */ }
 
   try {
     sh(`git worktree remove --force ${WT}`);
