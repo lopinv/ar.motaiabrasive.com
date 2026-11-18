@@ -1624,6 +1624,81 @@ tbody tr:hover th {
   line-height: 1.6;
 }
 
+/* ============================================================
+   Thank you — 提交成功页
+   ============================================================ */
+.thankyou__inner {
+  display: grid;
+  gap: 32px;
+}
+
+.thankyou__card {
+  max-width: 720px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background: var(--card);
+  padding: 28px;
+}
+
+.thankyou__badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  margin-block-end: 12px;
+  border-radius: 50%;
+  background: var(--brand-100);
+  color: var(--brand-500);
+}
+
+.thankyou h1 {
+  margin: 0 0 8px;
+}
+
+.thankyou__card p {
+  margin: 0;
+  color: var(--ink-3);
+  line-height: 1.7;
+}
+
+.thankyou__next {
+  margin-block-start: 20px;
+  padding-block-start: 16px;
+  border-block-start: 1px solid var(--line);
+  display: grid;
+  gap: 8px;
+}
+
+.thankyou__next .eyebrow {
+  margin: 0;
+}
+
+.thankyou__pipeline {
+  max-width: 720px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background: var(--card);
+  padding: 24px 28px;
+}
+
+.thankyou__pipeline h2 {
+  margin: 0 0 14px;
+  font-size: 1rem;
+}
+
+.thankyou__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+@media (max-width: 640px) {
+  .thankyou__actions .button {
+    flex: 1 1 100%;
+  }
+}
+
 
 /* 快选卡片 — radio 快选 */
 .quickpick {

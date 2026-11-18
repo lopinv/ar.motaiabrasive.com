@@ -1,0 +1,103 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import { SITE } from '../data/site';
+
+const breadcrumbs = [
+  { name: 'الرئيسية', href: '/' },
+  { name: 'تحديد الطلب', href: '/thankyou' },
+];
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  name: 'تحديد الطلب — موتاى',
+  description:
+    'تم استلام طلب عرض السعر. يراجع فريق موتاى المواصفة ويرد خلال يوم عمل واحد على القناة التي اخترتها.',
+};
+---
+
+<Layout
+  title="تحديد الطلب — موتاى"
+  description="تم استلام طلب عرض السعر. يراجع فريق موتاى المواصفة ويرد خلال يوم عمل واحد على القناة التي اخترتها (واتساب أو البريد أو الهاتف)."
+  image="/images/factory.jpg"
+  jsonLd={[jsonLd]}
+>
+  <Breadcrumbs items={breadcrumbs} />
+
+  <section class="section thankyou">
+    <div class="container thankyou__inner" data-reveal>
+      <div class="thankyou__card" data-thanks-card>
+        <span class="thankyou__badge" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="22" height="22">
+            <path
+              fill="currentColor"
+              d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm-1.2 14.4-4.6-4.6 1.5-1.5 3.1 3.1 6.5-6.5 1.5 1.5-8 7.9Z"
+            ></path>
+          </svg>
+        </span>
+        <h1>استلمنا طلب عرض السعر</h1>
+        <p>
+          شكرًا على رسالتك. سيراجع فريق موتاى المواصفة وقد نرجع إليك بسؤال تقني موجز، ثم نرسل
+          العرض التجاري على القناة التي اخترتها خلال يوم عمل واحد.
+        </p>
+
+        <div class="thankyou__next" data-thankyou-next hidden>
+          <span class="eyebrow">العودة إلى المصدر</span>
+          <a class="button button--outline" href="/" data-return-link>رجوع إلى الصفحة الأصلية</a>
+        </div>
+      </div>
+
+      <div class="thankyou__pipeline">
+        <h2>ماذا يحدث بعد الإرسال؟</h2>
+        <ol class="funnel-pipeline">
+          <li>
+            <strong>مراجعة أولية</strong>
+            <span>نتحقق من اكتمال المواصفة وقد نرجع بسؤال تقني موجز.</span>
+          </li>
+          <li>
+            <strong>عرض تجاري</strong>
+            <span>السعر والحد الأدنى للكمية وشروط التغليف والتوريد.</span>
+          </li>
+          <li>
+            <strong>عينة / عرض</strong>
+            <span>إذا طلبت عينة أو شهادة مطابقة نرتبها ضمن العملية.</span>
+          </li>
+        </ol>
+      </div>
+
+      <div class="thankyou__actions">
+        <a class="button button--accent" href="/quote">طلب عرض سعر آخر</a>
+        <a
+          class="button button--whatsapp"
+          href={`https://wa.me/${SITE.whatsapp}?text=${encodeURIComponent('مرحبًا موتاى، أرسلت طلب عرض سعر وأود متابعة حالته.')}`}
+          target="_blank"
+          rel="noopener nofollow"
+        >
+          متابعة عبر واتساب
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    // 提交后跳转携带 ?from=<来源页>（由表单 JS 写入 _next）；校验同域后启用「返回来源页」链接，
+    // 避免开放重定向
+    const from = new URLSearchParams(location.search).get('from') || '';
+    let safe = '';
+    if (from) {
+      try {
+        const u = new URL(from, location.origin);
+        if (u.origin === location.origin) safe = u.pathname + u.search;
+      } catch {
+        safe = '';
+      }
+    }
+    const box = document.querySelector<HTMLElement>('[data-thankyou-next]');
+    const link = document.querySelector<HTMLAnchorElement>('[data-return-link]');
+    if (box && link && safe) {
+      link.href = safe;
+      box.hidden = false;
+    }
+  </script>
+</Layout>

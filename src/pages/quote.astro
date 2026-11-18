@@ -67,6 +67,7 @@ const steps = [
         <input type="hidden" name="_subject" value="طلب عرض سعر - MoTai Abrasives" />
         <input type="hidden" name="_template" value="table" />
         <input type="hidden" name="_captcha" value="false" />
+        <input type="hidden" name="_next" value="/thankyou" />
         <input type="text" name="_honey" class="honeypot" tabindex="-1" autocomplete="off" aria-hidden="true" />
 
         
@@ -295,6 +296,12 @@ const steps = [
             <input name="consent" type="checkbox" required />
             <span>أوافق على استخدام هذه البيانات للرد على طلبي، وفق <a href="/privacy">سياسة الخصوصية</a>.</span>
           </label>
+
+          <label class="field field--full" data-return-url-field>
+            <span>رابط الصفحة المطلوب العودة إليها بعد الإرسال (اختياري)</span>
+            <input name="return_url" type="url" placeholder="https://ar.motaiabrasive.com/products/flap-discs" dir="ltr" />
+            <small class="fine-print">اتركه فارغًا والسنعودك إلى صفحة الشكر، أو اكتب رابطًا من نفس الموقع فقط.</small>
+          </label>
         </section>
 
         
@@ -330,6 +337,10 @@ const steps = [
             <li><strong>عرض تجاري</strong><span>السعر والحد الأدنى للكمية وشروط التغليف.</span></li>
             <li><strong>عينة / عرض</strong><span>إذا طلبت عينة أو شهادة مطابقة نرتبها ضمن العملية.</span></li>
           </ol>
+          <p class="fine-print">
+            بعد الإرسال بنجاح ستصلك صفحة <a href="/thankyou">تأكيد الاستلام</a>
+            — اكتب رابط صفحتك في الحقل الاختياري بالخطوة الأخيرة لتعود إليها مباشرة.
+          </p>
         </div>
 
         <div class="funnel-card funnel-card--meta">
@@ -407,11 +418,30 @@ const steps = [
       render();
     });
 
+    const returnUrl = form?.querySelector<HTMLInputElement>('[name="return_url"]');
+    const nextField = form?.querySelector<HTMLInputElement>('[name="_next"]');
+
     form?.addEventListener('submit', (event) => {
       if (!(form as HTMLFormElement).checkValidity()) {
         event.preventDefault();
         (form as HTMLFormElement).reportValidity();
         return;
+      }
+
+      // 提交后跳转：默认 /thankyou；填了同域 return_url 则 /thankyou?from=<来源页>（同域校验防开放重定向）
+      if (returnUrl && nextField) {
+        const raw = returnUrl.value.trim();
+        if (raw) {
+          try {
+            const u = new URL(raw, location.origin);
+            const target = u.pathname + u.search;
+            if (u.origin === location.origin && target !== '/') {
+              nextField.value = `/thankyou?from=${encodeURIComponent(target)}`;
+            }
+          } catch {
+            /* URL 无效 → 保持默认 /thankyou */
+          }
+        }
       }
 
       if (status) status.textContent = 'جارٍ إرسال الطلب…';

@@ -81,7 +81,8 @@ const slug = m[1];
 // ---- 生成 → build → 门禁（提交前；任一失败则回滚，保证幂等）----
 try {
   sh('npx tsx scripts/publish-next.ts');
-  sh('npm run build');
+  // 提高 V8 堆上限，避免 astro build 在渲染 3000+ 页时 Zone Allocation OOM（exit 134）
+  sh('npm run build', { env: { ...process.env, NODE_OPTIONS: (process.env.NODE_OPTIONS || '') + ' --max-old-space-size=8192' } });
   sh(
     'node scripts/homogeneity-audit.mjs --gate ' +
       '&& node scripts/quality-check.mjs ' +
