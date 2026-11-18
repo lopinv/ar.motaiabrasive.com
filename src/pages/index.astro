@@ -159,8 +159,13 @@ const spotlight = [
                 <div class="cat-card__actions">
                   <WhatsAppButton compact product={line.name} />
                   <a class="button button--sm" href={`/quote?product=${line.slug}`}>
+                    <svg aria-hidden="true" viewBox="0 0 24 24" width="16" height="16">
+                      <path
+                        fill="currentColor"
+                        d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5 8 5V8z"
+                      ></path>
+                    </svg>
                     اطلب عرض السعر
-                    <span aria-hidden="true">↗</span>
                   </a>
                 </div>
               </div>
