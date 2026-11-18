@@ -45,7 +45,9 @@ function shingles(s) {
 const rows = [];
 let yamlFail = 0;
 for (const f of files) {
-  const text = fs.readFileSync(path.join(dir, f), 'utf8');
+  // 源文件为 CRLF 换行；yaml 解析器对行尾 \r 敏感（报 "Unexpected scalar at node end"），
+  // 读入即归一化 CRLF→LF，保证 3000 篇 frontmatter 都能被审计
+  const text = fs.readFileSync(path.join(dir, f), 'utf8').replace(/\r\n/g, '\n');
   let fm = null;
   try {
     const raw = frontmatterOf(text);

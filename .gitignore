@@ -3,6 +3,8 @@ dist/
 .astro/
 .codegraph/
 .zcode/
+.ghpages-worktree/
+.publish-cycle.lock
 .DS_Store
 .env
 .env.*
