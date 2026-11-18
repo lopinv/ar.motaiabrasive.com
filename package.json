@@ -12,8 +12,8 @@
     "check:site": "node scripts/homogeneity-audit.mjs --gate && node scripts/quality-check.mjs && node scripts/link-check.mjs && node scripts/audit-urls.mjs",
     "check:links": "node scripts/check-all-links.mjs",
     "check:homogeneity": "node scripts/homogeneity-audit.mjs",
-    "dedupe:country": "node scripts/dedupe-country-versions.mjs",
-    "inject:specs": "node --experimental-strip-types scripts/inject-model-specs.mjs"
+    "dedupe:delete": "node scripts/delete-duplicate-articles.mjs",
+    "dedupe:delete:execute": "node scripts/delete-duplicate-articles.mjs --execute"
   },
   "dependencies": {
     "@astrojs/mdx": "8.1.6",

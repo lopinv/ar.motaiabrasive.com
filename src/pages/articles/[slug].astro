@@ -99,8 +99,6 @@ const dateFmt = new Date(article.data.publishDate).toLocaleDateString('ar-SA', {
   type="article"
   breadcrumbs={breadcrumbs}
   jsonLd={[articleJsonLd, faqJsonLd].filter(Boolean) as Record<string, unknown>[]}
-  noindex={article.data.noindex}
-  canonicalPath={article.data.canonicalSlug ? `/articles/${article.data.canonicalSlug}` : undefined}
 >
   <Breadcrumbs items={breadcrumbs} />
 

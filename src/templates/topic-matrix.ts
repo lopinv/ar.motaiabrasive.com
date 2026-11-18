@@ -135,8 +135,13 @@ function generateTopicsForCombination(
   const topics: TopicSpec[] = [];
   const baseId = `${productFamily.slug}-${model?.slug || 'general'}-${industry.code}-${gccCountry.code}-${articleType}`;
 
-  // 根据文章类型生成 1-3 个变体标题
-  const variants = generateTitleVariants(productFamily, model, industry, gccCountry, articleType);
+  // 根据文章类型生成变体标题；只保留首个变体（focus 0）。
+  // 后续焦点变体（如 grit-size-selection）与主变体同 cell 正文 Jaccard 0.95+，
+  // 属同模板换角度复制，直接不生成。
+  // 例外：gcc-regional-sourcing 的两个变体（import-guide / market-logistics）
+  // 正文由国家级数据驱动、差异显著，予以保留。
+  const all = generateTitleVariants(productFamily, model, industry, gccCountry, articleType);
+  const variants = articleType === 'gcc-regional-sourcing' ? all : all.slice(0, 1);
 
 variants.forEach((variant, idx) => {
 	    const keywords = selectKeywords(productFamily.slug, industry.code, gccCountry.code, articleType, model);
@@ -227,7 +232,7 @@ function generateTitleVariants(
 
     case 'application-guide':
       variants.push({
-        title: `${modelName} في ${iName}: تسلسل الدرجات والممارسات في ${countryName}`,
+        title: `${modelName} لتطبيق ${iName} ${countryName}`,
         focus: 'industry-application',
       });
       break;
@@ -439,10 +444,10 @@ function getTechnicalTopicForModel(
 function getProcessName(industryCode: string): string {
   const processes: Record<string, string> = {
     'woodworking': 'تشطيب الخشب',
-    'metalworking': 'تشطيب المعادن وإزالة الشavings',
+    'metalworking': 'تشطيب المعادن',
     'automotive': 'تجهيز هياكل السيارات',
     'shipbuilding': 'صيانة أسطح السفن',
-    'oil-gas': 'تهيئة أسطح الأنابيب والخزانات',
+    'oil-gas': 'تهيئة أسطح النفط',
     'construction': 'تشطيب مواد البناء',
     'general': 'الصنفرة الصناعية',
   };
@@ -467,10 +472,28 @@ export function generateTopicMatrix(): TopicSpec[] {
         if (!isRelevantCombination(productFamily.slug, industry.code, model)) continue;
 
         for (const gccCountry of gccCountries) {
-          // GCC 地域篇只生成特定国家，不生成 general-gcc
-          const relevantTypes = gccCountry.code === 'general-gcc'
+          // 反规模化策略：内容选题按「主市场(qatar)+泛海湾(general-gcc)」双轨生成，
+          // 其余 5 国只生成地域寻源篇（gcc-regional-sourcing），其正文由国家级真实数据
+          // （港口、监管机构、工业集群、文化商务要点）驱动，与其他国家版本正文显著不同——
+          // 不再是同模板换国名的 doorway 形态。
+          const isPanGcc = gccCountry.code === 'general-gcc';
+          const isPrimary = gccCountry.code === 'qatar';
+          if (!isPrimary && !isPanGcc) {
+            // 非主市场：仅地域寻源两型
+            const regionalTypes = articleTypes.filter(t => t === 'gcc-regional-sourcing');
+            for (const articleType of regionalTypes) {
+              allTopics.push(...generateTopicsForCombination(productFamily, model, industry, gccCountry, articleType));
+            }
+            continue;
+          }
+          // 主市场/泛海湾：地域寻源篇在 general-gcc 不生成；泛海湾只保留核心信息型 6 类
+          let relevantTypes = isPanGcc
             ? articleTypes.filter(t => t !== 'gcc-regional-sourcing')
             : articleTypes;
+          if (isPanGcc) {
+            // general-gcc 保留全部非地域寻源类型（泛海湾视角与 qatar 主版标题/关键词不同轨，
+            // 且泛海湾篇面向 6 国汇总查询，意图可区分）
+          }
 
           for (const articleType of relevantTypes) {
             const topics = generateTopicsForCombination(productFamily, model, industry, gccCountry, articleType);
