@@ -1,8 +1,4 @@
----
-const title = 'MoTai Abrasives';
----
-
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-label={title}>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-label="MoTai Abrasives">
   <rect width="1200" height="630" fill="#0b2b26"/>
   <rect x="72" y="72" width="86" height="86" rx="20" fill="#f4b942"/>
   <text x="115" y="132" text-anchor="middle" font-family="Arial, sans-serif" font-size="32" font-weight="700" fill="#0b2b26">MT</text>
