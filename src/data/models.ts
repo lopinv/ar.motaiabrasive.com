@@ -394,7 +394,7 @@ export const models: ModelSpec[] = [
   {
     slug: 'flap-disc-115-plastic',
     name: 'قرص شرائح 115 مم قاعدة بلاستيكية',
-    shortName: 'قرص كوت 115 مم بلاستيك',
+    shortName: 'قرص شرائح 115 مم بلاستيك',
     family: 'أقراص الشرائح',
     categorySlug: 'flap-discs',
     sizeLabel: '115 mm',
@@ -416,7 +416,7 @@ export const models: ModelSpec[] = [
   {
     slug: 'flap-disc-125-plastic',
     name: 'قرص شرائح 125 مم قاعدة بلاستيكية',
-    shortName: 'قرص كوت 125 مم بلاستيك',
+    shortName: 'قرص شرائح 125 مم بلاستيك',
     family: 'أقراص الشرائح',
     categorySlug: 'flap-discs',
     sizeLabel: '125 mm',
@@ -438,7 +438,7 @@ export const models: ModelSpec[] = [
   {
     slug: 'flap-disc-180-fiberglass',
     name: 'قرص شرائح 180 مم قاعدة ألياف زجاجية',
-    shortName: 'قرص كوت 180 مم زجاجية',
+    shortName: 'قرص شرائح 180 مم زجاجية',
     family: 'أقراص الشرائح',
     categorySlug: 'flap-discs',
     sizeLabel: '180 mm',
@@ -460,7 +460,7 @@ export const models: ModelSpec[] = [
   {
     slug: 'flap-disc-125-ceramic',
     name: 'قرص شرائح 125 مم حبيبات سيراميك',
-    shortName: 'قرص كوت 125 مم سيراميك',
+    shortName: 'قرص شرائح 125 مم سيراميك',
     family: 'أقراص الشرائح',
     categorySlug: 'flap-discs',
     sizeLabel: '125 mm',
@@ -482,7 +482,7 @@ export const models: ModelSpec[] = [
   {
     slug: 'flap-disc-180-steel-back',
     name: 'قرص شرائح 180 مم قاعدة فولاذية',
-    shortName: 'قرص كوت 180 مم فولاذي',
+    shortName: 'قرص شرائح 180 مم فولاذي',
     family: 'أقراص الشرائح',
     categorySlug: 'flap-discs',
     sizeLabel: '180 mm',
@@ -706,7 +706,7 @@ export const models: ModelSpec[] = [
   {
     slug: 'flap-disc-115-fiberglass',
     name: 'قرص شرائح 115 مم قاعدة ألياف زجاجية',
-    shortName: 'قرص كوت 115 مم زجاجية',
+    shortName: 'قرص شرائح 115 مم زجاجية',
     family: 'أقراص الشرائح',
     categorySlug: 'flap-discs',
     sizeLabel: '115 mm',
@@ -728,7 +728,7 @@ export const models: ModelSpec[] = [
   {
     slug: 'flap-disc-125-zirconia',
     name: 'قرص شرائح 125 مم زركونيا ألومينا',
-    shortName: 'قرص كوت 125 مم زركونيا',
+    shortName: 'قرص شرائح 125 مم زركونيا',
     family: 'أقراص الشرائح',
     categorySlug: 'flap-discs',
     sizeLabel: '125 mm',

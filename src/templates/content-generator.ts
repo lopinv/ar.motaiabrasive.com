@@ -36,17 +36,17 @@ const termMap = new Map(glossary.map(g => [g.term.toLowerCase(), g.ar]));
 const productTermMap: Record<string, string> = {
   'abrasive belts': 'أحزمة الصنفرة',
   'sanding belts': 'أحزمة صنفرة',
-  'grinding belts': 'أحزمة شحذ',
-  'abrasive discs': 'أقراص قاشة',
+  'grinding belts': 'أحزمة الصنفرة',
+  'abrasive discs': 'أقراص الصنفرة',
   'sanding discs': 'أقراص الصنفرة',
-  'flap discs': 'أقراص كوت (Flap Disc)',
+  'flap discs': 'أقراص الشرائح (Flap Disc)',
   'mesh sanding discs': 'أقراص صنفرة شبكية',
   'PSA': 'لصق ذاتي (PSA)',
   'hook-and-loop': 'هوك آند لوب',
-  'sanding sponges': 'إسفنجيات صنفرة',
-  'grit': 'درجة الغرِت',
+  'sanding sponges': 'إسفنجيات الصنفرة',
+  'grit': 'درجة الحبيبات',
   'backing': 'القاعدة',
-  'resin bond': 'رابطة إسفنجية',
+  'resin bond': 'الرابطة الراتنجية',
   'aluminum oxide': 'أكسيد الألومنيوم',
   'zirconia alumina': 'زركونيا ألومينا',
   'ceramic': 'حبيبات سيراميك',
@@ -244,7 +244,7 @@ function buildModelSpecBlock(model: typeof models[0] | null): string {
     '{/* model-spec-block */}',
     `<h2>مواصفات ${model.name} (الفروقات الجوهرية)</h2>`,
     `<ul class="plain-links">`,
-    `  <li><strong>درجات الغرِت المتاحة:</strong> ${grits}</li>`,
+    `  <li><strong>درجات الحبيبات المتاحة:</strong> ${grits}</li>`,
     `  <li><strong>القاعدة/الخلف:</strong> ${model.backing}</li>`,
     `  <li><strong>نظام التثبيت:</strong> ${model.attachment}</li>`,
     ...model.useCases.map((u) => `  <li><strong>استخدام أساسي:</strong> ${u}</li>`),
@@ -282,7 +282,7 @@ function buildBLUF(
   switch (topic.articleType) {
     case 'product-comparison':
       bluf = pick3([
-        `اختيار ${productName} يعتمد على مادة القطعة، مرحلة التشطيب، ونوع الماكينة. للـ ${industryName}${countryName ? ` في ${countryName}` : ''}، تُحدد درجة الغرِت، عرض الحزام/قطر القرص، ونظام التثبيت قبل الطلب.`,
+        `اختيار ${productName} يعتمد على مادة القطعة، مرحلة التشطيب، ونوع الماكينة. للـ ${industryName}${countryName ? ` في ${countryName}` : ''}، تُحدد درجة الحبيبات، عرض الحزام/قطر القرص، ونظام التثبيت قبل الطلب.`,
         `قرار ${productName} مقابل البدائل يُبنى على ثلاث محاور: المادة، مرحلة العمل، والتوافق مع الماكينة. للـ ${industryName}${countryName ? ` في ${countryName}` : ''}، المقاس ونظام التثبيت يحددان الخاطئ من الصائب.`,
         `قبل الطلب، حدّد للمادة والمرحلة والماكينة، ثم اختر من ${productName} المواصفة المناسبة لـ ${industryName}${countryName ? ` في ${countryName}` : ''}. الدرجات، القياس، ونظام التثبيت محاور القرار الأساسية.`,
       ]);
@@ -298,16 +298,16 @@ function buildBLUF(
       break;
     case 'technical-guide':
       bluf = pick3([
-        `${productName} يعتمد على نوع الحبيبات (أكسيد الألومنيوم، زركونيا، سيراميك)، القاعدة (قماش/ورق/بوليمر)، والرابطة الإسفنجية. معايير FEPA/ISO تحدد درجة الغرِت بدقة.`,
+        `${productName} يعتمد على نوع الحبيبات (أكسيد الألومنيوم، زركونيا، سيراميك)، القاعدة (قماش/ورق/بوليمر)، والرابطة الراتنجية. معايير FEPA/ISO تحدد درجة الحبيبات بدقة.`,
         `ثلاثة مكونات تحدد أداء ${productName}: الحبيبات، القاعدة، والرابطة. اختيار الحبيبات وفق المادة، والقاعدة وفق الماكينة، والدرجة وفق FEPA P.`,
-        `فهم ${productName} يبدأ من نوع الحبيبات (Al₂O₃/SiC/زركونيا/سيراميك) ثم القاعدة والرابطة، ثم قراءة درجة الغرِت وفق FEPA P دون خلطها بـ ANSI أو JIS.`,
+        `فهم ${productName} يبدأ من نوع الحبيبات (Al₂O₃/SiC/زركونيا/سيراميك) ثم القاعدة والرابطة، ثم قراءة درجة الحبيبات وفق FEPA P دون خلطها بـ ANSI أو JIS.`,
       ]);
       bluf += note;
       break;
     case 'application-guide':
       bluf = pick3([
-        `في ${industryName}${countryName ? ` (${countryName})` : ''}، دورة ${productName} تشمل: إزالة → تشطيب متوسط → لمسة نهائية. تسلسل الغرِت النموذجي: 60–80 → 120–180 → 240–400 حسب المادة.`,
-        `تطبيق ${productName} في ${industryName}${countryName ? ` (${countryName})` : ''} يمر بثلاث مراحل: الإزالة الخشنة، التسوية، واللمسة النهائية، مع تسلسل غرِت يبدأ من 60–80 وينتهي عند 240–400 أو أعلى.`,
+        `في ${industryName}${countryName ? ` (${countryName})` : ''}، دورة ${productName} تشمل: إزالة → تشطيب متوسط → لمسة نهائية. تسلسل الحبيبات النموذجية: 60–80 → 120–180 → 240–400 حسب المادة.`,
+        `تطبيق ${productName} في ${industryName}${countryName ? ` (${countryName})` : ''} يمر بثلاث مراحل: الإزالة الخشنة، التسوية، واللمسة النهائية، مع تسلسل الحبيبات يبدأ من 60–80 وينتهي عند 240–400 أو أعلى.`,
         `للعمل على ${industryName}${countryName ? ` في ${countryName}` : ''}، رتّب تشغيل ${productName} من الخشن إلى الناعم: إزالة (60–80) ثم تسوية (120–180) ثم تشطيب (240–400+) حسب المادة والنتيجة.`,
       ]);
       bluf += useCase + challenge;
@@ -321,9 +321,9 @@ function buildBLUF(
       break;
     case 'troubleshooting':
       bluf = pick3([
-        `أعطال ${productName} الشائعة (تآكل سريع، انسداد، انحراف) تعود عادةً إلى: درجة غرِت غير مناسبة، ضغط زائد، سرعة غير مطابقة، أو ضعف سحب الغبار. الجدول أدناه يربط العارض بالسبب والحل.`,
-        `عند ملاحظة تآكل غير طبيعي أو انسداد أو انحراف في ${productName}، راجع بالترتيب: الغرِت، الضغط، السرعة، ثم نظام الشفط. كل عارض له سبب محدد وحل مباشر في الجدول التالي.`,
-        `تشخيص مشاكل ${productName} يبدأ من العارض المرصود (سرعة العطل، نمط الانسداد، اتجاه الانحراف) ثم يطابق السبب: غير ملاءمة الغرِت، تحميل زائد، أو قصور في الشفط.`,
+        `أعطال ${productName} الشائعة (تآكل سريع، انسداد، انحراف) تعود عادةً إلى: درجة الحبيبات غير مناسبة، ضغط زائد، سرعة غير مطابقة، أو ضعف سحب الغبار. الجدول أدناه يربط العارض بالسبب والحل.`,
+        `عند ملاحظة تآكل غير طبيعي أو انسداد أو انحراف في ${productName}، راجع بالترتيب: الحبيبات، الضغط، السرعة، ثم نظام الشفط. كل عارض له سبب محدد وحل مباشر في الجدول التالي.`,
+        `تشخيص مشاكل ${productName} يبدأ من العارض المرصود (سرعة العطل، نمط الانسداد، اتجاه الانحراف) ثم يطابق السبب: غير ملاءمة الحبيبات، تحميل زائد، أو قصور في الشفط.`,
       ]);
       bluf += useCase;
       break;
@@ -352,7 +352,7 @@ function buildBLUF(
       break;
     case 'industry-market':
       bluf = pick2([
-        `قطاع ${industryName} في ${gccCountry?.name || 'الخليج'} يشهد تحديث معايير (FEPA/ISO/SASO/ESMA) واتجاه نحو حبيبات سيراميك/زركوريا للأداء الأعلى. التأثير على قرارات شراء ${productName}: مواصفات أدق، دورات أقصر.`,
+        `قطاع ${industryName} في ${gccCountry?.name || 'الخليج'} يشهد تحديث معايير (FEPA/ISO/SASO/ESMA) واتجاه نحو حبيبات سيراميك/زركونيا للأداء الأعلى. التأثير على قرارات شراء ${productName}: مواصفات أدق، دورات أقصر.`,
         `تحولات قطاع ${industryName} في ${gccCountry?.name || 'الخليج'} (معايير FEPA/ISO، حبيبات متطورة، توثيق أدق) تعني أن شراء ${productName} أصبح قرارًا بالمواصفة لا بالاسم التجاري.`,
       ]);
       bluf += challenge;
@@ -367,8 +367,8 @@ function buildBLUF(
       break;
     case 'faq-buyers-guide':
       bluf = pick2([
-        `أهم 3 أسئلة لمشتري ${productName}: 1) أي درجة غرِت لـ ${industryName}؟ → تعتمد على مرحلة العمل. 2) ما الحد الأدنى للطلب؟ → يُحدد بالمواصفة. 3) كم مدة التوريد؟ → تُحدد في عرض السعر حسب الكمية والمواصفة. التفاصيل في الأسئلة أدناه.`,
-        `مشترو ${productName} يسألون عادةً عن: اختيار الغرِت لـ ${industryName}، حد الكمية الأدنى، ومهلة التوريد. الإجابات المباشرة في قسم الأسئلة أدناه مع نموذج الاستفسار الجاهز.`,
+        `أهم 3 أسئلة لمشتري ${productName}: 1) أي درجة الحبيبات لـ ${industryName}؟ → تعتمد على مرحلة العمل. 2) ما الحد الأدنى للطلب؟ → يُحدد بالمواصفة. 3) كم مدة التوريد؟ → تُحدد في عرض السعر حسب الكمية والمواصفة. التفاصيل في الأسئلة أدناه.`,
+        `مشترو ${productName} يسألون عادةً عن: اختيار الحبيبات لـ ${industryName}، حد الكمية الأدنى، ومهلة التوريد. الإجابات المباشرة في قسم الأسئلة أدناه مع نموذج الاستفسار الجاهز.`,
       ]);
       bluf += challenge;
       break;
@@ -398,37 +398,37 @@ function buildDirectAnswerBlock(
       answer = `${productName} يناسب ${industry?.name || 'التطبيقات الصناعية'} عند الحاجة إلى إزالة مادة سريعة/متوسطة مع تحكم في التشطيب. البديل (أقراص/أحزمة أخرى) يُختار عند مساحات أضيق أو ماكينات مختلفة.`;
       break;
     case 'buying-guide':
-      answer = `حدد: 1) مادة القطعة (خشب/معدن/بلاستيك) 2) مرحلة العمل (إزالة/تشطيب/لمسة نهائية) 3) ماكينة ومقاس التثبيت. ثم اختر الغرِت: 40–80 للإزالة، 100–180 للتشطيب، 240+ للنهائي.`;
+      answer = `حدد: 1) مادة القطعة (خشب/معدن/بلاستيك) 2) مرحلة العمل (إزالة/تشطيب/لمسة نهائية) 3) ماكينة ومقاس التثبيت. ثم اختر الحبيبات: 40–80 للإزالة، 100–180 للتشطيب، 240+ للنهائي.`;
       break;
     case 'technical-guide':
-      answer = `الحبيبات: أكسيد ألومنيوم (عام)، زركونيا (معدن صلب)، سيراميك (أداء عالي). القاعدة: قماش (مرن)، ورق (ثابت)، بوليمر (مقاوم رطوبة). الرابطة: إسبنجية تقاوم الحرارة. الغرِت وفق FEPA P.`;
+      answer = `الحبيبات: أكسيد ألومنيوم (عام)، زركونيا (معدن صلب)، سيراميك (أداء عالي). القاعدة: قماش (مرن)، ورق (ثابت)، بوليمر (مقاوم رطوبة). الرابطة: راتنجية تقاوم الحرارة. الحبيبات وفق FEPA P.`;
       break;
     case 'application-guide':
       answer = `التسلسل المعياري: درجة 60–80 (إزالة صدأ/طلاء/مادة) → 120–180 (تسوية) → 240–400 (تشطيب نهائي). للـ ${industry?.name} يضاف: تنظيف → فحص → تجهيز للدهان/الطلاء.`;
       break;
     case 'process-tutorial':
-      answer = `الخطوات: 1) تنظيف القطعة 2) اختيار الغرِت الأول 3) ضبط سرعة/ضغط الماكينة 4) صنفرة بالتسلسل 5) تنظيف بين المراحل 6) فحص نهائي. المعلمات تختلف حسب المادة والماكينة.`;
+      answer = `الخطوات: 1) تنظيف القطعة 2) اختيار الحبيبات الأولى 3) ضبط سرعة/ضغط الماكينة 4) صنفرة بالتسلسل 5) تنظيف بين المراحل 6) فحص نهائي. المعلمات تختلف حسب المادة والماكينة.`;
       break;
     case 'troubleshooting':
-      answer = `التآكل السريع → غرِت أدق أو ضغط أقل. الانسداد (Loading) → قاعدة شبكية أو مبرد. الانحراف → فحص بكرات الماكينة واتجاه الحزام. ضعف الشفط → تنظيف الفلاتر وخراطيم السحب.`;
+      answer = `التآكل السريع → الحبيبات أدق أو ضغط أقل. الانسداد (Loading) → قاعدة شبكية أو مبرد. الانحراف → فحص بكرات الماكينة واتجاه الحزام. ضعف الشفط → تنظيف الفلاتر وخراطيم السحب.`;
       break;
     case 'product-spec-detail':
-      answer = `${model?.name || productName}: ${model?.sizeAr || 'أبعاد متعددة'}، غرِت ${model?.gritRange.join('–') || 'حسب الطلب'}، قاعدة ${model?.backing || 'قماش/ورق/بوليمر'}، تثبيت ${model?.attachment || 'يُحدد مع الماكينة'}.`;
+      answer = `${model?.name || productName}: ${model?.sizeAr || 'أبعاد متعددة'}، الحبيبات ${model?.gritRange.join('–') || 'حسب الطلب'}، قاعدة ${model?.backing || 'قماش/ورق/بوليمر'}، تثبيت ${model?.attachment || 'يُحدد مع الماكينة'}.`;
       break;
     case 'procurement-guide':
-      answer = `المواصفة التقنية: المنتج، المقاس، الغرِت، القاعدة، التثبيت، الكمية، التغليف، وجهة الشحن. التقييم: السعر الشامل، المهلة، الشهادات، مرونة OEM، سجل التسليم. التعاقد: شروط الدفع، جزاءات التأخر، مواصفات الجودة.`;
+      answer = `المواصفة التقنية: المنتج، المقاس، الحبيبات، القاعدة، التثبيت، الكمية، التغليف، وجهة الشحن. التقييم: السعر الشامل، المهلة، الشهادات، مرونة OEM، سجل التسليم. التعاقد: شروط الدفع، جزاءات التأخر، مواصفات الجودة.`;
       break;
     case 'wholesale-oem-guide':
       answer = `OEM يتطلب: ملف شعار فيكتور، رسومات تغليف، لغات الأسواق المستهدفة، مواصفات طباعة. الحد الأدنى للكمية يُحدد حسب المنتج والتخصيص. العينة تؤكد قبل الإنتاج الكمي.`;
       break;
     case 'industry-market':
-      answer = `المعايير المحدثة (FEPA P، ISO 6344، SASO، ESMA) تشدد على اتساق الغرِت وانبعاثات الغبار. الاتجاه: حبيبات سيراميك/زركوريا للخدمة الشاقة، قواعد بوليمرية للبيئات الرطبة.`;
+      answer = `المعايير المحدثة (FEPA P، ISO 6344، SASO، ESMA) تشدد على اتساق الحبيبات وانبعاثات الغبار. الاتجاه: حبيبات سيراميك/زركونيا للخدمة الشاقة، قواعد بوليمرية للبيئات الرطبة.`;
       break;
     case 'gcc-regional-sourcing':
       answer = `المتطلبات: شهادة مطابقة SASO (السعودية)/ESMA (الإمارات)/GSO (الخليج). الميناء الرئيسي: ${getMainPort(gccCountry?.code)}. مهلة بحري 25–35 يوم. الدفع: LC مستندي أو TT مسبق. لا وجود لمخزن محلي.`;
       break;
     case 'faq-buyers-guide':
-      answer = `1) كيف أختار الغرِت؟ → مرحلة العمل تحدد. 2) ما الـ MOQ؟ → بالمواصفة. 3) مهلة التوريد؟ → تُحدد في عرض السعر. 4) هل تدعمون OEM؟ → نعم، بشروط. 5) كيف أطلب عرضاً؟ → نموذج الاستفسار مع المواصفة الكاملة.`;
+      answer = `1) كيف أختار الحبيبات؟ → مرحلة العمل تحدد. 2) ما الـ MOQ؟ → بالمواصفة. 3) مهلة التوريد؟ → تُحدد في عرض السعر. 4) هل تدعمون OEM؟ → نعم، بشروط. 5) كيف أطلب عرضاً؟ → نموذج الاستفسار مع المواصفة الكاملة.`;
       break;
     default:
       answer = `الجواب المباشر: ${productName} يُختار حسب المادة، المرحلة، والماكينة. التفاصيل في المقال.`;
@@ -553,7 +553,7 @@ function buildSection(
     else if (h2Title.includes('تفصيل') || h2Title.includes('عمليات') || h2Title.includes('مراحل العمل') || h2Title.includes('دورة العمل')) {
       content = buildApplicationSection(topic, model, productCat, industry, gccCountry);
     }
-    else if (h2Title.includes('تركيبة') || h2Title.includes('مجموعة المنتجات') || h2Title.includes('تسلسل الغرِت')) {
+    else if (h2Title.includes('تركيبة') || h2Title.includes('مجموعة المنتجات') || h2Title.includes('تسلسل الحبيبات')) {
       content = buildProductCombo(topic, model, productCat, industry);
     }
     else if (h2Title.includes('إعدادات') || h2Title.includes('معامل') || h2Title.includes('المعلمات')) {
@@ -577,7 +577,7 @@ function buildSection(
     else if (h2Title.includes('مقاييس') || h2Title.includes('المعالم الرئيسية') || h2Title.includes('المعايير الأساسية')) {
       content = buildKeyParamsTable(topic, model, productCat);
     }
-    else if (h2Title.includes('تسلسل الغرِت') || h2Title.includes('حسب المادة') || h2Title.includes('توصيات')) {
+    else if (h2Title.includes('تسلسل الحبيبات') || h2Title.includes('حسب المادة') || h2Title.includes('توصيات')) {
       content = buildGritSequenceTable(topic, model, productCat, industry);
     }
     else if (h2Title.includes('兼容性') || h2Title.includes('兼容') || h2Title.includes('توافق') || h2Title.includes('قائمة تحقق')) {
@@ -712,7 +712,7 @@ function buildSection(
     else if (h2Title.includes('التوافق') || h2Title.includes('طراز الماكينة') || h2Title.includes('التركيب') || h2Title.includes('الماكينات')) {
       content = buildCompatibilityGuide(topic, model, productCat);
     }
-    else if (h2Title.includes('التخصيص') || h2Title.includes('درجات الغرِت') || h2Title.includes('الأبعاد') || h2Title.includes('القاعدة') || h2Title.includes('العلامة التجارية') || h2Title.includes('اختياري')) {
+    else if (h2Title.includes('التخصيص') || h2Title.includes('درجات الحبيبات') || h2Title.includes('الأبعاد') || h2Title.includes('القاعدة') || h2Title.includes('العلامة التجارية') || h2Title.includes('اختياري')) {
       content = buildCustomizationOptions(topic, model, productCat);
     }
     else if (h2Title.includes('الطلب') || h2Title.includes('MOQ') || h2Title.includes('مهلة التوريد') || h2Title.includes('التغليف') || h2Title.includes('معلومات الطلب')) {
@@ -828,7 +828,7 @@ function buildKeyParamsTable(topic: TopicSpec, model: typeof models[0] | null, p
   <thead><tr><th>المقياس</th><th>الوصف</th><th>كيف تحدد</th></tr></thead>
   <tbody>
     <tr><td>مادة القطعة</td><td>خشب، معدن، بلاستيك، مركب</td><td>حدد المادة الأساسية</td></tr>
-    <tr><td>مرحلة العمل</td><td>إزالة / تشطيب / لمسة نهائية</td><td>الغرِت: 40–80 / 100–180 / 240+</td></tr>
+    <tr><td>مرحلة العمل</td><td>إزالة / تشطيب / لمسة نهائية</td><td>الحبيبات: 40–80 / 100–180 / 240+</td></tr>
     <tr><td>نظام التثبيت</td><td>هوك آند لوب / PSA / شبكي</td><td>طابق مع قاعدة الماكينة</td></tr>
     <tr><td>المقاس</td><td>طول×عرض (حزام) / قطر (قرص)</td><td>راجع دليل الماكينة</td></tr>
     <tr><td>نوع الحبيبات</td><td>أكسيد ألومنيوم / زركونيا / سيراميك</td><td>حسب صلادة المادة</td></tr>
@@ -840,9 +840,9 @@ function buildKeyParamsTable(topic: TopicSpec, model: typeof models[0] | null, p
 function buildGritSequenceTable(topic: TopicSpec, model: typeof models[0] | null, productCat: typeof productCategories[0] | undefined, industry: typeof industries[0] | undefined): string {
   const industryName = industry?.name || '';
   return `
-<h3>تسلسل الغرِت المقترح لـ ${industryName}</h3>
+<h3>تسلسل الحبيبات المقترحة لـ ${industryName}</h3>
 <table class="spec-table">
-  <thead><tr><th>المرحلة</th><th>الغرِت (FEPA P)</th><th>الهدف</th><th>ملاحظات</th></tr></thead>
+  <thead><tr><th>المرحلة</th><th>الحبيبات (FEPA P)</th><th>الهدف</th><th>ملاحظات</th></tr></thead>
   <tbody>
     <tr><td>إزالة مادة/صدأ/طلاء</td><td>40 – 80</td><td>إنتاجية عالية، إزالة سريعة</td><td>زركونيا/سيراميك للمعدن</td></tr>
     <tr><td>تشطيب متوسط</td><td>100 – 180</td><td>تسوية آثار المرحلة السابقة</td><td>أكسيد ألومنيوم عام</td></tr>
@@ -908,7 +908,7 @@ function buildBulkProcurementAdvice(topic: TopicSpec, model: typeof models[0] | 
 function buildTechConceptSummary(topic: TopicSpec, model: typeof models[0] | null, productCat: typeof productCategories[0] | undefined): string {
   const productName = model?.name || productCat?.name || t(topic.productFamily);
   return `
-<p>${productName} يعتمد على ثلاثة عناصر أساسية: <strong>الحبيبات</strong> (أكسيد ألومنيوم، زركونيا، سيراميك) تحدد قدرة القطع، <strong>القاعدة</strong> (قماش، ورق، بوليمر) تحدد المرونة والثبات، <strong>الرابطة الإسفنجية</strong> تثبت الحبيبات وتقاوم الحرارة. درجة الغرِت وفق FEPA P تضمن الاتساق الدولي.</p>`;
+<p>${productName} يعتمد على ثلاثة عناصر أساسية: <strong>الحبيبات</strong> (أكسيد ألومنيوم، زركونيا، سيراميك) تحدد قدرة القطع، <strong>القاعدة</strong> (قماش، ورق، بوليمر) تحدد المرونة والثبات، <strong>الرابطة الراتنجية</strong> تثبت الحبيبات وتقاوم الحرارة. درجة الحبيبات وفق FEPA P تضمن الاتساق الدولي.</p>`;
 }
 
 function buildTechDeepDive(topic: TopicSpec, model: typeof models[0] | null, productCat: typeof productCategories[0] | undefined): string {
@@ -917,7 +917,7 @@ function buildTechDeepDive(topic: TopicSpec, model: typeof models[0] | null, pro
 
 function buildStandardsComparison(topic: TopicSpec, model: typeof models[0] | null, productCat: typeof productCategories[0] | undefined): string {
   return `
-<h3>مقارنة منظومات معايير الغرِت</h3>
+<h3>مقارنة منظومات معايير الحبيبات</h3>
 <table class="spec-table">
   <thead><tr><th>FEPA P (أوروبي)</th><th>ANSI (أمريكي)</th><th>JIS (ياباني)</th><th>ملاحظات</th></tr></thead>
   <tbody>
@@ -939,7 +939,7 @@ function buildParameterImpact(topic: TopicSpec, model: typeof models[0] | null, 
 <table class="spec-table">
   <thead><tr><th>المعامل</th><th>زيادة القيمة</th><th>تقليل القيمة</th></tr></thead>
   <tbody>
-    <tr><td>رقم الغرِت (أدق)</td><td>تشطيب أنعم، إزالة أبطأ</td><td>إزالة أسرع، خدوش أعمق</td></tr>
+    <tr><td>رقم الحبيبات (أدق)</td><td>تشطيب أنعم، إزالة أبطأ</td><td>إزالة أسرع، خدوش أعمق</td></tr>
     <tr><td>ضغط التشغيل</td><td>قطع أسرع، حرارة أكثر، تآكل أسرع</td><td>قطع أبطأ، حرارة أقل، عمر أطول</td></tr>
     <tr><td>سرعة الماكينة</td><td>إزالة أسرع، خطر حرق القطعة</td><td>تحكم أفضل، إزالة أبطأ</td></tr>
     <tr><td>معدل التغذية</td><td>إنتاجية أعلى، تشطيب أخشن</td><td>تشطيب أنعم، وقت أطول</td></tr>
@@ -960,7 +960,7 @@ function buildProcessOverview(topic: TopicSpec, model: typeof models[0] | null, 
   const industryName = industry?.name || '';
   return `
 <h3>نظرة عامة على العملية - ${industryName}</h3>
-<p>دورة الصنفرة القياسية تمر بـ 4 مراحل: التجهيز → الإزالة الخشنة → التسوية المتوسطة → التشطيب النهائي. كل مرحلة تتطلب غرِت محدد، ضبط معلمات الماكينة، وفحص جودة قبل الانتقال للمرحلة التالية.</p>`;
+<p>دورة الصنفرة القياسية تمر بـ 4 مراحل: التجهيز → الإزالة الخشنة → التسوية المتوسطة → التشطيب النهائي. كل مرحلة تتطلب الحبيبات محددة، ضبط معلمات الماكينة، وفحص جودة قبل الانتقال للمرحلة التالية.</p>`;
 }
 
 function buildGritProgressionTable(topic: TopicSpec, model: typeof models[0] | null, industry: typeof industries[0] | undefined): string {
@@ -976,7 +976,7 @@ function buildQualityControl(topic: TopicSpec, model: typeof models[0] | null, i
     <tr><td>خشونة السطح (Ra)</td><td>حسب مواصفة الرسم</td><td>مقياس خشونة محمول</td><td>كل 50 قطعة</td></tr>
     <tr><td>مظهر السطح</td><td>بدون خدوش عميقة/علامات</td><td>فحص بصري بإضاءة قياسية</td><td>كل قطعة</td></tr>
     <tr><td>أبعاد القطعة</td><td>ضمن التسامح المسموح</td><td>مقياس شريطي/ميكروميتر</td><td>أول/آخر/كل دفعة</td></tr>
-    <tr><td>حالة الحزام/القرص</td><td>تآكل متساوٍ، بدون تلف</td><td>فحص بصري</td><td>كل تغيير غرِت</td></tr>
+    <tr><td>حالة الحزام/القرص</td><td>تآكل متساوٍ، بدون تلف</td><td>فحص بصري</td><td>كل تغيير الحبيبات</td></tr>
   </tbody>
 </table>`;
 }
@@ -987,10 +987,10 @@ function buildDefectTroubleshooting(topic: TopicSpec, model: typeof models[0] | 
 <table class="spec-table">
   <thead><tr><th>العيب</th><th>السبب المحتمل</th><th>الإجراء التصحيحي</th></tr></thead>
   <tbody>
-    <tr><td>خدوش عميقة/غير متساوية</td><td>غرِت خشن جداً، ضغط زائد، حزام تالف</td><td>انزل لغرِت أنعم، خفف الضغط، استبدل الحزام</td></tr>
+    <tr><td>خدوش عميقة/غير متساوية</td><td>الحبيبات خشنة جداً، ضغط زائد، حزام تالف</td><td>انزل لالحبيبات أنعم، خفف الضغط، استبدل الحزام</td></tr>
     <tr><td>لمعان/احتراق السطح</td><td>سرعة عالية، ضغط عالي، تبريد ضعيف</td><td>قلل RPM، خفف الضغط،حسن الشفط/التبريد</td></tr>
     <tr><td>تشطيب غير موحد</td><td>حزام مائل، بكرات مهترئة، تغذية غير منتظمة</td><td>عدّل المحاذاة، استبدل البكرات، ثبت معدل التغذية</td></tr>
-    <tr><td>انسداد (Loading)</td><td>مادة لزجة، غرِت ناعم مبكراً، شفط ضعيف</td><td>نظف/استبدل، تسلسل غرِت صحيح، نظف الفلتر</td></tr>
+    <tr><td>انسداد (Loading)</td><td>مادة لزجة، الحبيبات ناعمة مبكراً، شفط ضعيف</td><td>نظف/استبدل، تسلسل الحبيبات صحيح، نظف الفلتر</td></tr>
   </tbody>
 </table>`;
 }
@@ -999,7 +999,7 @@ function buildMaterialAdjustments(topic: TopicSpec, model: typeof models[0] | nu
   return `
 <h3>نقاط الضبط لمواد مختلفة</h3>
 <table class="spec-table">
-  <thead><tr><th>المادة</th><th>الحبيبات المفضلة</th><th>الغرِت الافتتاحي</th><th>الضغط/السرعة</th></tr></thead>
+  <thead><tr><th>المادة</th><th>الحبيبات المفضلة</th><th>الحبيبات الافتتاحية</th><th>الضغط/السرعة</th></tr></thead>
   <tbody>
     <tr><td>خشب ناعم</td><td>أكسيد ألومنيوم</td><td>80–100</td><td>ضغط خفيف، سرعة متوسطة</td></tr>
     <tr><td>خشب صلب</td><td>أكسيد ألومنيوم/زركونيا</td><td>60–80</td><td>ضغط متوسط، سرعة متوسطة</td></tr>
@@ -1022,7 +1022,7 @@ function buildTroubleshootingTable(topic: TopicSpec, model: typeof models[0] | n
 <table class="spec-table">
   <thead><tr><th>العطل</th><th>السبب الرئيسي</th><th>الحل الفوري</th><th>الوقاية</th></tr></thead>
   <tbody>
-    <tr><td>تآكل سريع</td><td>غرِت ناعم جداً / ضغط عالي</td><td>اختر غرِت أخرش / خفف الضغط</td><td>تسلسل غرِت صحيح</td></tr>
+    <tr><td>تآكل سريع</td><td>الحبيبات ناعمة جداً / ضغط عالي</td><td>اختر الحبيبات أخرش / خفف الضغط</td><td>تسلسل الحبيبات صحيح</td></tr>
     <tr><td>انسداد (Loading)</td><td>مادة لزجة / شفط ضعيف</td><td>قرص شبكي / نظف الفلتر</td><td>شفط فعال، مبرد</td></tr>
     <tr><td>انحراف الحزام</td><td>بكرات غير محاذية / وصل خاطئ</td><td>عدّل المحاذاة / راجع الوصل</td><td>صيانة بكرات أسبوعية</td></tr>
     <tr><td>اهتزاز/ضجيج</td><td>حزام غير متوازن / بكرات تالفة</td><td>استبدل الحزام / البكرات</td><td>فحص بصري يومي</td></tr>
@@ -1035,10 +1035,10 @@ function buildFailureClassification(topic: TopicSpec, model: typeof models[0] | 
   return `
 <h3>تصنيف مظاهر العطل ومنطق التشخيص</h3>
 <ol class="numbered-list">
-  <li><strong>أعطال التآكل:</strong> تآكل مبكر، تآكل غير متساوٍ، فقدان الحبيبات → تحقق من الغرِت، الضغط، نوع الحبيبات</li>
-  <li><strong>أعطال الانسداد:</strong> Loading، سطح لامع، فقدان القطع → تحقق من الشفط، المادة، تسلسل الغرِت</li>
+  <li><strong>أعطال التآكل:</strong> تآكل مبكر، تآكل غير متساوٍ، فقدان الحبيبات → تحقق من الحبيبات، الضغط، نوع الحبيبات</li>
+  <li><strong>أعطال الانسداد:</strong> Loading، سطح لامع، فقدان القطع → تحقق من الشفط، المادة، تسلسل الحبيبات</li>
   <li><strong>أعطال الميكانيكية:</strong> انحراف، اهتزاز، تمزق، كسر → تحقق من البكرات، المحاذاة، الوصل، RPM</li>
-  <li><strong>أعطال السطح:</strong> خدوش، حرق، موجة، تشطيب غير موحد → تحقق من تسلسل الغرِت، المعلمات، حالة الحزام</li>
+  <li><strong>أعطال السطح:</strong> خدوش، حرق، موجة، تشطيب غير موحد → تحقق من تسلسل الحبيبات، المعلمات، حالة الحزام</li>
   <li><strong>أعطال السلامة:</strong> غبار زائد، شرر، شظايا → تحقق من PPE، الشفط، واقيات الماكينة، حالة المنتج</li>
 </ol>`;
 }
@@ -1049,7 +1049,7 @@ function buildRootCauseAnalysis(topic: TopicSpec, model: typeof models[0] | null
 <table class="spec-table">
   <thead><tr><th>العطل</th><th>السبب المباشر</th><th>السبب الجذري (5 Why's)</th><th>الإجراء التصحيحي</th></tr></thead>
   <tbody>
-    <tr><td>تآكل سريع</td><td>غرِت 120 لمرحلة إزالة</td><td>لم يحدد مرحلة العمل → لا يعرف تسلسل الغرِت → لا دليل متاح</td><td>وفر دليل تسلسل الغرِt، درّب المشغلين</td></tr>
+    <tr><td>تآكل سريع</td><td>الحبيبات 120 لمرحلة إزالة</td><td>لم يحدد مرحلة العمل → لا يعرف تسلسل الحبيبات → لا دليل متاح</td><td>وفر دليل تسلسل الحبيبات، درّب المشغلين</td></tr>
     <tr><td>انحراف متكرر</td><td>بكرة توجيه مهترئة</td><td>لا صيانة دورية → لا قائمة تحقق → لا مسؤولية محددة</td><td>أضف للبكرات في الصيانة الأسبوعية، عين مسؤول</td></tr>
     <tr><td>انسداد مستمر</td><td>قرص غير مثقب لمادة لزجة</td><td>لم يطابق نوع القرص للمادة → لا مواصفة واضحة → افتراض خاطئ</td><td>أضف "نوع القرص" لنموذج RFQ، درّب المشتريات</td></tr>
   </tbody>
@@ -1060,14 +1060,14 @@ function buildRootCauseChecklist(topic: TopicSpec, model: typeof models[0] | nul
   return `
 <h3>قائمة تحقق الأسباب الجذرية</h3>
 <ul class="plain-links">
-  <li>☐ هل الغرِت مطابق لمرحلة العمل؟</li>
+  <li>☐ هل الحبيبات مطابقة لمرحلة العمل؟</li>
   <li>☐ هل نوع الحبيبات مناسب لمادة القطعة؟</li>
   <li>☐ هل الضغط ضمن النطاق الموصى به (0.5–2 N/cm²)؟</li>
   <li>☐ هل RPM الماكينة ضمن حد المنتج؟</li>
   <li>☐ هل نظام الشفط يعمل بكفاءة؟ (تحقق فلاتر، تدفق هواء)</li>
   <li>☐ هل البكرات/القاعدة نظيفة وفي حالة جيدة؟</li>
   <li>☐ هل اتجاه الدوران/الوصل صحيح (للأحزمة)؟</li>
-  <li>☐ هل المشغل مدرب على تسلسل الغرِت؟</li>
+  <li>☐ هل المشغل مدرب على تسلسل الحبيبات؟</li>
   <li>☐ هل البيئة (رطوبة/حرارة) تؤثر على القاعدة/الرابطة؟</li>
   <li>☐ هل الدفعة الحالية مطابقة للمواصفة المرجعية؟</li>
 </ul>`;
@@ -1113,7 +1113,7 @@ function buildMarketContext(topic: TopicSpec, industry: typeof industries[0] | u
 /**
  * 进口合规（地域寻源篇专用）：按目的国给出真实的监管机构与合规要点，
  * 替代原先误路由的 PPE 安全清单（该清单与进口法规主题无关，属灌水）。
- * 数据全部来自 prompts_ar_gulf.md 第 7 节限定的权威机构（SASO/ESMA/GSO/GSO 各国分支）。
+ * 数据全部来自 prompts_ar.md 第 7 节限定的权威机构（SASO/ESMA/GSO/GSO 各国分支）。
  */
 function buildImportCompliance(gccCountry: typeof gccCountries[0] | undefined): string {
   if (!gccCountry || gccCountry.code === 'general-gcc') return '';
@@ -1195,8 +1195,8 @@ function buildStandardsAnalysis(topic: TopicSpec, industry: typeof industries[0]
   return `
 <h3>الإطار المعياري العام في الخليج (GSO)</h3>
 <ul class="plain-links">
-  <li><strong>FEPA P:</strong> نظام درجات الغرِت الأوروبي السائد، يُستخدم كمرجع أساسي في المواصفات الدولية</li>
-  <li><strong>ISO 6344:</strong> تحليل حجم حبيبات الغرِت، يضمن اتساق الدقة عبر الموردين</li>
+  <li><strong>FEPA P:</strong> نظام درجات الحبيبات الأوروبي السائد، يُستخدم كمرجع أساسي في المواصفات الدولية</li>
+  <li><strong>ISO 6344:</strong> تحليل حجم حبيبات الحبيبات، يضمن اتساق الدقة عبر الموردين</li>
   <li><strong>GSO:</strong> المواصفات الخليجية الموحدة، تُطبق في جميع دول مجلس التعاون</li>
   <li><strong>OSHA 1910.215 / NIOSH:</strong> مرجعية دولية للسلامة المهنية في عمليات الصنفرة</li>
 </ul>
@@ -1209,7 +1209,7 @@ function buildMarketData(topic: TopicSpec, industry: typeof industries[0] | unde
 <ul class="plain-links">
   <li>حجم سوق المواد الكاشطة في الخليج: ~$1.2B سنوياً (تقديرات 2023–2024)</li>
   <li>معدل النمو السنوي المركب (CAGR): 6–8% حتى 2028</li>
-  <li>الحصة الأكبر: أحزمة وأقراص الصنفرة (~55%)، ثم فلب ديسك (~25%)</li>
+  <li>الحصة الأكبر: أحزمة وأقراص الصنفرة (~55%)، ثم فلاب ديسك (~25%)</li>
   <li>المستوردون الرئيسيون: الصين، ألمانيا، إيطاليا، كوريا، الولايات المتحدة</li>
 </ul>
 <p><em>المصادر: تقارير فروست آند سوليفان، يورومونيتور، غرف التجارة الخليجية. الأرقام تقديرية وتختلف حسب المصدر.</em></p>`;
@@ -1254,11 +1254,11 @@ function buildMOQPricing(topic: TopicSpec, model: typeof models[0] | null, produ
   <tbody>
     <tr><td>أحزمة صنفرة</td><td>500–1000 وحدة</td><td>2000–5000 وحدة</td><td>1000 / 5000 / 10000 / 50000</td></tr>
     <tr><td>أقراص صنفرة</td><td>2000–5000 وحدة</td><td>5000–10000 وحدة</td><td>5000 / 10000 / 50000 / 100000</td></tr>
-    <tr><td>فلب ديسك</td><td>1000–2000 وحدة</td><td>3000–5000 وحدة</td><td>2000 / 5000 / 10000 / 20000</td></tr>
+    <tr><td>فلاب ديسك</td><td>1000–2000 وحدة</td><td>3000–5000 وحدة</td><td>2000 / 5000 / 10000 / 20000</td></tr>
     <tr><td>إسفنج صنفرة</td><td>3000–5000 وحدة</td><td>5000–10000 وحدة</td><td>5000 / 10000 / 20000 / 50000</td></tr>
   </tbody>
 </table>
-<p><em>الأرقام إرشادية. MOQ النهائي يعتمد على المقاس، الغرِت، التخصيص، والتغليف. اطلب عرضاً دقيقاً.</em></p>`;
+<p><em>الأرقام إرشادية. MOQ النهائي يعتمد على المقاس، الحبيبات، التخصيص، والتغليف. اطلب عرضاً دقيقاً.</em></p>`;
 }
 
 function buildSampleApproval(topic: TopicSpec, model: typeof models[0] | null, productCat: typeof productCategories[0] | undefined): string {
@@ -1282,7 +1282,7 @@ function buildQAStandards(topic: TopicSpec, model: typeof models[0] | null, prod
   <thead><tr><th>معيار الفحص</th><th>طريقة الاختبار</th><th>معيار القبول</th></tr></thead>
   <tbody>
     <tr><td>الأبعاد</td><td>مقياس شريطي/ميكروميتر، عينة عشوائية 5%</td><td>± التسامح المحدد في المواصفة</td></tr>
-    <tr><td>درجة الغرِت</td><td>محلل حبيبات (FEPA P) أو مرجع معتمد</td><td>ضمن نطاق FEPA للدرجة المعلنة</td></tr>
+    <tr><td>درجة الحبيبات</td><td>محلل حبيبات (FEPA P) أو مرجع معتمد</td><td>ضمن نطاق FEPA للدرجة المعلنة</td></tr>
     <tr><td>المظهر السطحي</td><td>فحص بصري بإضاءة 1000 لوكس</td><td>لا خدوش، لا فقاعات، لا تلوث</td></tr>
     <tr><td>قوة الرابطة</td><td>اختبار قص/تقشير قياسي</td><td>≥ القيمة الدنيا للمواصفة</td></tr>
     <tr><td>الطباعة/التغليف</td><td>مطابقة عينة الموافقة الموقعة</td><td>متطابقة 100%</td></tr>
@@ -1318,11 +1318,11 @@ function buildPainPoints(topic: TopicSpec, model: typeof models[0] | null, produ
   const industryName = industry?.name || '';
   // 行业痛点优先用 site.ts 已验证的 challenges；无数据行业回落通用痛点
   const painItems = industry?.challenges?.length
-    ? industry.challenges.map(ch => `<li><strong>${ch}:</strong> ${model?.name || productCat?.name || t(topic.productFamily)} بتسلسل غرِت موحد وعينات مرجعية → اتساق النتائج وتقليل إعادة العمل</li>`)
+    ? industry.challenges.map(ch => `<li><strong>${ch}:</strong> ${model?.name || productCat?.name || t(topic.productFamily)} بتسلسل الحبيبات موحد وعينات مرجعية → اتساق النتائج وتقليل إعادة العمل</li>`)
     : [
-        '<li><strong>تشتت جودة التشطيب:</strong> تسلسل غرِت موحد + عينات مرجعية → اتساق بين الدفعات</li>',
+        '<li><strong>تشتت جودة التشطيب:</strong> تسلسل الحبيبات موحد + عينات مرجعية → اتساق بين الدفعات</li>',
         '<li><tt>توقف الماكينة المتكرر:</strong> أحزمة/أقراص بعمر أطول + صيانة وقائية → توفر أعلى</li>',
-        '<li><strong>اختيار الغرِت الخاطئ:</strong> دليل تسلسل + استشارة فنية → قرار صحيح من المرة الأولى</li>',
+        '<li><strong>اختيار الحبيبات الخاطئ:</strong> دليل تسلسل + استشارة فنية → قرار صحيح من المرة الأولى</li>',
         '<li><strong>تكلفة الوحدة المرتفعة:</strong> حساب TCO (سعر + عمر + توقف) → قرار اقتصادي حقيقي</li>',
       ];
   return `
@@ -1356,7 +1356,7 @@ function buildSampleEvaluation(topic: TopicSpec, model: typeof models[0] | null,
 <table class="spec-table">
   <thead><tr><th>المعيار</th><th>الوزن</th><th>طريقة التقييم</th><th>الدرجة المستهدفة</th></tr></thead>
   <tbody>
-    <tr><td>مطابقة المواصفة التقنية</td><td>30%</td><td>قياس أبعاد، غرِت، مادة</td><td>100% مطابقة</td></tr>
+    <tr><td>مطابقة المواصفة التقنية</td><td>30%</td><td>قياس أبعاد، الحبيبات، مادة</td><td>100% مطابقة</td></tr>
     <tr><td>أداء القطع/التشطيب</td><td>25%</td><td>اختبار على قطعة تمثيلية</td><td>≥ المعيار المرجعي</td></tr>
     <tr><td>العمر الافتراضي</td><td>20%</td><td>تشغيل حتى التآكل الكامل</td><td>≥ 90% عمر المرجع</td></tr>
     <tr><td>اتساق الدفعة</td><td>15%</td><td>فحص 5 قطع من مواقع مختلفة</td><td>CV ≤ 5%</td></tr>
@@ -1389,7 +1389,7 @@ function buildQuoteComparison(topic: TopicSpec, model: typeof models[0] | null, 
   <li><strong>الشحن والتأمين:</strong> CIF (للميناء)، CFR، FOB، أو EXW — قارن على أساس موحد</li>
   <li><strong>شروط الدفع:</strong> LC/TT، نسب المقدمة، آجال، عملة الفاتورة</li>
   <li><strong>مهلة التوريد:</strong> من اعتماد المواصفة/العينة إلى التسليم في الميناء/المستودع</li>
-  <li><strong>الحد الأدنى للطلب:</strong> MOQ لكل منتج/غرِت، مرونة خلط الأصناف</li>
+  <li><strong>الحد الأدنى للطلب:</strong> MOQ لكل منتج/الحبيبات، مرونة خلط الأصناف</li>
   <li><strong>الضمان والجودة:</strong> سياسة الإرجاع، استبدال الدفعات المعيبة، شهادات مع كل شحنة</li>
   <li><strong>دعم OEM:</strong> تكلفة القوالب، لوحات الطباعة، حد أدنى للتخصيص</li>
 </ul>`;
@@ -1417,11 +1417,11 @@ function buildCommonMistakes(topic: TopicSpec, model: typeof models[0] | null, p
 <table class="spec-table">
   <thead><tr><th>الخطأ</th><th>النتيجة</th><th>التصحيح</th></tr></thead>
   <tbody>
-    <tr><td>اختيار الغرِت بالحدس لا بمرحلة العمل</td><td>إما إزالة بطيئة أو خدوش عميقة</td><td>اتبع التسلسل: خشن → متوسط → ناعم</td></tr>
+    <tr><td>اختيار الحبيبات بالحدس لا بمرحلة العمل</td><td>إما إزالة بطيئة أو خدوش عميقة</td><td>اتبع التسلسل: خشن → متوسط → ناعم</td></tr>
     <tr><td>تجاهل توافق الماكينة (المقاس/التثبيت)</td><td>منتج لا يركب أو يتلف الماكينة</td><td>أرسل طراز الماكينة وطريقة الوصل قبل الطلب</td></tr>
     <tr><td>ضغط زائد "للإنجاز أسرع"</td><td>تآكل متسارع، حرارة، تشوه القطعة</td><td>دع الحبيبات تعمل، ضغط معتدل ثابت</td></tr>
     <tr><td>إهمال سحب الغبار</td><td>انسداد (Loading)، عمر قصير، بيئة غير صحية</td><td>نظف الفلاتر يومياً، تحقق من تدفق الهواء</td></tr>
-    <tr><td>خلط معايير الغرِت (FEPA/ANSI/JIS)</td><td>درجات غير متطابقة بين الدفعات</td><td>التزم بمعيار واحد (FEPA P) في كل المواصفات</td></tr>
+    <tr><td>خلط معايير الحبيبات (FEPA/ANSI/JIS)</td><td>درجات غير متطابقة بين الدفعات</td><td>التزم بمعيار واحد (FEPA P) في كل المواصفات</td></tr>
     <tr><td>طلب كمية كبيرة دون عينة</td><td>مخاطر عدم مطابقة للجودة/الأبعاد</td><td>اطلب عينة، افحص، وقع موافقة، ثم اطلب الكمي</td></tr>
     <tr><td>عدم تحديد OEM/التغليف مبكراً</td><td>تأخير الإنتاج، تكاليف تعديل عالية</td><td>أرفق ملفات العلامة مع RFQ الأولي</td></tr>
   </tbody>
@@ -1447,7 +1447,7 @@ function buildDesignPrinciples(topic: TopicSpec, model: typeof models[0] | null,
 <ul class="plain-links">
   <li><strong>الحبيبات:</strong> ${getGrainTypes(topic.productFamily).join(' / ')} — تُختار حسب صلادة المادة ومعدل الإزالة المطلوب</li>
   <li><strong>القاعدة:</strong> ${model?.backing || 'قماش/ورق/بوليمر'} — توازن بين المرونة (للانحناءات) والثبات (للأسطح المستوية)</li>
-  <li><strong>الرابطة:</strong> إسبنجية (Resin) عالية الحرارة — تحافظ على الحبيبات تحت أحمال قطع عالية</li>
+  <li><strong>الرابطة:</strong> راتنجية (Resin) عالية الحرارة — تحافظ على الحبيبات تحت أحمال قطع عالية</li>
   <li><strong>الهيكل:</strong> ${topic.productFamily === 'abrasive-belts' ? 'حزام موصول (مستقيم/مائل/متداخل)' : 'قرص موحد/مثقب/شبكي'} — مصمم لتوزيع ضغط متساوٍ</li>
 </ul>`;
 }
@@ -1466,7 +1466,7 @@ function buildOrderingInfo(topic: TopicSpec, model: typeof models[0] | null, pro
 <table class="spec-table">
   <thead><tr><th>البند</th><th>التفاصيل</th></tr></thead>
   <tbody>
-    <tr><td>MOQ</td><td>يُحدد حسب المقاس، الغرِت، التخصيص (راجع قسم الجملة/OEM)</td></tr>
+    <tr><td>MOQ</td><td>يُحدد حسب المقاس، الحبيبات، التخصيص (راجع قسم الجملة/OEM)</td></tr>
     <tr><td>مهلة الإنتاج</td><td>تُحدد في عرض السعر بعد اعتماد المواصفة والعينة الموقعة</td></tr>
     <tr><td>الشحن البحري</td><td>25–35 يوماً إلى موانئ الخليج</td></tr>
     <tr><td>التغليف القياسي</td><td>كرتون مموج، وحدات/لفة حسب المنتج، ملصق تعريف</td></tr>
@@ -1481,7 +1481,7 @@ function buildTop3FAQ(topic: TopicSpec, model: typeof models[0] | null, productC
   return `
 <h3>أهم 3 أسئلة - إجابات مختصرة</h3>
 <dl class="faq-list">
-  <dt>كيف أختار الغرِت المناسب لـ ${productName}؟</dt>
+  <dt>كيف أختار الحبيبات المناسبة لـ ${productName}؟</dt>
   <dd>مرحلة العمل تحدد: إزالة 40–80، تشطيب 100–180، نهائي 240+. المادة تحدد نوع الحبيبات.</dd>
   <dt>ما هو الحد الأدنى للطلب (MOQ)؟</dt>
   <dd>يُحدد بالمواصفة: المنتج القياسي أقل، OEM/تخصيص أعلى. اطلب العرض للرقم الدقيق.</dd>
@@ -1517,7 +1517,7 @@ function altAttachment(familySlug: string): string {
 function altGritRange(familySlug: string): string {
   const alt = { 'abrasive-belts': 'sanding-discs', 'flap-discs': 'abrasive-belts', 'sanding-discs': 'abrasive-belts', 'hook-loop': 'sanding-discs', 'sanding-sponges': 'sanding-discs' }[familySlug] || 'sanding-discs';
   const cat = productCategories.find(c => c.slug === alt);
-  const g = cat?.specs?.find(s => /حبيبات|غرِت/i.test(s[0]))?.[1];
+  const g = cat?.specs?.find(s => /حبيبات|الحبيبات/i.test(s[0]))?.[1];
   return g || 'حسب الطلب';
 }
 function getAltApplication(familySlug: string): string {
@@ -1538,7 +1538,7 @@ function buildComparisonTable(topic: TopicSpec, model: typeof models[0] | null, 
   <tbody>
     <tr><td>النوع</td><td>${productName}</td><td>${altProduct}</td><td>اختلاف في الشكل والاستخدام</td></tr>
     <tr><td>مقاس شائع</td><td>${model?.sizeAr || 'متعدد'}</td><td>${altSize(topic.productFamily)}</td><td>يُختار حسب الماكينة</td></tr>
-    <tr><td>نطاق الغرِت</td><td>${model?.gritRange.join(' – ') || '40–800'}</td><td>${altGritRange(topic.productFamily)}</td><td>يعتمد على مرحلة العمل</td></tr>
+    <tr><td>نطاق الحبيبات</td><td>${model?.gritRange.join(' – ') || '40–800'}</td><td>${altGritRange(topic.productFamily)}</td><td>يعتمد على مرحلة العمل</td></tr>
     <tr><td>القاعدة</td><td>${model?.backing || 'قماش/ورق/بوليمر'}</td><td>${altBacking(topic.productFamily)}</td><td>مرونة vs ثبات</td></tr>
     <tr><td>نظام التثبيت</td><td>${model?.attachment || 'يُحدد مع الماكينة'}</td><td>${altAttachment(topic.productFamily)}</td><td>توافق الماكينة حاسم</td></tr>
     <tr><td>التطبيق الرئيسي</td><td>${getMainApplication(topic.productFamily)}</td><td>${getAltApplication(topic.productFamily)}</td><td>قد تتداخل في بعض المراحل</td></tr>
@@ -1558,13 +1558,13 @@ function buildDecisionGuide(topic: TopicSpec, model: typeof models[0] | null, pr
   <h3>خطوات التحديد (3 خطوات)</h3>
   <ol class="numbered-list">
     <li><strong>مادة القطعة:</strong> ${getWorkpieceMaterials(topic.industry).join(' / ')}</li>
-    <li><strong>مرحلة العمل:</strong> إزالة (غرِت 40–80) → تشطيب متوسط (100–180) → لمسة نهائية (240–400+)</li>
+    <li><strong>مرحلة العمل:</strong> إزالة (الحبيبات 40–80) → تشطيب متوسط (100–180) → لمسة نهائية (240–400+)</li>
     <li><strong>توافق الماكينة:</strong> مقاس الحزام/القرص، نظام التثبيت (هوك آند لوب / PSA / شبكي)، اتجاه الدوران</li>
   </ol>
 
   <h3>مصفوفة الاختيار السريع</h3>
   <table class="spec-table">
-    <thead><tr><td>المادة</td><td>مرحلة</td><td>الغرِت المقترح</td><td>النوع المفضل</td></tr></thead>
+    <thead><tr><td>المادة</td><td>مرحلة</td><td>الحبيبات المقترحة</td><td>النوع المفضل</td></tr></thead>
     <tbody>
       <tr><td>خشب ناعم</td><td>إزالة</td><td>60–80</td><td>${productName}</td></tr>
       <tr><td>خشب صلب</td><td>تشطيب</td><td>120–180</td><td>${productName}</td></tr>
@@ -1581,7 +1581,7 @@ function buildSpecsSection(topic: TopicSpec, model: typeof models[0] | null, pro
 
   return `
 <h3>المعايير المرجعية</h3>
-<p>درجات الغرِت تتبع <strong>FEPA P</strong> (الأوروبية) وهي المعيار الدولي السائد. المقابل ANSI (الأمريكية) و JIS (اليابانية) موجودة لكن لا تخلط بينهما في مواصفة واحدة.</p>
+<p>درجات الحبيبات تتبع <strong>FEPA P</strong> (الأوروبية) وهي المعيار الدولي السائد. المقابل ANSI (الأمريكية) و JIS (اليابانية) موجودة لكن لا تخلط بينهما في مواصفة واحدة.</p>
 
 <h3>جدول المواصفات الكاملة</h3>
 <table class="spec-table">
@@ -1589,10 +1589,10 @@ function buildSpecsSection(topic: TopicSpec, model: typeof models[0] | null, pro
   <tbody>
     <tr><td>المنتج</td><td>${productName}</td><td></td></tr>
     <tr><td>المقاس</td><td>${model?.sizeAr || productCat?.specs?.find(s => s[0].includes('أبعاد'))?.[1] || 'متعدد المقاسات'}</td><td>يُحدد بالملّيمتر بدقة</td></tr>
-    <tr><td>نطاق الغرِت</td><td>${model?.gritRange.join('، ') || 'حسب الطلب'}</td><td>FEPA P قياسي</td></tr>
+    <tr><td>نطاق الحبيبات</td><td>${model?.gritRange.join('، ') || 'حسب الطلب'}</td><td>FEPA P قياسي</td></tr>
     <tr><td>نوع الحبيبات</td><td>${getGrainTypes(topic.productFamily).join(' / ')}</td><td>يُختار حسب المادة</td></tr>
     <tr><td>القاعدة (Backing)</td><td>${model?.backing || 'قماش، ورق، أو بوليمر'}</td><td>مرونة، ثبات، مقاومة رطوبة</td></tr>
-    <tr><td>الرابطة (Bond)</td><td>إسفنجية (Resin)</td><td>مقاومة حرارة عالية</td></tr>
+    <tr><td>الرابطة (Bond)</td><td>راتنجية (Resin)</td><td>مقاومة حرارة عالية</td></tr>
     <tr><td>نظام التثبيت</td><td>${model?.attachment || 'هوك آند لوب / PSA / شبكي'}</td><td>يجب مطابقة الماكينة</td></tr>
     <tr><td>السرعة القصوى</td><td>وفق ملصق المنتج</td><td>لا تتجاوز RPM الماكينة</td></tr>
     <tr><td>السلامة</td><td>PPE إلزامي، سحب غبار</td><td>OSHA/NIOSH + محلي</td></tr>
@@ -1609,15 +1609,15 @@ function buildApplicationSection(topic: TopicSpec, model: typeof models[0] | nul
 <h3>دورة العمل في ${industryName}${countryName ? ` (${countryName})` : ''}</h3>
 <ol class="numbered-list">
   <li><strong>التجهيز:</strong> تنظيف السطح، إزالة الصدأ/الطلاء القديم، فحص العيوب</li>
-  <li><strong>الإزالة السريعة:</strong> ${productName} بغرِت 40–80، ضغط معتدل، سرعة موصى بها</li>
-  <li><strong>التسوية المتوسطة:</strong> غرِت 100–180، تخفيف الضغط، تمريرات متقاطعة</li>
-  <li><strong>التشطيب النهائي:</strong> غرِت 240–400 (أو أعلى للدهان)، حركة منتظمة</li>
+  <li><strong>الإزالة السريعة:</strong> ${productName} بالحبيبات 40–80، ضغط معتدل، سرعة موصى بها</li>
+  <li><strong>التسوية المتوسطة:</strong> الحبيبات 100–180، تخفيف الضغط، تمريرات متقاطعة</li>
+  <li><strong>التشطيب النهائي:</strong> الحبيبات 240–400 (أو أعلى للدهان)، حركة منتظمة</li>
   <li><strong>التنظيف والفحص:</strong> إزالة الغبار، فحص خشونة السطح (Ra/Rz)، تجهيز للخطوة التالية</li>
 </ol>
 
-<h3>تسلسل الغرِت المقترح</h3>
+<h3>تسلسل الحبيبات المقترحة</h3>
 <table class="spec-table">
-  <thead><tr><th>المرحلة</th><th>الغرِت</th><th>الهدف</th><th>ملاحظات</th></tr></thead>
+  <thead><tr><th>المرحلة</th><th>الحبيبات</th><th>الهدف</th><th>ملاحظات</th></tr></thead>
   <tbody>
     <tr><td>إزالة مادة/صدأ/طلاء</td><td>40 – 80</td><td>إنتاجية عالية</td><td>زركونيا/سيراميك للمعدن</td></tr>
     <tr><td>تشطيب متوسط</td><td>100 – 180</td><td>تسوية آثار المرحلة السابقة</td><td>أكسيد ألومنيوم عام</td></tr>
@@ -1641,9 +1641,9 @@ function buildProcessSteps(topic: TopicSpec, model: typeof models[0] | null, pro
   <li><strong>تركيب ${productName}:</strong> مطابقة المقاس، تثبيت صحيح، فحص محاذاة الحزام/القرص</li>
   <li><strong>اختبار تشغيل:</strong> 30 ثانية بدون قطعة، مراقبة اهتزاز/صوت/انحراف</li>
   <li><strong>ضبط المعلمات:</strong> السرعة (RPM)، الضغط (N/cm²)، معدل التغذية (m/min)</li>
-  <li><strong>الصنفرة التسلسلية:</strong> اتبع جدول الغرِت، نظف السطح بين كل درجة</li>
+  <li><strong>الصنفرة التسلسلية:</strong> اتبع جدول الحبيبات، نظف السطح بين كل درجة</li>
   <li><strong>مراقبة الجودة:</strong> فحص بصري + مقياس خشونة كل 50 قطعة أو كل دفعة</li>
-  <li><strong>تغيير الغرِت:</strong> أوقف الماكينة، أزل القديم، نظف القاعدة، ثبت الجديد، اختبر</li>
+  <li><strong>تغيير الحبيبات:</strong> أوقف الماكينة، أزل القديم، نظف القاعدة، ثبت الجديد، اختبر</li>
   <li><strong>إيقاف وتنظيف:</strong> أزل ${productName}، نظف الماكينة، خزن في مكان جاف</li>
 </ol>
 
@@ -1672,7 +1672,7 @@ function buildSafetyCompliance(topic: TopicSpec, industry: typeof industries[0] 
 <h3>متطلبات السلامة (PPE إلزامي)</h3>
 <ul class="plain-links">
   <li>نظارات واقية / وجهية (EN 166 / ANSI Z87.1)</li>
-  <li>كمامة تنفس (N95 / FFP2 mínimo، أعلى للغبار الدقيق)</li>
+  <li>كمامة تنفس (N95 / FFP2 على الأقل، أعلى للغبار الدقيق)</li>
   <li>قفازات مقاومة للقطع (EN 388)</li>
   <li>واقي سمع (EN 352) للماكينات الصاخبة</li>
   <li>ملابس عمل طويلة، لا مجوهرات، شعر مربوط</li>
@@ -1704,8 +1704,8 @@ function buildCostOptimization(topic: TopicSpec, model: typeof models[0] | null,
 <table class="spec-table">
   <thead><tr><th>العامل</th><th>التأثير على التكلفة</th><th>إجراء تحسين</th></tr></thead>
   <tbody>
-    <tr><td>اختيار الغرِت الصحيح</td><td>تجنب إعادة العمل + عمر أطول</td><td>اختبار 2–3 درجات قبل الطلب الكمي</td></tr>
-    <tr><td>نوع الحبيبات</td><td>سيراميك/زركوريا أغلى لكن تدوم 2–3×</td><td>احسب تكلفة المتر المربع لا سعر الوحدة</td></tr>
+    <tr><td>اختيار الحبيبات الصحيحة</td><td>تجنب إعادة العمل + عمر أطول</td><td>اختبار 2–3 درجات قبل الطلب الكمي</td></tr>
+    <tr><td>نوع الحبيبات</td><td>سيراميك/زركونيا أغلى لكن تدوم 2–3×</td><td>احسب تكلفة المتر المربع لا سعر الوحدة</td></tr>
     <tr><td>القاعدة المناسبة</td><td>قماش مرن = أقل كسر على الانحناءات</td><td>مطابقة القاعدة لشكل القطعة</td></tr>
     <tr><td>نظام الشفط</td><td>يقلل الانسداد → يطيل العمر 30–50%</td><td>استثمر في شفط فعال</td></tr>
     <tr><td>الصيانة الوقائية</td><td>بكرات نظيفة = حزام مستقيم = تآكل متساوٍ</td><td>جدول تنظيف يومي/أسبوعي</td></tr>
@@ -1732,7 +1732,7 @@ function buildProcurementTemplate(topic: TopicSpec, model: typeof models[0] | nu
   <tbody>
     <tr><td>اسم المنتج / العائلة</td><td>${productName}</td><td>نعم</td></tr>
     <tr><td>المقاس (مم / إنش)</td><td>${model?.sizeAr || '533 × 75 مم / 5 إنش'}</td><td>نعم</td></tr>
-    <tr><td>درجة الغرِت (FEPA)</td><td>${model?.gritRange?.slice(0, 3).join('، ') || '80، 120، 240'}</td><td>نعم</td></tr>
+    <tr><td>درجة الحبيبات (FEPA)</td><td>${model?.gritRange?.slice(0, 3).join('، ') || '80، 120، 240'}</td><td>نعم</td></tr>
     <tr><td>نوع الحبيبات</td><td>أكسيد ألومنيوم / زركونيا / سيراميك</td><td>يفضل</td></tr>
     <tr><td>القاعدة (Backing)</td><td>قماش X / ورق Y / بوليمر Z</td><td>يفضل</td></tr>
     <tr><td>نظام التثبيت</td><td>هوك آند لوب / PSA / شبكي</td><td>نعم</td></tr>
@@ -1819,7 +1819,7 @@ function buildMarketTrends(topic: TopicSpec, industry: typeof industries[0] | un
   return `
 <h3>محركات السوق في ${industryName}${countryName ? ` (${countryName})` : ''}</h3>
 <ul class="plain-links">
-  <li><strong>تحديث المعايير:</strong> FEPA P 2023، ISO 6344:2022 تفرض اتساقاً أدق للغرِت</li>
+  <li><strong>تحديث المعايير:</strong> FEPA P 2023، ISO 6344:2022 تفرض اتساقاً أدق للالحبيبات</li>
   <li><strong>الصحة والسلامة:</strong> SASO/ESMA/GSO تشدد على حدود الغبار القابل للتنفس، PPE إلزامي</li>
   <li><strong>الأتمتة:</strong> خطوط صنفرة روبوتية تحتاج أحزمة/أقراص بتماسك أبعاد عالي</li>
   <li><strong>الاستدامة:</strong> طلب متزايد لقواعد قابلة لإعادة التدوير، حبيبات أقل انبعاثاً</li>
@@ -1829,7 +1829,7 @@ function buildMarketTrends(topic: TopicSpec, industry: typeof industries[0] | un
 <table class="spec-table">
   <thead><tr><th>الاتجاه</th><th>التأثير على الشراء</th><th>المنتجات المعنية</th></tr></thead>
   <tbody>
-    <tr><td>حبيبات سيراميك/زركونيا</td><td>سعر أعلى، عمر 2–3×، تكلفة متر مربع أقل</td><td>أحزمة، أقراص، فلب ديسك</td></tr>
+    <tr><td>حبيبات سيراميك/زركونيا</td><td>سعر أعلى، عمر 2–3×، تكلفة متر مربع أقل</td><td>أحزمة، أقراص، فلاب ديسك</td></tr>
     <tr><td>قواعد بوليمرية مقاومة رطوبة</td><td>استقرار أبعاد في بيئات رطبة/ساحلية</td><td>أحزمة كبيرة، أقراص</td></tr>
     <tr><td>أقراص شبكية متعددة الثقوب</td><td>شفط أفضل، أقل انسداد، تشطيب موحد</td><td>أقراص 5/6 إنش</td></tr>
     <tr><td>نظام هوك آند لوب محسن</td><td>تغيير أسرع، ثبات أعلى، عمر قاعدة أطول</td><td>جميع الأقطار</td></tr>
@@ -1863,7 +1863,7 @@ function buildSupportEscalation(): string {
   <li>عطل متكرر بنفس النمط بعد تطبيق الحلول القياسية</li>
   <li>منتج جديد لا يتوافق مع المواصفة المتعاقد عليها</li>
   <li>انحراف أداء > 20% عن الدفعة المرجعية</li>
-  <li>حاجة لتعديل مواصفة (غرِت، قاعدة، أبعاد) أثناء التعاقد</li>
+  <li>حاجة لتعديل مواصفة (الحبيبات، قاعدة، أبعاد) أثناء التعاقد</li>
 </ul>
 
 <h3>قنوات الدعم</h3>
@@ -1907,7 +1907,7 @@ function buildDisclaimer(gccCountry: typeof gccCountries[0] | undefined): string
   <h3>إخلاء مسؤولية مهم</h3>
   <ul>
     <li>موتاى <strong>لا تملك مخزوناً محلياً</strong>، ولا مكتباً، ولا كياناً قانونياً، ولا موزعاً معتمداً حصرياً في ${countryName}.</li>
-    <li>جميع الشحنات <strong>تصدر من مصنعنا في الصين</strong> (هوبي، شيانينغ) وفق شروط INCOTERTS المتفق عليها.</li>
+    <li>جميع الشحنات <strong>تصدر من مصنعنا في الصين</strong> (هوبي، شيانينغ) وفق شروط INCOTERMS المتفق عليها.</li>
     <li>مهل التوريد، الأسعار، MOQ، والشهادات <strong>تخضع للعرض التجاري النهائي</strong> بعد مراجعة المواصفة الكاملة.</li>
     <li>الامتثال لـ SASO/ESMA/GSO <strong>مسؤولية المستورد</strong>؛ نحن نوفر شهادات المصنع (COC/COA) وفق المواصفة.</li>
     <li>أي إشارة إلى "موزع محلي" أو "تسليم من المخزن في ${countryName}" <strong>غير صحيحة</strong> ما لم تصدر كتابياً من موتاى.</li>
@@ -1917,9 +1917,9 @@ function buildDisclaimer(gccCountry: typeof gccCountries[0] | undefined): string
 
 function buildGlossaryCard(topic: TopicSpec): string {
   const terms = [
-    { term: 'درجة الغرِت (Grit)', def: 'رقم معياري (FEPA P) يدل على حجم الحبيبات. رقم أقل = أخشن، رقم أعلى = أنعم' },
+    { term: 'درجة الحبيبات (Grit)', def: 'رقم معياري (FEPA P) يدل على حجم الحبيبات. رقم أقل = أخشن، رقم أعلى = أنعم' },
     { term: 'القاعدة (Backing)', def: 'المادة الحاملة للحبيبات: قماش (مرن)، ورق (ثابت)، بوليمر (مقاوم رطوبة)' },
-    { term: 'الرابطة (Resin Bond)', def: 'المادة اللاصقة التي تثبت الحبيبات على القاعدة. إسبنجية تتحمل الحرارة' },
+    { term: 'الرابطة (Resin Bond)', def: 'المادة اللاصقة التي تثبت الحبيبات على القاعدة. راتنجية تتحمل الحرارة' },
     { term: 'هوك آند لوب (Hook & Loop)', def: 'نظام تثبيت بخطاف وحلقة (فيلكرو) يسمح بتغيير القرص سريعاً' },
     { term: 'لصق ذاتي (PSA)', def: 'قرص بوجه لاصق حساس للضغط، تركيب مرة واحدة على قاعدة لاصقة' },
     { term: 'شبكي (Mesh)', def: 'قرص/حزام بفتحات لتفريغ الغبار، يقلل الانسداد ويحسن التشطيب' },
@@ -1943,7 +1943,7 @@ function buildInquiryTemplate(topic: TopicSpec): string {
   <h3>نموذج طلب عرض سعر (نسخ، ملء، إرسال)</h3>
   <pre style="background:#1e293b;color:#e2e8f0;padding:1rem;border-radius:8px;overflow-x:auto;font-family:monospace;font-size:0.85rem;line-height:1.6;">منتج: [اسم المنتج/العائلة]
 مقاس: [مثال: 533×75 مم أو 5 إنش]
-غرِت: [مثال: 80، 120، 240]
+الحبيبات: [مثال: 80، 120، 240]
 حبيبات: [أكسيد ألومنيوم / زركونيا / سيراميك / غير محدد]
 قاعدة: [قماش / ورق / بوليمر / غير محدد]
 تثبيت: [هوك آند لوب / PSA / شبكي / غير محدد]
@@ -2043,7 +2043,7 @@ function buildInternalLinks(
   links.push({
     url: '/resources/abrasive-grit-guide',
     anchorText: 'دليل اختيار درجات الحبيبات',
-    description: 'جدول مرجعي يربط درجة الغرِت بمهمة التشطيب الأساسية',
+    description: 'جدول مرجعي يربط درجة الحبيبات بمهمة التشطيب الأساسية',
   });
 
   links.push({
@@ -2124,15 +2124,15 @@ function buildFAQ(
   const baseFAQs = [
     {
       q: `ما الفرق بين ${productName} والمنتجات المشابهة؟`,
-      a: `الفرق في الشكل (حزام/قرص/إسفنج)، نظام التثبيت، ونطاق الغرِت. ${productName} مصمم لـ ${getMainApplication(topic.productFamily)}. للتفاصيل راجع جدول المقارنة أعلاه.`,
+      a: `الفرق في الشكل (حزام/قرص/إسفنج)، نظام التثبيت، ونطاق الحبيبات. ${productName} مصمم لـ ${getMainApplication(topic.productFamily)}. للتفاصيل راجع جدول المقارنة أعلاه.`,
     },
     {
-      q: `كيف أحدد درجة الغرِت المناسبة لـ ${industryName}؟`,
+      q: `كيف أحدد درجة الحبيبات المناسبة لـ ${industryName}؟`,
       a: `يعتمد على مرحلة العمل: إزالة (40–80)، تشطيب متوسط (100–180)، لمسة نهائية (240–400+). المادة تهم أيضاً: معدن صلب → زركونيا/سيراميك، خشب/عام → أكسيد ألومنيوم.`,
     },
     {
       q: `ما المعلومات المطلوبة لطلب عرض سعر دقيق؟`,
-      a: `المنتج، المقاس، الغرِت، الحبيبات، القاعدة، التثبيت، الكمية، التطبيق، الماكينة، وجهة الشحن، شروط الدفع، شهادات مطلوبة. النموذج الكامل في قسم "نموذج طلب عرض سعر".`,
+      a: `المنتج، المقاس، الحبيبات، الحبيبات، القاعدة، التثبيت، الكمية، التطبيق، الماكينة، وجهة الشحن، شروط الدفع، شهادات مطلوبة. النموذج الكامل في قسم "نموذج طلب عرض سعر".`,
     },
     {
       q: `ما هو الحد الأدنى لكمية الطلب (MOQ)؟`,
@@ -2160,10 +2160,10 @@ function buildFAQ(
     ],
     'troubleshooting': [
       { q: `الحزام ينحرف باستمرار، ما الحل؟`, a: `افحص: محاذاة البكرات، اتجاه الوصل، تآكل البكرات، نظافة الأسطح. 90% من حالات الانحراف تحل بمحاذاة صحيحة وبكرات نظيفة.` },
-      { q: `القرص يسد (Loading) بسرعة، ماذا أفعل؟`, a: `جرّب: 1) قرص شبكي للشفط الأفضل 2) تقليل الضغط 3) مبرد/ماء إن أمكن 4) درجة غرِت أخشن للمرحلة الأولى 5) تنظيف فلتر الشفط.` },
+      { q: `القرص يسد (Loading) بسرعة، ماذا أفعل؟`, a: `جرّب: 1) قرص شبكي للشفط الأفضل 2) تقليل الضغط 3) مبرد/ماء إن أمكن 4) درجة الحبيبات أخشن للمرحلة الأولى 5) تنظيف فلتر الشفط.` },
     ],
     'process-tutorial': [
-      { q: `هل يجب تنظيف السطح بين كل درجة غرِت؟`, a: `نعم، ضروري. بقايا الغرِت الخشن تخدش السطح عند الانتقال للدرجة الأنعم. استخدم هواء مضغوط أو ممسحة نظيفة جافة.` },
+      { q: `هل يجب تنظيف السطح بين كل درجة الحبيبات؟`, a: `نعم، ضروري. بقايا الحبيبات الخشنة تخدش السطح عند الانتقال للدرجة الأنعم. استخدم هواء مضغوط أو ممسحة نظيفة جافة.` },
     ],
   };
 
@@ -2189,7 +2189,7 @@ function buildSpecsTable(topic: TopicSpec, model: typeof models[0] | null, produ
   return [
     { المعلمة: 'المنتج', القيمة: model?.name || productCat?.name || getProductFamilyNameAr(topic.productFamily) },
     { المعلمة: 'المقاس', القيمة: model.sizeAr },
-    { المعلمة: 'نطاق الغرِت', القيمة: model.gritRange.join(' – ') },
+    { المعلمة: 'نطاق الحبيبات', القيمة: model.gritRange.join(' – ') },
     { المعلمة: 'النوع', القيمة: model.type === 'belt' ? 'حزام' : 'قرص' },
     { المعلمة: 'القاعدة', القيمة: model.backing },
     { المعلمة: 'التثبيت', القيمة: model.attachment },
@@ -2213,7 +2213,7 @@ function buildInfoBoxes(
     title: 'إجابة سريعة',
     content: [
       `المنتج: ${productName}`,
-      `الغرِت الشائع: ${getCommonGritRange(topic.productFamily)}`,
+      `الحبيبات الشائعة: ${getCommonGritRange(topic.productFamily)}`,
       `التطبيق الرئيسي: ${getMainApplication(topic.productFamily)}`,
       `نظام التثبيت: ${model?.attachment || 'هوك آند لوب / PSA / شبكي'}`,
     ],
@@ -2226,7 +2226,7 @@ function buildInfoBoxes(
     content: [
       '☐ المنتج والعائلة',
       '☐ المقاس الدقيق (مم/إنش)',
-      '☐ درجة/درجات الغرِت (FEPA P)',
+      '☐ درجة/درجات الحبيبات (FEPA P)',
       '☐ نوع الحبيبات (Al₂O₃ / ZrO₂ / سيراميك / SiC)',
       '☐ القاعدة (قماش / ورق / بوليمر)',
       '☐ نظام التثبيت (هوك آند لوب / PSA / شبكي)',
@@ -2246,7 +2246,7 @@ function buildInfoBoxes(
     content: [
       `منتج: ${productName}`,
       `مقاس: [املأ]`,
-      `غرِت: [املأ]`,
+      `الحبيبات: [املأ]`,
       `كمية: [وحدات/فترة]`,
       `تطبيق: [مادة + مرحلة]`,
       `ماكينة: [طراز + تثبيت]`,
@@ -2282,7 +2282,7 @@ function buildVoiceSearchQueries(
 
   return [
     `ما أفضل ${productName} لـ ${industryName}؟`,
-    `كيف أختار درجة الغرِت لـ ${productName}؟`,
+    `كيف أختار درجة الحبيبات لـ ${productName}؟`,
     `كم سعر ${productName} بالجملة في ${countryName || 'الخليج'}؟`,
     `أين أجد مورد ${productName} موثوق؟`,
     `ما مواصفات ${productName} للـ ${industryName}؟`,
@@ -2303,9 +2303,9 @@ function buildCTA(
     return {
       type: 'hard' as const,
       text: pick([
-        `اطلب عرض سعر جملة لـ ${productName}. أرفق النوع، الأبعاد، درجة الغرِت، القاعدة/التثبيت، الكمية، التطبيق، وجهة الشحن، ومتطلبات OEM إن وجدت.`,
-        `لطلب جملة على ${productName}: حدد المقاس، الغرِت، نظام التثبيت، الكمية التقديرية، وجهة الشحن. سيراجع الفريق المواصفة ويرد بعرض سعر.`,
-        `جهز ملف المواصفة لـ ${productName} (الأبعاد، الغرِت، التثبيت، الكمية، وجهة الشحن) واطلب عرض الجملة — يتضمن خيارات OEM والتغليف عند الحاجة.`,
+        `اطلب عرض سعر جملة لـ ${productName}. أرفق النوع، الأبعاد، درجة الحبيبات، القاعدة/التثبيت، الكمية، التطبيق، وجهة الشحن، ومتطلبات OEM إن وجدت.`,
+        `لطلب جملة على ${productName}: حدد المقاس، الحبيبات، نظام التثبيت، الكمية التقديرية، وجهة الشحن. سيراجع الفريق المواصفة ويرد بعرض سعر.`,
+        `جهز ملف المواصفة لـ ${productName} (الأبعاد، الحبيبات، التثبيت، الكمية، وجهة الشحن) واطلب عرض الجملة — يتضمن خيارات OEM والتغليف عند الحاجة.`,
       ]),
       targetUrl: '/quote',
     };
@@ -2314,8 +2314,8 @@ function buildCTA(
       type: 'soft' as const,
       text: pick([
         `هل لديك استفسار فني عن ${productName}؟ شاركنا مادة القطعة، مرحلة العمل، والماكينة لنوصي بالمواصفة الأنسب.`,
-        `اسأل فنيًا عن ${productName}: أرسل المادة، مرحلة التشغيل، ونوع الماكينة، وسنحدد الغرّت والقاعدة المناسبة دون افتراض.`,
-        `محتار في اختيار ${productName}؟ صِفتنا فنية: أرسَل تطبيقك (المادة + الماكينة + المرحلة) ونقترح المواصفة مع تسلسل الغرِت.`,
+        `اسأل فنيًا عن ${productName}: أرسل المادة، مرحلة التشغيل، ونوع الماكينة، وسنحدد الحبيبات والقاعدة المناسبة دون افتراض.`,
+        `محتار في اختيار ${productName}؟ صِفتنا فنية: أرسَل تطبيقك (المادة + الماكينة + المرحلة) ونقترح المواصفة مع تسلسل الحبيبات.`,
       ]),
       targetUrl: '/quote',
     };
@@ -2332,7 +2332,7 @@ function buildMetaDescription(topic: TopicSpec, model: typeof models[0] | null, 
   if (industryName) desc += ` لتطبيقات ${industryName}`;
   if (countryName && countryName !== 'الخليج العربي') desc += ` في ${countryName}`;
 
-  desc += `. درجات الغرِت، القاعدة، التثبيت، MOQ، مهلة التوريد، وخطوات الطلب.`;
+  desc += `. درجات الحبيبات، القاعدة، التثبيت، MOQ، مهلة التوريد، وخطوات الطلب.`;
 
   return desc.slice(0, 160);
 }
@@ -2399,7 +2399,7 @@ function getCommonGritRange(productFamily: string): string {
 function getProductFamilyNameAr(productFamily: string): string {
   const map: Record<string, string> = {
     'abrasive-belts': 'أحزمة الصنفرة',
-    'flap-discs': 'أقراص كوت (Flap Discs)',
+    'flap-discs': 'أقراص الشرائح (Flap Discs)',
     'sanding-discs': 'أقراص الصنفرة',
     'hook-loop': 'أقراص هوك آند لوب',
     'sanding-sponges': 'إسفنجيات صنفرة',

@@ -16,7 +16,7 @@ const HOOK_ONLY_MODEL_SLUGS = new Set(['hook-loop-disc', 'hook-loop-disc-multi-h
 
 export const productFamilies = [
   { slug: 'abrasive-belts', name: 'أحزمة الصنفرة', models: models.filter(m => m.categorySlug === 'abrasive-belts') },
-  { slug: 'flap-discs', name: 'أقراص كوت (Flap Discs)', models: models.filter(m => m.categorySlug === 'flap-discs') },
+  { slug: 'flap-discs', name: 'أقراص الشرائح (Flap Discs)', models: models.filter(m => m.categorySlug === 'flap-discs') },
   { slug: 'sanding-discs', name: 'أقراص الصنفرة', models: models.filter(m => m.categorySlug === 'sanding-discs' && !HOOK_ONLY_MODEL_SLUGS.has(m.slug)) },
   { slug: 'hook-loop', name: 'أقراص هوك آند لوب', models: models.filter(m => m.categorySlug === 'sanding-discs' && m.attachment.includes('Hook')) },
   { slug: 'sanding-sponges', name: 'إسفنجيات صنفرة', models: models.filter(m => m.categorySlug === 'sanding-sponges') },
@@ -35,7 +35,7 @@ export const gccCountries = [
 // titleName: عنوان مختصر مخصص لبناء عناوين SEO (≤ 70 خانة) — يوضع في generateTitleVariants
 export const industrySegments = [
   { code: 'woodworking', name: 'نجارة الخشب', titleName: 'النجارة', nameEn: 'Woodworking', keyProcesses: ['تجهيز الألواح', 'تشطيب الحواف', 'أثاث', 'أرضيات'] },
-  { code: 'metalworking', name: 'تشطيب المعادن', titleName: 'المعادن', nameEn: 'Metalworking', keyProcesses: ['إزالة الشavings والحواف', 'إزالة الصدأ', 'طحن اللحام', 'تهيئة الأسطح', 'الصفائح المعدنية'] },
+  { code: 'metalworking', name: 'تشطيب المعادن', titleName: 'المعادن', nameEn: 'Metalworking', keyProcesses: ['إزالة النتوءات والحواف', 'إزالة الصدأ', 'طحن اللحام', 'تهيئة الأسطح', 'الصفائح المعدنية'] },
   { code: 'automotive', name: 'السيارات والصيانة', titleName: 'السيارات', nameEn: 'Automotive', keyProcesses: ['صنفرة هيكل السيارة', 'صنفرة البرايمر', 'الإصلاح', 'التلميع الدقيق'] },
   { code: 'shipbuilding', name: 'التصنيع البحري وصيانة السفن', titleName: 'حوض السفن', nameEn: 'Shipbuilding', keyProcesses: ['إزالة صدأ الصفائح الفولاذية', 'معالجة اللحام', 'معالجة ما قبل الطلاء', 'مضاد انزلاق السطح'] },
   { code: 'oil-gas', name: 'النفط والغاز - تهيئة الأسطح', titleName: 'النفط والغاز', nameEn: 'Oil & Gas', keyProcesses: ['إزالة صدأ الأنابيب', 'الأسطح الداخلية للخزانات', 'صيانة المنصات البحرية', 'معالجة ما قبل الطلاء المضاد للتآكل'] },
@@ -50,8 +50,8 @@ export const articleTypes = getAllTemplateTypes();
 export const keywordLibrary = {
   // 核心产品词（主关键词候选）
   primaryKeywords: {
-    'abrasive-belts': ['أحزمة الصنفرة', 'أحزمة قاشة', 'حزام صنفرة'],
-    'flap-discs': ['أقراص كوت', 'أقراص شرائح', 'فلاب ديسك'],
+    'abrasive-belts': ['أحزمة الصنفرة', 'أحزمة الكاشطة', 'حزام صنفرة'],
+    'flap-discs': ['أقراص الشرائح', 'أقراص شرائح', 'فلاب ديسك'],
     'sanding-discs': ['أقراص الصنفرة', 'أقراص سنفرة', 'قرص صنفرة'],
     'hook-loop': ['أقراص هوك آند لوب', 'أقراص فيلكرو', 'أقراص خطاف وحلقة'],
     'sanding-sponges': ['إسفنجيات صنفرة', 'إسفنج صنفرة', 'وسائد صنفرة'],
@@ -59,7 +59,7 @@ export const keywordLibrary = {
 
   // 规格词（次关键词）
   specKeywords: {
-    grit: ['غرِت 40', 'غرِت 60', 'غرِت 80', 'غرِت 100', 'غرِت 120', 'غرِت 150', 'غرِت 180', 'غرِت 240', 'غرِت 320', 'غرِت 400', 'غرِت 600', 'غرِت 800', 'غرِت 1000', 'غرِت 3000', 'غرِت 5000'],
+    grit: ['الحبيبات 40', 'الحبيبات 60', 'الحبيبات 80', 'الحبيبات 100', 'الحبيبات 120', 'الحبيبات 150', 'الحبيبات 180', 'الحبيبات 240', 'الحبيبات 320', 'الحبيبات 400', 'الحبيبات 600', 'الحبيبات 800', 'الحبيبات 1000', 'الحبيبات 3000', 'الحبيبات 5000'],
     size: ['533×75 مم', '610×100 مم', '1520×630 مم', '2200×1330 مم', '3 إنش', '4 إنش', '5 إنش', '6 إنش', '125 مم', '150 مم'],
     backing: ['قاعدة قماش', 'قاعدة ورق', 'قاعدة بوليمرية', 'قاعدة بلاستيكية', 'قاعدة ألياف زجاجية'],
     attachment: ['هوك آند لوب', 'لصق ذاتي (PSA)', 'شبكة معدنية'],
@@ -94,7 +94,7 @@ export const keywordLibrary = {
   technicalKeywords: [
     'مواصفات FEPA', 'المعايير الدولية ISO', 'ANSI', 'JIS',
     'معدات الوقاية الشخصية', 'سحب الغبار', 'تهيئة الأسطح',
-    'SASO', 'ESMA', 'GSO', 'درجة الغرِت', 'رابطة إسفنجية',
+    'SASO', 'ESMA', 'GSO', 'درجة الحبيبات', 'رابطة راتنجية',
   ],
 };
 
@@ -217,7 +217,7 @@ function generateTitleVariants(
       });
       if (model) {
         variants.push({
-          title: `الغرِت والمقاس لـ ${modelName} ${iName} ${countryName}`,
+          title: `الحبيبات والمقاس لـ ${modelName} ${iName} ${countryName}`,
           focus: 'grit-size-selection',
         });
       }
@@ -322,7 +322,7 @@ function selectKeywords(
   // 次关键词：规格 + 应用 + 采购
   const secondary: string[] = [];
   if (model) {
-    secondary.push(...model.gritRange.slice(0, 3).map(g => `غرِت ${g}`));
+    secondary.push(...model.gritRange.slice(0, 3).map(g => `الحبيبات ${g}`));
     secondary.push(model.sizeAr);
   }
   secondary.push(...(lib.applicationKeywords[industryCode as keyof typeof lib.applicationKeywords] || []).slice(0, 2));

@@ -2,7 +2,7 @@
   "name": "ar-motai-abrasives",
   "version": "1.0.0",
   "private": true,
-  "description": "الموقع الرسمي العربي لمصنع MoTai للم مواد الكاشطة",
+  "description": "الموقع الرسمي العربي لمصنع MoTai للمواد الكاشطة",
   "type": "module",
   "scripts": {
     "dev": "astro dev",

@@ -1,6 +1,6 @@
 // 全量 URL 审计（构建产物 dist/）：
 //  1. 站内链接与资源 → 文件存在性（目录路由需 index.html）
-//  2. 站外 http(s) 链接 → 去重后 HEAD 可达性（wa.me / 社交平台 / formsubmit / 本站 canonical 跳过）
+//  2. 站外 http(s) 链接 → 去重后 HEAD 可达性（wa.me / 社交平台 / formsubmit 主机跳过；站点表单现为 form.lopins.cn，会参与 HEAD 检查）
 //  3. mailto / tel → 格式校验
 // 锚点（#x）与纯查询串（?x）不校验。用法：npm run build 后执行 node scripts/audit-urls.mjs
 import fs from 'node:fs';
@@ -69,7 +69,7 @@ for (const [target, sources] of internal) {
   }
 }
 
-// 站外可达性：本站 canonical（Pages 上线前域名未解析）、wa.me / 社交平台 / formsubmit 跳过
+// 站外可达性：本域 ar.motaiabrasive.com（canonical 自引用）与 wa.me / 社交平台 / formsubmit 主机跳过 HEAD
 const allExt = [...external].sort();
 const selfUrls = allExt.filter((u) => new URL(u).host === 'ar.motaiabrasive.com');
 const rest = allExt.filter((u) => new URL(u).host !== 'ar.motaiabrasive.com');
