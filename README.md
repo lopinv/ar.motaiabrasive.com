@@ -55,7 +55,7 @@ src/
 ├── data/site.ts   # 企业资料、5 个产品族、7 个行业、质量流程与资源内容
 ├── data/models.ts # 31 个产品型号规格（ModelSpec）
 ├── data/glossary.ts  # 阿语术语对照
-├── layouts/       # BaseLayout（元数据/JSON-LD）与 Layout（页面骨架）
+├── layouts/       # BaseLayout（元数据/JSON-LD/GA4-GTM 统计注入）与 Layout（页面骨架）
 ├── pages/         # 全部静态路由（含 /articles/[slug]、/products/models/[slug]）
 ├── styles/        # 设计令牌、组件样式、页面样式
 └── templates/     # 批量内容管线：选题矩阵、确定性内容生成器、文章模板
@@ -108,6 +108,7 @@ check_keywords.mjs  # 根目录：前 10 篇关键词密度抽查
 ## SEO 与结构化数据
 
 - 每页唯一 Title、Meta Description、单 H1、Canonical、OGP 与 Twitter 卡片
+- 行为分析：`BaseLayout.astro` 注入 GA4（经 Google Tag Manager，容器 `G-SLN397942Q`）；内联 `gtag` 片段带 `is:inline` 原样透传（不走打包与类型检查），替换容器 ID 只需改 `src/layouts/BaseLayout.astro` 中两处
 - JSON-LD：`Organization`、`WebSite`、`BreadcrumbList` 由 `BaseLayout.astro` 生成，`Product`、`FAQPage` 由具体页面提供，经 `BaseLayout.astro` 统一合并注入
 - `sitemap-index.xml` 由 `@astrojs/sitemap` 生成（全量收录生成文章）；`robots.txt` 由 `src/pages/robots.txt.ts` 路由生成并指向生产域名
 - `Product` 结构化数据仅填充可核验字段，不写入虚假价格、库存或评分
